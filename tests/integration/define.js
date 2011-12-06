@@ -1,20 +1,21 @@
 
 var persist = require("../../lib/persist");
-var vows = require("vows");
-var assert = require('assert');
+var nodeunit = require("nodeunit");
 
-vows.describe("Define").addBatch({
-  "create simple property": function() {
+exports['Define'] = nodeunit.testCase({
+  "create simple property": function(test) {
     var Person = persist.define("Person", {
       "name": "string"
     });
-    assert.isFunction(Person);
+    test.isFunction(Person);
 
     var person = new Person();
-    assert.isNotNull(person.name);
+    test.isNotNull(person.name);
+
+    test.done();
   },
 
-  "hasMany": function() {
+  "hasMany": function(test) {
     var Phone = persist.define("Phone", {
       "number": "string"
     });
@@ -23,13 +24,15 @@ vows.describe("Define").addBatch({
     }).hasMany(Phone);
 
     var person = new Person();
-    assert.isNotNull(person.phones);
+    test.isNotNull(person.phones);
 
     var phone = new Phone();
-    assert.isNotNull(phone.person);
+    test.isNotNull(phone.person);
+
+    test.done();
   },
 
-  "hasOne": function() {
+  "hasOne": function(test) {
     var Phone = persist.define("Phone", {
       "number": "string"
     });
@@ -38,13 +41,15 @@ vows.describe("Define").addBatch({
     }).hasOne(Phone);
 
     var person = new Person();
-    assert.isNotNull(person.phone);
+    test.isNotNull(person.phone);
 
     var phone = new Phone();
-    assert.isNotNull(phone.person);
+    test.isNotNull(phone.person);
+
+    test.done();
   },
 
-  "hasManyToMany": function() {
+  "hasManyToMany": function(test) {
     var Phone = persist.define("Phone", {
       "number": "string"
     });
@@ -54,9 +59,11 @@ vows.describe("Define").addBatch({
     Phone.hasMany(Person);
 
     var person = new Person();
-    assert.isNotNull(person.phones);
+    test.isNotNull(person.phones);
 
     var phone = new Phone();
-    assert.isNotNull(phone.persons);
+    test.isNotNull(phone.persons);
+
+    test.done();
   }
-}).export(module);
+});

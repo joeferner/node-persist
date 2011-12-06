@@ -15,6 +15,6 @@
     { "type" : "git", "url" : "https://github.com/nearinfinity/node-orm.git" }
   ],
   "devDependencies" : {
-    "nodeunit" : "~>0.6.0"
+    "nodeunit" : "~>0.6.4"
   }
 }

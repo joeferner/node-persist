@@ -1,25 +1,28 @@
 
 var persist = require("../../lib/persist");
-var vows = require("vows");
-var assert = require('assert');
+var nodeunit = require("nodeunit");
 
-Phone = persist.define("Phone", {
-  "number": "string"
-});
+exports['Define'] = nodeunit.testCase({
+  setUp: function(callback) {
+    this.Phone = persist.define("Phone", {
+      "number": "string"
+    });
 
-Person = persist.define("Person", {
-  "name": "string"
-}).hasMany(Phone);
+    this.Person = persist.define("Person", {
+      "name": "string"
+    }).hasMany(Phone);
 
-vows.describe("Insert").addBatch({
-  topic: function() {
-    var person1 = new Person({ name: "bob" });
-    person1.save(this.callback);
+    callback();
   },
 
-  "save with no associations": function(err, person) {
-    assert.isNull(err);
-    assert.isNotNull(p.id);
-    assert.equals(p.name, "bob");
+  "save with no associations": function(test) {
+    var person1 = new Person({ name: "bob" });
+    person1.save(function(err, p) {
+      test.ifError(err);
+      test.isNotNull(p.id);
+      test.equals(p.name, "bob");
+
+      test.done();
+    });
   }
-}).export(module);
+});
