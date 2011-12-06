@@ -5,7 +5,7 @@
   "homepage" : "https://github.com/nearinfinity/node-orm",
   "version" : "0.0.1",
   "engines" : { "node" : ">=0.6.0" },
-  "maintainers" : [ 
+  "maintainers" : [
     { "name": "Joe Ferner", "email": "joe.ferner@nearinfinity.com" },
     { "name": "Jeff Kunkle", "email": "jeff.kunkle@nearinfinity.com" }
   ],
@@ -14,6 +14,7 @@
   "repositories" : [
     { "type" : "git", "url" : "https://github.com/nearinfinity/node-orm.git" }
   ],
-  "devDependencies" : { 
+  "devDependencies" : {
+    "nodeunit" : "~>0.6.0"
   }
 }
