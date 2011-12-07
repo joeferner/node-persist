@@ -11,3 +11,9 @@ exports.isNotUndefined = function(val, msg) {
     throw new Error(msg || "object is undefined");
   }
 }
+
+exports.isNotNullOrUndefined = function(val, msg) {
+  if(!val) {
+    throw new Error(msg || "object is null or undefined");
+  }
+}

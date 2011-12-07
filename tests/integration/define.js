@@ -1,17 +1,17 @@
 
 var persist = require("../../lib/persist");
 var nodeunit = require("nodeunit");
-var asserts = require("../../test_helpers/asserts");
+var assert = require("../../test_helpers/assert");
 
 exports['Define'] = nodeunit.testCase({
   "create simple property": function(test) {
     var Person = persist.define("Person", {
       "name": "string"
     });
-    asserts.isFunction(Person, "Person is not a function");
+    assert.isFunction(Person, "Person is not a function");
 
     var person = new Person();
-    asserts.isNotUndefined(person.name, "person.name is undefined");
+    assert.isNotUndefined(person.name, "person.name is undefined");
 
     test.done();
   },
@@ -25,11 +25,11 @@ exports['Define'] = nodeunit.testCase({
     }).hasMany(Phone);
 
     var person = new Person();
-    test.isNotNull(person.phones);
+    assert.isNotNullOrUndefined(person.phones, "person.phones is null or undefined");
     test.equals(person.phones.length, 0);
 
     var phone = new Phone();
-    test.isNotNull(phone.person);
+    assert.isNotNullOrUndefined(phone.person, "phone.person is null or undefined");
     test.equals(phone.person.length, 0);
 
     test.done();
@@ -44,10 +44,10 @@ exports['Define'] = nodeunit.testCase({
     }).hasOne(Phone);
 
     var person = new Person();
-    asserts.isNotUndefined(person.phone, "person.phone is undefined");
+    assert.isNotUndefined(person.phone, "person.phone is undefined");
 
     var phone = new Phone();
-    asserts.isNotUndefined(phone.person, "phone.person is undefined");
+    assert.isNotUndefined(phone.person, "phone.person is undefined");
 
     test.done();
   },
@@ -62,11 +62,11 @@ exports['Define'] = nodeunit.testCase({
     Phone.hasMany(Person);
 
     var person = new Person();
-    test.isNotNull(person.phones);
+    assert.isNotNullOrUndefined(person.phones, "person.phones is null or undefined");
     test.equals(person.phones.length, 0);
 
     var phone = new Phone();
-    test.isNotNull(phone.persons);
+    assert.isNotNullOrUndefined(phone.persons, "phone.persons is null or undefined");
     test.equals(person.phones.length, 0);
 
     test.done();
