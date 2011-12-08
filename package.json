@@ -1,18 +1,18 @@
 {
-  "name": "orm",
+  "name": "persist",
   "description": "Node.js ORM framework supporting 0 relational databases",
-  "keywords": ["database", "db", "orm", "sqlite", "mysql", "orm"],
-  "homepage": "https://github.com/nearinfinity/node-orm",
+  "keywords": ["database", "db", "orm", "sqlite", "mysql"],
+  "homepage": "https://github.com/nearinfinity/node-persist",
   "version": "0.0.1",
   "engines": { "node" : ">=0.6.0" },
   "maintainers": [
     { "name": "Joe Ferner", "email": "joe.ferner@nearinfinity.com" },
     { "name": "Jeff Kunkle", "email": "jeff.kunkle@nearinfinity.com" }
   ],
-  "bugs": { "url": "https://github.com/nearinfinity/node-orm/issues" },
+  "bugs": { "url": "https://github.com/nearinfinity/node-persist/issues" },
   "licenses": [ { "type" : "MIT" } ],
   "repositories": [
-    { "type": "git", "url": "https://github.com/nearinfinity/node-orm.git" }
+    { "type": "git", "url": "https://github.com/nearinfinity/node-persist.git" }
   ],
   "dependencies": {
     "sqlite3": "~>2.1.1"
