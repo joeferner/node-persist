@@ -47,6 +47,16 @@ exports['Select'] = nodeunit.testCase({
 
       test.done();
     });
+  },
+
+  "where": function(test) {
+    this.Person.using(this.connection).where("name = ?", "bob").all(function(err, people) {
+      test.ifError(err);
+      test.equals(people.length, 1);
+      test.equals(people[0].name, 'bob');
+
+      test.done();
+    });
   }
 
 });
