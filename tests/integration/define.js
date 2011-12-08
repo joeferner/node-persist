@@ -16,6 +16,20 @@ exports['Define'] = nodeunit.testCase({
     test.done();
   },
 
+  "default value": function(test) {
+    var testDate = new Date(2011, 10, 30, 12, 15);
+    var Person = persist.define("Person", {
+      "name": { type: persist.String, defaultValue: 'bob' },
+      'lastUpdated': { type: persist.DateTime, defaultValue: function() { return testDate; } }
+    });
+
+    var person = new Person();
+    test.equal(person.name, "bob");
+    test.equal(person.lastUpdated, testDate);
+
+    test.done();
+  },
+
   "hasMany": function(test) {
     var Phone = persist.define("Phone", {
       "number": persist.String
