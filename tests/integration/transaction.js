@@ -11,7 +11,8 @@ exports['Transaction'] = nodeunit.testCase({
       "name": "string"
     });
 
-    testUtils.connect(persist, function(connection) {
+    testUtils.connect(persist, function(err, connection) {
+      console.log("connection", connection);
       self.connection = connection;
       callback();
     });
@@ -22,10 +23,10 @@ exports['Transaction'] = nodeunit.testCase({
     var person1 = new this.Person({ name: "bob" });
     this.connection.tx(function(err, tx) {
       test.ifError(err);
-      person1.save(tx, function(err, p) {
+      person1.save(self.connection, function(err, p) {
         tx.rollback(function(err) {
           test.ifError(err);
-          self.Person.all(function(err, items) {
+          self.Person.using(self.connection).all(function(err, items) {
             test.ifError(err);
             test.equals(items.length, 0);
             test.done();
@@ -40,11 +41,11 @@ exports['Transaction'] = nodeunit.testCase({
     var person1 = new this.Person({ name: "bob" });
     this.connection.tx(function(err, tx) {
       test.ifError(err);
-      person1.save(tx, function(err, p) {
+      person1.save(self.connection, function(err, p) {
         test.ifError(err);
         tx.commit(function(err) {
           test.ifError(err);
-          self.Person.all(function(err, items) {
+          self.Person.using(self.connection).all(function(err, items) {
             test.ifError(err);
             test.equals(items.length, 1);
             test.done();

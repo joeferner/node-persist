@@ -29,8 +29,7 @@ exports['Define'] = nodeunit.testCase({
     test.equals(person.phones.length, 0);
 
     var phone = new Phone();
-    assert.isNotNullOrUndefined(phone.person, "phone.person is null or undefined");
-    test.equals(phone.person.length, 0);
+    assert.isNotUndefined(phone.person, "phone.person is null");
 
     test.done();
   },
@@ -47,7 +46,7 @@ exports['Define'] = nodeunit.testCase({
     assert.isNotUndefined(person.phone, "person.phone is undefined");
 
     var phone = new Phone();
-    assert.isNotUndefined(phone.person, "phone.person is undefined");
+    assert.isNotUndefined(phone.persons, "phone.person is undefined");
 
     test.done();
   },

@@ -1,9 +1,12 @@
 
 var persist = require("../../lib/persist");
 var nodeunit = require("nodeunit");
+var testUtils = require("../../test_helpers/test_utils");
 
 exports['Select'] = nodeunit.testCase({
   setUp: function(callback) {
+    var self = this;
+
     this.Phone = persist.define("Phone", {
       "number": "string"
     });
@@ -12,11 +15,14 @@ exports['Select'] = nodeunit.testCase({
       "name": "string"
     }).hasMany(this.Phone);
 
-    callback();
+    testUtils.connect(persist, function(connection) {
+      self.connection = connection;
+      callback();
+    });
   },
 
   "all": function(test) {
-    this.Person.all(function(err, people) {
+    this.Person.using(this.connection).all(function(err, people) {
       test.ifError(err);
       test.equals(people.length, 2);
 

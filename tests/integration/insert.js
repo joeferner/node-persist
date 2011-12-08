@@ -16,10 +16,17 @@ exports['Insert'] = nodeunit.testCase({
       "name": "string"
     }).hasMany(this.Phone);
 
-    testUtils.connect(persist, function(connection) {
+    testUtils.connect(persist, function(err, connection) {
       self.connection = connection;
-      callback();
+      self.connection.runSql("CREATE TABLE Person (id INTEGER PRIMARY KEY, name string);", function() {
+        callback();
+      });
     });
+  },
+
+  tearDown: function(callback) {
+    this.connection.close();
+    callback();
   },
 
   "save with no associations": function(test) {
