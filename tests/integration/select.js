@@ -53,6 +53,22 @@ exports['Select'] = nodeunit.testCase({
     });
   },
 
+  "each": function(test) {
+    var count = 0;
+    this.Person.using(this.connection).orderBy("name").each(function(err, person) {
+      test.ifError(err);
+      if(count == 0) {
+        test.equals(person.name, 'bob');
+        count++;
+      } else if(count == 1) {
+        test.equals(person.name, 'john');
+        count++;
+      } else {
+        throw new Error("Invalid count");
+      }
+    }, function() { test.done(); });
+  },
+
   "where": function(test) {
     this.Person.using(this.connection).where("name = ?", "bob").all(function(err, people) {
       test.ifError(err);
