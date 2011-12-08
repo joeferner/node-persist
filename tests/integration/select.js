@@ -1,6 +1,7 @@
 
 var persist = require("../../lib/persist");
 var nodeunit = require("nodeunit");
+var util = require("util");
 var testUtils = require("../../test_helpers/test_utils");
 
 exports['Select'] = nodeunit.testCase({
@@ -18,14 +19,15 @@ exports['Select'] = nodeunit.testCase({
     testUtils.connect(persist, function(err, connection) {
       self.connection = connection;
       self.connection.runSql("CREATE TABLE Person (id INTEGER PRIMARY KEY, name string);", function() {
-        self.Person = persist.define("Person", {
-          "name": "string"
-        });
+        self.connection.runSql("CREATE TABLE Phone (id INTEGER PRIMARY KEY, number string, personId INTEGER);", function() {
+          self.person1 = new self.Person({ name: "bob" });
+          self.person2 = new self.Person({ name: "john" });
+          self.phone1 = new self.Phone({ person: self.person1, number: '111-2222' });
+          self.phone2 = new self.Phone({ person: self.person1, number: '222-3333' });
+          self.phone3 = new self.Phone({ person: self.person2, number: '333-4444' });
 
-        self.person1 = new self.Person({ name: "bob" });
-        self.person2 = new self.Person({ name: "john" });
-        self.person1.save(self.connection, function(err, p1) {
-          self.person2.save(self.connection, function(err, p2) {
+          self.connection.save([self.person1, self.person2, self.phone1, self.phone2, self.phone3], function(err) {
+            if(err) { console.log(err); return; }
             callback();
           });
         });
@@ -34,7 +36,9 @@ exports['Select'] = nodeunit.testCase({
   },
 
   tearDown: function(callback) {
-    this.connection.close();
+    if(this.connection) {
+      this.connection.close();
+    }
     callback();
   },
 
@@ -56,6 +60,20 @@ exports['Select'] = nodeunit.testCase({
       test.equals(people[0].name, 'bob');
 
       test.done();
+    });
+  },
+
+  "associated data": function(test) {
+    var self = this;
+    this.Person.using(this.connection).where("name = ?", "bob").first(function(err, person) {
+      test.ifError(err);
+      person.phones.all(function(err, phones) {
+        if(err) { console.log(err); return; }
+        test.equals(phones.length, 2);
+        test.equals(phones[0].number, '111-2222');
+        test.equals(phones[1].number, '222-3333');
+        test.done();
+      });
     });
   }
 

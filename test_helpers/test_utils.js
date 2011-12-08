@@ -6,6 +6,7 @@ exports.connect = function(persist, callback) {
     persist.connect({
       driver: 'sqlite3',
       filename: ':memory:',
+      //filename: 'test.db',
       trace: true
     }, callback);
   });
