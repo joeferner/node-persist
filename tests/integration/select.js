@@ -18,17 +18,25 @@ exports['Select'] = nodeunit.testCase({
 
     testUtils.connect(persist, function(err, connection) {
       self.connection = connection;
-      self.connection.runSql("CREATE TABLE Person (id INTEGER PRIMARY KEY, name string);", function() {
-        self.connection.runSql("CREATE TABLE Phone (id INTEGER PRIMARY KEY, number string, personId INTEGER);", function() {
-          self.person1 = new self.Person({ name: "bob" });
-          self.person2 = new self.Person({ name: "john" });
-          self.phone1 = new self.Phone({ person: self.person1, number: '111-2222' });
-          self.phone2 = new self.Phone({ person: self.person1, number: '222-3333' });
-          self.phone3 = new self.Phone({ person: self.person2, number: '333-4444' });
-
-          self.connection.save([self.person1, self.person2, self.phone1, self.phone2, self.phone3], function(err) {
+      self.connection.runSql("CREATE TABLE IF NOT EXISTS Person (id INTEGER PRIMARY KEY " + (connection.driver=='mysql'?'auto_increment':'') + ", name text);", function(err) {
+        if(err) { console.log(err); return; }
+        self.connection.runSql("CREATE TABLE IF NOT EXISTS Phone (id INTEGER PRIMARY KEY " + (connection.driver=='mysql'?'auto_increment':'') + ", number text, personId INTEGER);", function(err) {
+          if(err) { console.log(err); return; }
+          self.connection.runSql("DELETE FROM Person;", function(err) {
             if(err) { console.log(err); return; }
-            callback();
+            self.connection.runSql("DELETE FROM Phone;", function(err) {
+              if(err) { console.log(err); return; }
+              self.person1 = new self.Person({ name: "bob" });
+              self.person2 = new self.Person({ name: "john" });
+              self.phone1 = new self.Phone({ person: self.person1, number: '111-2222' });
+              self.phone2 = new self.Phone({ person: self.person1, number: '222-3333' });
+              self.phone3 = new self.Phone({ person: self.person2, number: '333-4444' });
+
+              self.connection.save([self.person1, self.person2, self.phone1, self.phone2, self.phone3], function(err) {
+                if(err) { console.log(err); return; }
+                callback();
+              });
+            });
           });
         });
       });
