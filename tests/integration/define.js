@@ -6,7 +6,7 @@ var assert = require("../../test_helpers/assert");
 exports['Define'] = nodeunit.testCase({
   "create simple property": function(test) {
     var Person = persist.define("Person", {
-      "name": "string"
+      "name": persist.String
     });
     assert.isFunction(Person, "Person is not a function");
 
@@ -18,10 +18,10 @@ exports['Define'] = nodeunit.testCase({
 
   "hasMany": function(test) {
     var Phone = persist.define("Phone", {
-      "number": "string"
+      "number": persist.String
     });
     var Person = persist.define("Person", {
-      "name": "string"
+      "name": persist.String
     }).hasMany(Phone);
 
     var person = new Person();
@@ -36,10 +36,10 @@ exports['Define'] = nodeunit.testCase({
 
   "hasOne": function(test) {
     var Phone = persist.define("Phone", {
-      "number": "string"
+      "number": persist.String
     });
     var Person = persist.define("Person", {
-      "name": "string"
+      "name": persist.String
     }).hasOne(Phone);
 
     var person = new Person();
@@ -53,10 +53,10 @@ exports['Define'] = nodeunit.testCase({
 
   "hasManyToMany": function(test) {
     var Phone = persist.define("Phone", {
-      "number": "string"
+      "number": persist.String
     });
     var Person = persist.define("Person", {
-      "name": "string"
+      "name": persist.String
     }).hasMany(Phone);
     Phone.hasMany(Person);
 

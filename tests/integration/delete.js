@@ -10,7 +10,7 @@ exports['Delete'] = nodeunit.testCase({
       self.connection = connection;
       self.connection.runSql("CREATE TABLE Person (id INTEGER PRIMARY KEY, name string);", function() {
         self.Person = persist.define("Person", {
-          "name": "string"
+          "name": persist.String
         });
 
         self.person1 = new self.Person({ name: "bob" });

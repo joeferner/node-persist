@@ -9,11 +9,11 @@ exports['Select'] = nodeunit.testCase({
     var self = this;
 
     this.Phone = persist.define("Phone", {
-      "number": "string"
+      "number": persist.String
     });
 
     this.Person = persist.define("Person", {
-      "name": "string"
+      "name": persist.String
     }).hasMany(this.Phone);
 
     testUtils.connect(persist, function(err, connection) {
@@ -54,7 +54,7 @@ exports['Select'] = nodeunit.testCase({
   },
 
   "order by desc": function(test) {
-    this.Person.using(this.connection).orderBy("name", "desc").all(function(err, people) {
+    this.Person.using(this.connection).orderBy("name", persist.Descending).all(function(err, people) {
       test.ifError(err);
       test.equals(people.length, 2);
       test.equals(people[0].name, 'john');

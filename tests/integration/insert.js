@@ -9,11 +9,11 @@ exports['Insert'] = nodeunit.testCase({
     var self = this;
 
     this.Phone = persist.define("Phone", {
-      "number": "string"
+      "number": persist.String
     });
 
     this.Person = persist.define("Person", {
-      "name": "string"
+      "name": persist.String
     }).hasMany(this.Phone);
 
     testUtils.connect(persist, function(err, connection) {

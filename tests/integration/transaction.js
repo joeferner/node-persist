@@ -8,7 +8,7 @@ exports['Transaction'] = nodeunit.testCase({
     var self = this;
 
     this.Person = persist.define("Person", {
-      "name": "string"
+      "name": persist.String
     });
 
     testUtils.connect(persist, function(err, connection) {
