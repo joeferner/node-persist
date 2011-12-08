@@ -1,2 +1,1 @@
-
-modules.export = require("./lib/persist");
+module.exports = require("./lib/persist");
