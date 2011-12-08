@@ -12,13 +12,16 @@ exports['Insert'] = nodeunit.testCase({
       "number": persist.String
     });
 
+    this.testDate = new Date(2011, 10, 30, 12, 15);
+
     this.Person = persist.define("Person", {
-      "name": persist.String
+      "name": persist.String,
+      "lastUpdated": { type: persist.DateTime, defaultValue: function() { return self.testDate } }
     }).hasMany(this.Phone);
 
     testUtils.connect(persist, function(err, connection) {
       self.connection = connection;
-      self.connection.runSql("CREATE TABLE Person (id INTEGER PRIMARY KEY, name string);", function() {
+      self.connection.runSql("CREATE TABLE Person (id INTEGER PRIMARY KEY, name string, lastUpdated text);", function() {
         callback();
       });
     });
@@ -30,11 +33,13 @@ exports['Insert'] = nodeunit.testCase({
   },
 
   "save with no associations": function(test) {
+    var self = this;
     var person1 = new this.Person({ name: "bob" });
     person1.save(this.connection, function(err, p) {
       test.ifError(err);
       assert.isNotNullOrUndefined(p.id, "p.id is null or undefined");
       test.equals(p.name, "bob");
+      test.equals(p.lastUpdated, self.testDate);
 
       test.done();
     });
