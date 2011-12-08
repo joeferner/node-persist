@@ -12,10 +12,16 @@ exports['Transaction'] = nodeunit.testCase({
     });
 
     testUtils.connect(persist, function(err, connection) {
-      console.log("connection", connection);
       self.connection = connection;
-      callback();
+      self.connection.runSql("CREATE TABLE Person (id INTEGER PRIMARY KEY, name string);", function() {
+        callback();
+      });
     });
+  },
+
+  tearDown: function(callback) {
+    this.connection.close();
+    callback();
   },
 
   "rollback": function(test) {
