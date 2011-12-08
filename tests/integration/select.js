@@ -53,6 +53,17 @@ exports['Select'] = nodeunit.testCase({
     });
   },
 
+  "order by desc": function(test) {
+    this.Person.using(this.connection).orderBy("name", "desc").all(function(err, people) {
+      test.ifError(err);
+      test.equals(people.length, 2);
+      test.equals(people[0].name, 'john');
+      test.equals(people[1].name, 'bob');
+
+      test.done();
+    });
+  },
+
   "each": function(test) {
     var count = 0;
     this.Person.using(this.connection).orderBy("name").each(function(err, person) {
