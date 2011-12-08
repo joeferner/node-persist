@@ -1,5 +1,4 @@
 
-
 exports.isFunction = function(val, msg) {
   if(!val || typeof(val) != "function") {
     throw new Error(msg || "not a function");

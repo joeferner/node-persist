@@ -71,4 +71,5 @@ exports['Define'] = nodeunit.testCase({
 
     test.done();
   }
+
 });
