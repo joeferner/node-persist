@@ -31,7 +31,7 @@ exports['Delete'] = nodeunit.testCase({
 
   "delete with no associations": function(test) {
     var self = this;
-    this.person1.delete(function(err, deletedPerson) {
+    this.person1.delete(self.connection, function(err, deletedPerson) {
       test.ifError(err);
       self.Person.using(self.connection).all(function(err, rows) {
         test.ifError(err);
@@ -44,8 +44,7 @@ exports['Delete'] = nodeunit.testCase({
 
   "delete all of a certain type": function(test) {
     var self = this;
-    this.Person.using(this.connection).deleteAll(function(err, count) {
-      test.equal(count, 2);
+    this.Person.using(this.connection).deleteAll(function(err) {
       self.Person.using(self.connection).all(function(err, rows) {
         test.ifError(err);
         test.equal(rows.length, 0);
