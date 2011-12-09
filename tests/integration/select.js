@@ -25,7 +25,7 @@ exports['Select'] = nodeunit.testCase({
         "DELETE FROM Person;"
       ], function(err) {
         if(err) { console.log(err); return; }
-        self.person1 = new self.Person({ name: "bob" });
+        self.person1 = new self.Person({ name: "Bob O'Neill" });
         self.person2 = new self.Person({ name: "john" });
         self.phone1 = new self.Phone({ person: self.person1, number: '111-2222' });
         self.phone2 = new self.Phone({ person: self.person1, number: '222-3333' });
@@ -50,7 +50,7 @@ exports['Select'] = nodeunit.testCase({
     this.Person.using(this.connection).all(function(err, people) {
       test.ifError(err);
       test.equals(people.length, 2);
-      test.equals(people[0].name, 'bob');
+      test.equals(people[0].name, "Bob O'Neill");
       test.equals(people[1].name, 'john');
 
       test.done();
@@ -70,7 +70,7 @@ exports['Select'] = nodeunit.testCase({
       test.ifError(err);
       test.equals(people.length, 2);
       test.equals(people[0].name, 'john');
-      test.equals(people[1].name, 'bob');
+      test.equals(people[1].name, "Bob O'Neill");
 
       test.done();
     });
@@ -81,7 +81,7 @@ exports['Select'] = nodeunit.testCase({
     this.Person.using(this.connection).orderBy("name").each(function(err, person) {
       test.ifError(err);
       if(count == 0) {
-        test.equals(person.name, 'bob');
+        test.equals(person.name, "Bob O'Neill");
         count++;
       } else if(count == 1) {
         test.equals(person.name, 'john');
@@ -93,10 +93,10 @@ exports['Select'] = nodeunit.testCase({
   },
 
   "where": function(test) {
-    this.Person.using(this.connection).where("name = ?", "bob").all(function(err, people) {
+    this.Person.using(this.connection).where("name = ?", "Bob O'Neill").all(function(err, people) {
       test.ifError(err);
       test.equals(people.length, 1);
-      test.equals(people[0].name, 'bob');
+      test.equals(people[0].name, "Bob O'Neill");
 
       test.done();
     });
@@ -104,7 +104,7 @@ exports['Select'] = nodeunit.testCase({
 
   "associated data": function(test) {
     var self = this;
-    this.Person.using(this.connection).where("name = ?", "bob").first(function(err, person) {
+    this.Person.using(this.connection).where("name = ?", "Bob O'Neill").first(function(err, person) {
       test.ifError(err);
       person.phones.all(function(err, phones) {
         if(err) { console.log(err); return; }

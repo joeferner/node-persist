@@ -34,13 +34,13 @@ exports['Update'] = nodeunit.testCase({
 
   "update": function(test) {
     var self = this;
-    var person1 = new this.Person({ name: "bob" });
+    var person1 = new this.Person({ name: "Bob O'Neill" });
     person1.save(this.connection, function(err, p) {
       test.ifError(err);
       self.Person.using(self.connection).all(function(err, rows) {
         test.ifError(err);
         test.equal(1, rows.length);
-        test.equal('bob', rows[0].name);
+        test.equal("Bob O'Neill", rows[0].name);
 
         // update
         person1.name = 'tom';
