@@ -37,14 +37,15 @@ exports['Insert'] = nodeunit.testCase({
 
   "save with no associations": function(test) {
     var self = this;
-    var person1 = new this.Person({ name: "bob" });
+    var person1 = new this.Person({ name: "Bob O'Neill" });
     person1.save(this.connection, function(err, p) {
       test.ifError(err);
       assert.isNotNullOrUndefined(p.id, "p.id is null or undefined");
-      test.equals(p.name, "bob");
+      test.equals(p.name, "Bob O'Neill");
       test.equals(p.lastUpdated, self.testDate);
 
       test.done();
     });
   }
+
 });
