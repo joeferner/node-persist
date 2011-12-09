@@ -102,6 +102,23 @@ exports['Select'] = nodeunit.testCase({
     });
   },
 
+  "first": function(test) {
+    this.Person.using(this.connection).where("name = ?", "Bob O'Neill").first(function(err, person) {
+      test.ifError(err);
+      test.ok(person);
+      test.equals(person.name, "Bob O'Neill");
+      test.done();
+    });
+  },
+
+  "first that doesn't match anything": function(test) {
+    this.Person.using(this.connection).where("name = ?", "Bad Name").first(function(err, person) {
+      test.ifError(err);
+      test.equals(person, null);
+      test.done();
+    });
+  },
+
   "associated data": function(test) {
     var self = this;
     this.Person.using(this.connection).where("name = ?", "Bob O'Neill").first(function(err, person) {
