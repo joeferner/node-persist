@@ -110,7 +110,9 @@ exports['Select'] = nodeunit.testCase({
         if(err) { console.log(err); return; }
         test.equals(phones.length, 2);
         test.equals(phones[0].number, '111-2222');
+        test.equals(phones[0].personId, person.id);
         test.equals(phones[1].number, '222-3333');
+        test.equals(phones[1].personId, person.id);
         test.done();
       });
     });
