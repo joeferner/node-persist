@@ -16,7 +16,8 @@
   ],
   "dependencies": {
     "sqlite3": "~>2.1.1",
-    "mysql": "~>0.9.5"
+    "mysql": "~>0.9.5",
+    "async": "0.1.15"
   },
   "devDependencies": {
     "nodeunit": "~>0.6.4"
