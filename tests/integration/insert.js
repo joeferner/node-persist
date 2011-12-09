@@ -12,12 +12,22 @@ exports['Insert'] = nodeunit.testCase({
       "number": persist.String
     });
 
-    this.testDate = new Date(2011, 10, 30, 12, 15);
+    this.testDate1 = new Date(2011, 10, 30, 12, 15);
+    this.testDate2 = new Date(2011, 10, 30, 12, 15);
 
     this.Person = persist.define("Person", {
       "name": persist.String,
-      "lastUpdated": { type: persist.DateTime, defaultValue: function() { return self.testDate } }
-    }).hasMany(this.Phone);
+      "createdDate": { type: persist.DateTime, defaultValue: function() { return self.testDate1 } },
+      "lastUpdated": { type: persist.DateTime }
+    })
+    .hasMany(this.Phone)
+    .on('beforeSave', function(obj) {
+      obj.lastUpdated = self.testDate2;
+    })
+    .on('afterSave', function(obj) {
+      if(!obj.updateCount) obj.updateCount = 0;
+      obj.updateCount++;
+    });
 
     testUtils.connect(persist, function(err, connection) {
       self.connection = connection;
@@ -31,20 +41,28 @@ exports['Insert'] = nodeunit.testCase({
   },
 
   tearDown: function(callback) {
-    this.connection.close();
+    if(this.connection) {
+      this.connection.close();
+    }
     callback();
   },
 
   "save with no associations": function(test) {
     var self = this;
     var person1 = new this.Person({ name: "Bob O'Neill" });
-    person1.save(this.connection, function(err, p) {
+
+    person1.save(self.connection, function(err, p) {
       test.ifError(err);
       assert.isNotNullOrUndefined(p.id, "p.id is null or undefined");
       test.equals(p.name, "Bob O'Neill");
-      test.equals(p.lastUpdated, self.testDate);
+      test.equals(p.createdDate, self.testDate1);
+      test.equals(p.lastUpdated, self.testDate2);
+      test.equals(p.updateCount, 1);
 
-      test.done();
+      person1.save(self.connection, function(err, p) {
+        test.equals(p.updateCount, 2);
+        test.done();
+      });
     });
   }
 
