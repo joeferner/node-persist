@@ -21,7 +21,10 @@ exports['Insert'] = nodeunit.testCase({
 
     testUtils.connect(persist, function(err, connection) {
       self.connection = connection;
-      self.connection.runSql("CREATE TABLE Person (id INTEGER PRIMARY KEY, name string, lastUpdated text);", function() {
+      self.connection.runSql([
+        testUtils.personCreateStmt,
+        "DELETE FROM Person;"
+      ], function() {
         callback();
       });
     });

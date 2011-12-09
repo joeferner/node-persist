@@ -8,7 +8,10 @@ exports['Delete'] = nodeunit.testCase({
 
     testUtils.connect(persist, function(err, connection) {
       self.connection = connection;
-      self.connection.runSql("CREATE TABLE Person (id INTEGER PRIMARY KEY, name string);", function() {
+      self.connection.runSql([
+        testUtils.personCreateStmt,
+        "DELETE FROM Person;"
+      ], function() {
         self.Person = persist.define("Person", {
           "name": persist.String
         });
@@ -32,9 +35,9 @@ exports['Delete'] = nodeunit.testCase({
   "delete with no associations": function(test) {
     var self = this;
     this.person1.delete(self.connection, function(err, deletedPerson) {
-      test.ifError(err);
+      if(err) { console.log(err); return; }
       self.Person.using(self.connection).all(function(err, rows) {
-        test.ifError(err);
+        if(err) { console.log(err); return; }
         test.equal(rows.length, 1);
         test.equal(rows[0].name, 'john');
         test.done();
@@ -45,8 +48,9 @@ exports['Delete'] = nodeunit.testCase({
   "delete all of a certain type": function(test) {
     var self = this;
     this.Person.using(this.connection).deleteAll(function(err) {
+      if(err) { console.log(err); return; }
       self.Person.using(self.connection).all(function(err, rows) {
-        test.ifError(err);
+        if(err) { console.log(err); return; }
         test.equal(rows.length, 0);
         test.done();
       });

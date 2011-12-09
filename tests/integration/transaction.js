@@ -13,7 +13,10 @@ exports['Transaction'] = nodeunit.testCase({
 
     testUtils.connect(persist, function(err, connection) {
       self.connection = connection;
-      self.connection.runSql("CREATE TABLE Person (id INTEGER PRIMARY KEY, name string);", function() {
+      self.connection.runSql([
+        testUtils.personCreateStmt,
+        "DELETE FROM Person;"
+      ], function() {
         callback();
       });
     });
@@ -28,12 +31,12 @@ exports['Transaction'] = nodeunit.testCase({
     var self = this;
     var person1 = new this.Person({ name: "bob" });
     this.connection.tx(function(err, tx) {
-      test.ifError(err);
+      if(err) { console.log(err); return; }
       person1.save(self.connection, function(err, p) {
         tx.rollback(function(err) {
-          test.ifError(err);
+          if(err) { console.log(err); return; }
           self.Person.using(self.connection).all(function(err, items) {
-            test.ifError(err);
+            if(err) { console.log(err); return; }
             test.equals(items.length, 0);
             test.done();
           });
@@ -46,11 +49,11 @@ exports['Transaction'] = nodeunit.testCase({
     var self = this;
     var person1 = new this.Person({ name: "bob" });
     this.connection.tx(function(err, tx) {
-      test.ifError(err);
+      if(err) { console.log(err); return; }
       person1.save(self.connection, function(err, p) {
-        test.ifError(err);
+        if(err) { console.log(err); return; }
         tx.commit(function(err) {
-          test.ifError(err);
+          if(err) { console.log(err); return; }
           self.Person.using(self.connection).all(function(err, items) {
             test.ifError(err);
             test.equals(items.length, 1);
