@@ -59,6 +59,9 @@ You can install using Node Package Manager (npm):
  * [orderBy](#queryOrderBy)
  * [limit](#queryLimit)
  * [where](#queryWhere)
+ * [count](#queryCount)
+ * [min](#queryMin)
+ * [max](#queryMax)
 
 ## Transaction
 
@@ -85,6 +88,8 @@ __Example__
 
     connection.chain([
       person3.save,
+      Person.min('age'),
+      Person.max('age'),
       phone3.delete,
       person2.delete,
       Person.orderBy('name').all,
@@ -93,6 +98,16 @@ __Example__
       Phone.deleteAll,
       Phone.all
     ], function(err, results) {
+      // results[0] = person3
+      // results[1] = 21
+      // results[2] = 25
+      // results[3] = []
+      // results[4] = []
+      // results[5] = -- all people ordered by name
+      // results[6] = -- first phone ordered by number
+      // results[7] = 100
+      // results[8] = []
+      // results[9] = [] -- nobody left
     });
 
 <a name="connectionTx"/>
@@ -351,6 +366,56 @@ __Example__
 
     Person.where('name = ?', 'bob').all(connection, function(err, people) {
       // All the people named 'bob'
+    });
+
+<a name="queryCount" />
+### query.count([connection], callback)
+
+Counts the number of items that would be returned by the query.
+
+__Arguments__
+
+ * connection - (Optional) The connection to use. If this is not specified a [using](#modelUsing) statement must be specified earlier.
+ * callback(err, count) - Callback with the count of items.
+
+__Example__
+
+    Person.where('name = ?', 'bob').count(connection, function(err, count) {
+      // count = the number of people with the name bob
+    });
+
+<a name="queryMin" />
+### query.min([connection], fieldName, callback)
+
+Gets the minimum value in the query of the given field.
+
+__Arguments__
+
+ * connection - (Optional) The connection to use. If this is not specified a [using](#modelUsing) statement must be specified earlier.
+ * fieldName - The field name of the value you would like to get the minimum for.
+ * callback(err, min) - Callback with the minimum value.
+
+__Example__
+
+    Person.where('name = ?', 'bob').min(connection, 'age', function(err, min) {
+      // the minimum age of all bobs
+    });
+
+<a name="queryMax" />
+### query.max([connection], fieldName, callback)
+
+Gets the maximum value in the query of the given field.
+
+__Arguments__
+
+ * connection - (Optional) The connection to use. If this is not specified a [using](#modelUsing) statement must be specified earlier.
+ * fieldName - The field name of the value you would like to get the maximum for.
+ * callback(err, min) - Callback with the maximum value.
+
+__Example__
+
+    Person.where('name = ?', 'bob').max(connection, 'age', function(err, min) {
+      // the maximum age of all bobs
     });
 
 <a name="tx"/>

@@ -13,7 +13,8 @@ exports['Chain'] = nodeunit.testCase({
     });
 
     this.Person = persist.define("Person", {
-      "name": persist.String
+      "name": persist.String,
+      "age": persist.Integer
     }).hasMany(this.Phone);
 
     testUtils.connect(persist, function(err, connection) {
@@ -25,8 +26,8 @@ exports['Chain'] = nodeunit.testCase({
         "DELETE FROM Person;"
       ], function(err) {
         if(err) { console.log(err); return; }
-        self.person1 = new self.Person({ name: "Bob O'Neill" });
-        self.person2 = new self.Person({ name: "john" });
+        self.person1 = new self.Person({ name: "Bob O'Neill", age: 21 });
+        self.person2 = new self.Person({ name: "john", age: 23 });
         self.phone1 = new self.Phone({ person: self.person1, number: '111-2222' });
         self.phone2 = new self.Phone({ person: self.person1, number: '222-3333' });
         self.phone3 = new self.Phone({ person: self.person2, number: '333-4444' });
@@ -48,10 +49,12 @@ exports['Chain'] = nodeunit.testCase({
 
   "chain": function(test) {
     var self = this;
-    var person3 = new self.Person({ name: "fred" });
+    var person3 = new self.Person({ name: "fred", age: 25 });
 
     this.connection.chain([
       person3.save,
+      self.Person.min('age'),
+      self.Person.max('age'),
       self.phone3.delete,
       self.person2.delete,
       self.Person.orderBy('name').all,
@@ -65,28 +68,34 @@ exports['Chain'] = nodeunit.testCase({
       // person3.save
       test.equal(results[0].name, 'fred');
 
+      // Person.min
+      test.equal(results[1], 21);
+
+      // Person.max
+      test.equal(results[2], 25);
+
       // phone3.delete
-      test.ok(results[1]);
+      test.ok(results[3]);
 
       // person2.delete
-      test.ok(results[2]);
+      test.ok(results[4]);
 
       // person select all
-      test.equal(results[3].length, 2);
-      test.equal(results[3][0].name, "Bob O'Neill");
-      test.equal(results[3][1].name, "fred");
+      test.equal(results[5].length, 2);
+      test.equal(results[5][0].name, "Bob O'Neill");
+      test.equal(results[5][1].name, "fred");
 
       // phone select first
-      test.equal(results[4].number, "111-2222");
+      test.equal(results[6].number, "111-2222");
 
       // phone select count
-      test.equal(results[5], 2);
+      test.equal(results[7], 2);
 
       // phone.deleteAll
-      test.ok(results[6]);
+      test.ok(results[8]);
 
       // phone.all
-      test.equal(results[7].length, 0);
+      test.equal(results[9].length, 0);
 
       test.done();
     });

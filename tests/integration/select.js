@@ -13,7 +13,8 @@ exports['Select'] = nodeunit.testCase({
     });
 
     this.Person = persist.define("Person", {
-      "name": persist.String
+      "name": persist.String,
+      "age": persist.Integer
     }).hasMany(this.Phone);
 
     testUtils.connect(persist, function(err, connection) {
@@ -25,8 +26,8 @@ exports['Select'] = nodeunit.testCase({
         "DELETE FROM Person;"
       ], function(err) {
         if(err) { console.log(err); return; }
-        self.person1 = new self.Person({ name: "Bob O'Neill" });
-        self.person2 = new self.Person({ name: "john" });
+        self.person1 = new self.Person({ name: "Bob O'Neill", age: 21 });
+        self.person2 = new self.Person({ name: "john", age: 23 });
         self.phone1 = new self.Phone({ person: self.person1, number: '111-2222' });
         self.phone2 = new self.Phone({ person: self.person1, number: '222-3333' });
         self.phone3 = new self.Phone({ person: self.person2, number: '333-4444' });
@@ -115,6 +116,22 @@ exports['Select'] = nodeunit.testCase({
     this.Person.using(this.connection).where("name = ?", "Bad Name").first(function(err, person) {
       test.ifError(err);
       test.equals(person, null);
+      test.done();
+    });
+  },
+
+  "min": function(test) {
+    this.Person.using(this.connection).min("age", function(err, age) {
+      test.ifError(err);
+      test.equals(age, 21);
+      test.done();
+    });
+  },
+
+  "max": function(test) {
+    this.Person.using(this.connection).max("age", function(err, age) {
+      test.ifError(err);
+      test.equals(age, 23);
       test.done();
     });
   },
