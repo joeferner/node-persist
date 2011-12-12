@@ -40,6 +40,7 @@ You can install using Node Package Manager (npm):
 ## Connection
 
  * [chain](#connectionChain)
+ * [tx](#connectionTx)
 
 ## Model
 
@@ -58,6 +59,11 @@ You can install using Node Package Manager (npm):
  * [orderBy](#queryOrderBy)
  * [limit](#queryLimit)
  * [where](#queryWhere)
+
+## Transaction
+
+ * [commit](#txCommit)
+ * [rollback](#txRollback)
 
 # API Documentation
 
@@ -87,6 +93,26 @@ __Example__
       Phone.deleteAll,
       Phone.all
     ], function(err, results) {
+    });
+
+<a name="connectionTx"/>
+### connection.tx(callback)
+
+Begins a transaction on the connection.
+
+__Arguments__
+
+ * callback(err, tx) - Callback called when the transaction has started. tx is a transaction object which you can
+   call [commit](#txCommit) or [rollback](#txRollback)
+
+__Example__
+
+    connection.tx(function(err, tx) {
+      person1.save(connection, function(err) {
+        tx.commit(function(err) {
+          // person1 saved and committed to database
+        });
+      });
     });
 
 <a name="model" />
@@ -325,4 +351,45 @@ __Example__
 
     Person.where('name = ?', 'bob').all(connection, function(err, people) {
       // All the people named 'bob'
+    });
+
+<a name="tx"/>
+## Transaction
+
+<a name="txCommit"/>
+### tx.commit(callback)
+
+Commits a transaction.
+
+__Arguments__
+
+ * callback(err) - Callback called when the transaction has committed.
+
+__Example__
+
+    connection.tx(function(err, tx) {
+      person1.save(connection, function(err) {
+        tx.commit(function(err) {
+          // person1 saved and committed to database
+        });
+      });
+    });
+
+<a name="txRollback"/>
+### tx.rollback(callback)
+
+Rollsback a transaction.
+
+__Arguments__
+
+ * callback(err) - Callback called when the transaction has rolledback.
+
+__Example__
+
+    connection.tx(function(err, tx) {
+      person1.save(connection, function(err) {
+        tx.rollback(function(err) {
+          // person1 not saved. Transaction rolledback.
+        });
+      });
     });
