@@ -54,11 +54,11 @@ exports['Chain'] = nodeunit.testCase({
       person3.save,
       self.phone3.delete,
       self.person2.delete,
-      self.Person.using(self.connection).orderBy('name').all,
-      self.Phone.using(self.connection).orderBy('number').first,
-      self.Phone.using(self.connection).count,
-      self.Phone.using(self.connection).deleteAll,
-      self.Phone.using(self.connection).all
+      self.Person.orderBy('name').all,
+      self.Phone.orderBy('number').first,
+      self.Phone.count,
+      self.Phone.deleteAll,
+      self.Phone.all
     ], function(err, results) {
       if(err) { console.error(err); return; }
 
