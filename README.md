@@ -35,11 +35,64 @@ You can install using Node Package Manager (npm):
 
     npm install persist
 
+# Index
+
+## Connection
+
+ * [chain](#connectionChain)
+
+## Model
+
+ * [define](#modelDefine)
+ * [hasMany](#modelHasMany)
+ * [using](#modelUsing)
+ * [save](#modelSave)
+ * [delete](#modelDelete)
+ * [Associated Object Properties](#associatedObjectProperties)
+
+## Query
+
+ * [all](#queryAll)
+ * [each](#queryEach)
+ * [first](#queryFirst)
+ * [orderBy](#queryOrderBy)
+ * [limit](#queryLimit)
+ * [where](#queryWhere)
+
 # API Documentation
+
+<a name="connection"/>
+## Connection
+
+<a name="connectionChain"/>
+### connection.chain(chainables, callback)
+
+Chains multiple statements together in order and gets the results.
+
+__Arguments__
+
+ * chainables - An array of chainable queries. These can be save, updates, selects, or deletes. Each item in the array will be
+   executed, wait for the results, and then execute the next.
+ * callback(err, results) - Callback called when all the items have been executed.
+
+__Example__
+
+    connection.chain([
+      person3.save,
+      phone3.delete,
+      person2.delete,
+      Person.orderBy('name').all,
+      Phone.orderBy('number').first,
+      Phone.count,
+      Phone.deleteAll,
+      Phone.all
+    ], function(err, results) {
+    });
 
 <a name="model" />
 ## Model
 
+<a name="modelDefine" />
 ### persist.define(modelName, properties): Model
 
 Defines a model object for use in persist.
@@ -90,7 +143,7 @@ __Example__
     }).hasMany(Phone);
 
 <a name="modelUsing" />
-### Model.using(connection): Query
+### Model.using(connection): query
 
 Gets a query object bound to a connection object.
 
@@ -105,6 +158,38 @@ __Returns__
 __Example__
 
     Person.using(connection).first(...);
+
+<a name="modelSave" />
+### Model.save(connection, callback)
+
+Saves the model object to the database
+
+__Arguments__
+
+ * connection - The connection to use to save the object with.
+ * callback(err) - The callback to be called when the save is complete
+
+__Example__
+
+    person1.save(connection, function() {
+      // person1 saved
+    });
+
+<a name="modelDelete" />
+### Model.delete(connection, callback)
+
+Deletes the model object from the database
+
+__Arguments__
+
+ * connection - The connection to use to delete the object with.
+ * callback(err) - The callback to be called when the delete is complete
+
+__Example__
+
+    person1.delete(connection, function() {
+      // person1 deleted
+    });
 
 <a name="associatedObjectProperties" />
 ### Associated Object Properties
@@ -132,6 +217,7 @@ __Example__
 <a name="query" />
 ## Query
 
+<a name="queryAll" />
 ### query.all([connection], callback)
 
 Gets all items from a query as a single array of items.
@@ -147,6 +233,7 @@ __Example__
       // all the people
     });
 
+<a name="queryEach" />
 ### query.each([connection], callback, doneCallback)
 
 Gets items from a query calling the callback for each item returned.
@@ -154,7 +241,7 @@ Gets items from a query calling the callback for each item returned.
 __Arguments__
 
  * connection - (Optional) The connection to use. If this is not specified a [using](#modelUsing) statement must be specified earlier.
- * callback(err, item) - Callback to be called after each row has been fetched. item is a model instances.
+ * callback(err, item) - Callback to be called after each row has been fetched. item is a model instance.
  * doneCallback(err) - Callback called after all rows have been retrieved.
 
 __Example__
@@ -165,9 +252,26 @@ __Example__
       // all done
     });
 
+<a name="queryFirst" />
+### query.first([connection], callback)
+
+Gets the first item from a query.
+
+__Arguments__
+
+ * connection - (Optional) The connection to use. If this is not specified a [using](#modelUsing) statement must be specified earlier.
+ * callback(err, item) - Callback to be called after the row has been fetched. item is a model instance.
+
+__Example__
+
+    Person.first(connection, function(err, person) {
+      // gets the first person
+    });
+
+<a name="queryOrderBy" />
 ### query.orderBy(propertyName): query
 
-Sets an order by on the query.
+Orders the results of a query.
 
 __Arguments__
 
@@ -180,5 +284,45 @@ __Returns__
 __Example__
 
     Person.orderBy('name').all(connection, function(err, people) {
-      // all the people
+      // all the people ordered by name
+    });
+
+<a name="queryLimit" />
+### query.limit(count, [offset]): query
+
+Limits the number of results of a query.
+
+__Arguments__
+
+ * count - Number of items to return.
+ * offset - (Optional) The number of items to skip.
+
+__Returns__
+
+ The query object suitable for chaining.
+
+__Example__
+
+    Person.orderBy('name').limit(5, 5).all(connection, function(err, people) {
+      // The 5-10 people ordered by name
+    });
+
+<a name="queryWhere" />
+### query.where(clause, [values...]): query
+
+Filters the results by a where clause.
+
+__Arguments__
+
+ * clause - A clause to filter the results by.
+ * values - (Optional) A single value or array of values to substitute in for '?'s in the clause.
+
+__Returns__
+
+ The query object suitable for chaining.
+
+__Example__
+
+    Person.where('name = ?', 'bob').all(connection, function(err, people) {
+      // All the people named 'bob'
     });
