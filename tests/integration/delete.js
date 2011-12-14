@@ -1,4 +1,5 @@
 var persist = require("../../lib/persist");
+var type = persist.type;
 var nodeunit = require("nodeunit");
 var testUtils = require("../../test_helpers/test_utils");
 
@@ -13,7 +14,7 @@ exports['Delete'] = nodeunit.testCase({
         "DELETE FROM Person;"
       ], function() {
         self.Person = persist.define("Person", {
-          "name": persist.String
+          "name": type.STRING
         });
 
         self.person1 = new self.Person({ name: "bob" });

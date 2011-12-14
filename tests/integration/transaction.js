@@ -1,5 +1,6 @@
 
 var persist = require("../../lib/persist");
+var type = persist.type;
 var nodeunit = require("nodeunit");
 var testUtils = require("../../test_helpers/test_utils");
 
@@ -8,7 +9,7 @@ exports['Transaction'] = nodeunit.testCase({
     var self = this;
 
     this.Person = persist.define("Person", {
-      "name": persist.String
+      "name": type.STRING
     });
 
     testUtils.connect(persist, function(err, connection) {

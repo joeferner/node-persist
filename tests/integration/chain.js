@@ -1,5 +1,6 @@
 
 var persist = require("../../lib/persist");
+var type = persist.type;
 var nodeunit = require("nodeunit");
 var util = require("util");
 var testUtils = require("../../test_helpers/test_utils");
@@ -9,12 +10,12 @@ exports['Chain'] = nodeunit.testCase({
     var self = this;
 
     this.Phone = persist.define("Phone", {
-      "number": persist.String
+      "number": type.STRING
     });
 
     this.Person = persist.define("Person", {
-      "name": persist.String,
-      "age": persist.Integer
+      "name": type.STRING,
+      "age": type.INTEGER
     }).hasMany(this.Phone);
 
     testUtils.connect(persist, function(err, connection) {

@@ -1,5 +1,6 @@
 
 var persist = require("../../lib/persist");
+var type = persist.type;
 var nodeunit = require("nodeunit");
 var assert = require("../../test_helpers/assert");
 var testUtils = require("../../test_helpers/test_utils");
@@ -9,14 +10,14 @@ exports['Insert'] = nodeunit.testCase({
     var self = this;
 
     this.Phone = persist.define("Phone", {
-      "number": persist.String
+      "number": type.STRING
     });
 
     this.testDate1 = new Date(2011, 10, 30, 12, 15);
     this.testDate2 = new Date(2011, 10, 30, 12, 15);
 
     this.Person = persist.define("Person", {
-      "name": persist.String,
+      "name": type.STRING,
       "createdDate": { type: persist.DateTime, defaultValue: function() { return self.testDate1 } },
       "lastUpdated": { type: persist.DateTime }
     })

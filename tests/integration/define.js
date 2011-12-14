@@ -1,12 +1,13 @@
 
 var persist = require("../../lib/persist");
+var type = persist.type;
 var nodeunit = require("nodeunit");
 var assert = require("../../test_helpers/assert");
 
 exports['Define'] = nodeunit.testCase({
   "create simple property": function(test) {
     var Person = persist.define("Person", {
-      "name": persist.String
+      "name": type.STRING
     });
     assert.isFunction(Person, "Person is not a function");
 
@@ -19,8 +20,8 @@ exports['Define'] = nodeunit.testCase({
   "default value": function(test) {
     var testDate = new Date(2011, 10, 30, 12, 15);
     var Person = persist.define("Person", {
-      "name": { type: persist.String, defaultValue: 'bob' },
-      'lastUpdated': { type: persist.DateTime, defaultValue: function() { return testDate; } }
+      "name": { type: type.STRING, defaultValue: 'bob' },
+      'lastUpdated': { type: type.DATETIME, defaultValue: function() { return testDate; } }
     });
 
     var person = new Person();
@@ -32,10 +33,10 @@ exports['Define'] = nodeunit.testCase({
 
   "hasMany": function(test) {
     var Phone = persist.define("Phone", {
-      "number": persist.String
+      "number": type.STRING
     });
     var Person = persist.define("Person", {
-      "name": persist.String
+      "name": type.STRING
     }).hasMany(Phone);
 
     var person = new Person();
@@ -50,10 +51,10 @@ exports['Define'] = nodeunit.testCase({
 
   "hasOne": function(test) {
     var Phone = persist.define("Phone", {
-      "number": persist.String
+      "number": type.STRING
     });
     var Person = persist.define("Person", {
-      "name": persist.String
+      "name": type.STRING
     }).hasOne(Phone);
 
     var person = new Person();
@@ -67,10 +68,10 @@ exports['Define'] = nodeunit.testCase({
 
   "hasManyToMany": function(test) {
     var Phone = persist.define("Phone", {
-      "number": persist.String
+      "number": type.STRING
     });
     var Person = persist.define("Person", {
-      "name": persist.String
+      "name": type.STRING
     }).hasMany(Phone);
     Phone.hasMany(Person);
 
