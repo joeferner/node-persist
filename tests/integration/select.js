@@ -32,7 +32,6 @@ exports['Select'] = nodeunit.testCase({
         self.phone1 = new self.Phone({ person: self.person1, number: '111-2222' });
         self.phone2 = new self.Phone({ person: self.person1, number: '222-3333' });
         self.phone3 = new self.Phone({ person: self.person2, number: '333-4444' });
-
         self.connection.save([self.person1, self.person2, self.phone1, self.phone2, self.phone3], function(err) {
           if(err) { console.log(err); return; }
           callback();
