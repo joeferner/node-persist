@@ -50,7 +50,7 @@ exports['Select'] = nodeunit.testCase({
       test.ifError(err);
       test.equals(people.length, 2);
       test.equals(people[0].name, "Bob O'Neill");
-      test.equals(JSON.stringify(people[0]), '{"phones":{},"companies":{},"name":"Bob O\'Neill","age":21,"id":1}');
+      test.equals(JSON.stringify(people[0]), '{"phones":{},"companies":{},"name":"Bob O\'Neill","age":21,"id":'+people[0].id+'}');
       test.equals(people[1].name, 'john');
 
       test.done();

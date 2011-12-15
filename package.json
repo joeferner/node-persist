@@ -1,7 +1,7 @@
 {
   "name": "persist",
   "description": "Node.js ORM framework supporting 0 relational databases",
-  "keywords": ["database", "db", "orm", "sqlite", "mysql"],
+  "keywords": ["database", "db", "orm", "sqlite", "mysql", "PostgreSQL"],
   "homepage": "https://github.com/nearinfinity/node-persist",
   "version": "0.0.1",
   "engines": { "node" : ">=0.6.0" },
@@ -17,6 +17,7 @@
   "dependencies": {
     "sqlite3": "~>2.1.1",
     "mysql": "~>0.9.5",
+    "pg": "~>0.6.8",
     "async": "0.1.15"
   },
   "devDependencies": {

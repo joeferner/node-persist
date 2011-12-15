@@ -1,20 +1,20 @@
 {
-  "default": "dev",
+  "default": "sqlite3",
 
-  "dev": {
+  "sqlite3": {
     "driver": "sqlite3",
     "filename": ":memory:"
   },
 
-  "test": {
+  "mysql": {
     "driver": "mysql",
     "user": "root",
     "password": "root",
     "database": "test"
   },
 
-  "prod": {
-    "driver": "sqlite3",
-    "filename": "prod.db"
+  "postgresql": {
+    "driver": "pg",
+    "connectionString": "tcp://test:test@localhost/test"
   }
 }

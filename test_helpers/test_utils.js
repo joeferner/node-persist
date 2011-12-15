@@ -3,15 +3,24 @@ var fs = require("fs");
 
 var driver = "sqlite3";
 
-exports.personCreateStmt = personCreateStmt = "CREATE TABLE IF NOT EXISTS Person (id INTEGER PRIMARY KEY " + (driver=='mysql'?'auto_increment':'') + ", name text, age INTEGER, txt TEXT, last_updated text, created_date text) " + (driver=='mysql'?'engine=innodb':'') + ";";
-exports.phoneCreateStmt = phoneCreateStmt = "CREATE TABLE IF NOT EXISTS Phone (id INTEGER PRIMARY KEY " + (driver=='mysql'?'auto_increment':'') + ", number text, person_id INTEGER) " + (driver=='mysql'?'engine=innodb':'') + ";";
-exports.companyCreateStmt = companyCreateStmt = "CREATE TABLE IF NOT EXISTS Company (id INTEGER PRIMARY KEY " + (driver=='mysql'?'auto_increment':'') + ", name text) " + (driver=='mysql'?'engine=innodb':'') + ";";
+exports.personCreateStmt = personCreateStmt = "CREATE TABLE IF NOT EXISTS Person (id INTEGER PRIMARY KEY "
+  + (driver=='mysql'?'auto_increment':'')
+  + ", name text, age INTEGER, txt TEXT, last_updated text, created_date text) "
+  + (driver=='mysql'?'engine=innodb':'') + ";";
+exports.phoneCreateStmt = phoneCreateStmt = "CREATE TABLE IF NOT EXISTS Phone (id INTEGER PRIMARY KEY "
+  + (driver=='mysql'?'auto_increment':'')
+  + ", number text, person_id INTEGER) "
+  + (driver=='mysql'?'engine=innodb':'') + ";";
+exports.companyCreateStmt = companyCreateStmt = "CREATE TABLE IF NOT EXISTS Company (id INTEGER PRIMARY KEY "
+  + (driver=='mysql'?'auto_increment':'')
+  + ", name text) "
+  + (driver=='mysql'?'engine=innodb':'') + ";";
 exports.companyPersonCreateStmt = companyPersonCreateStmt = "CREATE TABLE IF NOT EXISTS CompanyPerson ( company_id INTEGER, person_id INTEGER, PRIMARY KEY(company_id, person_id)) " + (driver=='mysql'?'engine=innodb':'') + ";";
 
 exports.connect = function(persist, callback) {
   var mycallback = function(err, connection) {
     if(err) { callback(err); return; }
-    connection.runSql([
+    var stmts = [
       personCreateStmt,
       phoneCreateStmt,
       companyPersonCreateStmt,
@@ -20,8 +29,25 @@ exports.connect = function(persist, callback) {
       "DELETE FROM Person;",
       "DELETE FROM CompanyPerson;",
       "DELETE FROM Company;"
-    ], function(err, results) {
-      callback(err, connection);
+    ];
+    connection.runSql(stmts, function(err, results) {
+      if(err) { callback(err); return; }
+
+      if(driver == 'postgresql') {
+        stmts = [
+          'CREATE SEQUENCE phone_seq',
+          'CREATE SEQUENCE person_seq',
+          'CREATE SEQUENCE company_seq',
+          "ALTER TABLE Phone ALTER COLUMN id SET DEFAULT NEXTVAL('phone_seq')",
+          "ALTER TABLE Person ALTER COLUMN id SET DEFAULT NEXTVAL('person_seq')",
+          "ALTER TABLE Company ALTER COLUMN id SET DEFAULT NEXTVAL('company_seq')"
+        ];
+        connection.runSql(stmts, function(err, results) {
+          callback(null, connection); // CREATE SEQUENCE may have already ran so throw away the errors
+        });
+      } else {
+        callback(null, connection);
+      }
     });
   };
 
@@ -34,6 +60,11 @@ exports.connect = function(persist, callback) {
         //filename: 'test.db'
       }, mycallback);
     });
+  } else if(driver == 'postgresql') {
+    persist.connect({
+      driver: 'pg',
+      "connectionString": "tcp://test:test@localhost/test"
+    }, mycallback);
   } else {
     persist.connect({
       driver: 'mysql',
