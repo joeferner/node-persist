@@ -70,6 +70,7 @@ You can install using Node Package Manager (npm):
  * [min](#queryMin)
  * [max](#queryMax)
  * [deleteAll](#queryDeleteAll)
+ * [include](#queryInclude)
 
 ## Transaction
 
@@ -519,6 +520,21 @@ __Example__
       // all people name 'bob' have been deleted.
     });
 
+<a name="queryInclude" />
+### query.include(propertyName): query
+
+Includes the associated data linked by (hasMany or hasMany(through)) the propertyName when retrieving data from the database.
+This will replace obj.propertyName with an array of results as opposed to the default before which is a query.
+
+__Arguments__
+
+ * propertyName - This can be a single property name or an array of property names to include.
+
+__Example__
+
+    Person.include("phones").where('name = ?', 'bob').all(connection, function(err, people) {
+      // all people name 'bob' and all their phone numbers
+    });
 
 <a name="tx"/>
 ## Transaction
