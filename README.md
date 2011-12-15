@@ -38,6 +38,8 @@ You can install using Node Package Manager (npm):
 
 # Index
 
+## [database.json](#databaseJson)
+
 ## persist
  * [connect](#persistConnect)
  * [define](#persistDefine)
@@ -74,6 +76,7 @@ You can install using Node Package Manager (npm):
  * [commit](#txCommit)
  * [rollback](#txRollback)
 
+<a name="databaseJson"/>
 # database.json
 
 If the current working directory contains a file called database.json this file will be loaded upon requiring persist.
@@ -112,12 +115,14 @@ Connects to a database.
 
 __Arguments__
 
- * options - (optional) Options used to connect to the database. If options are not specified the global connect options are used.
+ * options - (optional) Options used to connect to the database. If options are not specified the default connect options are used.
+             see [database.json](#databaseJson) and [SetDefaultConnectOptions](#persistSetDefaultConnectOptions)
   * driver - The driver to use to connect (ie sqlite3 or mysql).
   * _other_ - see the documentation for your driver. The options hash will be passed to that driver.
  * callback(err, connection) - Callback to be called when the connection is established.
 
 __Example__
+
     persist.connect({
       driver: 'sqlite3',
       filename: 'test.db',
@@ -155,12 +160,13 @@ __Example__
 <a name="persistSetDefaultConnectOptions"/>
 ### persist.setDefaultConnectOptions(options)
 
-Sets the default connection options to be used on future connect calls.
+Sets the default connection options to be used on future connect calls. see [database.json](#databaseJson)
 
 __Arguments__
  * options - See [connect](#persistConnect) for the description of options
 
 __Example__
+
     persist.setDefaultConnectOptions({
       driver: 'sqlite3',
       filename: 'test.db',
