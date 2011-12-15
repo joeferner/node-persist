@@ -162,7 +162,7 @@ __Example__
     })
 
 <a name="modelHasMany" />
-### Model.hasMany(AssociatedModel): Model
+### Model.hasMany(AssociatedModel, [options]): Model
 
 Adds a has many relationship to a model. This will automatically add a property to the associated model which links to this
 model. It will also define a property on instances of this model to get the releated objects - see [Associated Object Properties](#associatedObjectProperties)
@@ -170,6 +170,8 @@ model. It will also define a property on instances of this model to get the rele
 __Arguments__
 
  * AssociatedModel - The name of the model to associate to.
+ * options - (optional) An hash of options.
+  * through - creates a many to many relationship using the value of through as the join table.
 
 __Returns__
 
