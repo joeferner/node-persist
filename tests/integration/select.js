@@ -167,6 +167,40 @@ exports['Select'] = nodeunit.testCase({
         });
       });
     });
+  },
+
+  "JSON datatype": function(test) {
+    var self = this;
+    MyPerson = persist.define("Person", {
+      "name": type.STRING,
+      "txt": type.JSON
+    });
+
+    var person1 = new MyPerson({"name": "joe1", "txt": '{"address": "123 Elm St", "emails": [ "a@b.com", "b@c.com" ]}'});
+    var person2 = new MyPerson({"name": "joe2", "txt": 'invalid JSON'});
+
+    this.connection.save([person1, person2], function(err) {
+      if(err) { console.log(err); return; }
+
+      MyPerson.where("name = ?", "joe1").first(self.connection, function(err, p) {
+        if(err) { console.log(err); return; }
+
+        test.ok(p.txt);
+        test.equal(p.txt.address, '123 Elm St');
+        test.equal(p.txt.emails.length, 2);
+        test.equal(p.txt.emails[0], 'a@b.com');
+        test.equal(p.txt.emails[1], 'b@c.com');
+
+        MyPerson.where("name = ?", "joe2").first(self.connection, function(err, p) {
+          if(err) { console.log(err); return; }
+
+          test.ok(p.txt);
+          test.equal(p.txt, 'invalid JSON');
+
+          test.done();
+        });
+      });
+    });
   }
 
 });
