@@ -19,24 +19,17 @@ exports['Chain'] = nodeunit.testCase({
     }).hasMany(this.Phone);
 
     testUtils.connect(persist, function(err, connection) {
+      if(err) { console.log(err); return; }
       self.connection = connection;
-      self.connection.runSql([
-        testUtils.personCreateStmt,
-        testUtils.phoneCreateStmt,
-        "DELETE FROM Phone;",
-        "DELETE FROM Person;"
-      ], function(err) {
-        if(err) { console.log(err); return; }
-        self.person1 = new self.Person({ name: "Bob O'Neill", age: 21 });
-        self.person2 = new self.Person({ name: "john", age: 23 });
-        self.phone1 = new self.Phone({ person: self.person1, number: '111-2222' });
-        self.phone2 = new self.Phone({ person: self.person1, number: '222-3333' });
-        self.phone3 = new self.Phone({ person: self.person2, number: '333-4444' });
+      self.person1 = new self.Person({ name: "Bob O'Neill", age: 21 });
+      self.person2 = new self.Person({ name: "john", age: 23 });
+      self.phone1 = new self.Phone({ person: self.person1, number: '111-2222' });
+      self.phone2 = new self.Phone({ person: self.person1, number: '222-3333' });
+      self.phone3 = new self.Phone({ person: self.person2, number: '333-4444' });
 
-        self.connection.save([self.person1, self.person2, self.phone1, self.phone2, self.phone3], function(err) {
-          if(err) { console.log(err); return; }
-          callback();
-        });
+      self.connection.save([self.person1, self.person2, self.phone1, self.phone2, self.phone3], function(err) {
+        if(err) { console.log(err); return; }
+        callback();
       });
     });
   },

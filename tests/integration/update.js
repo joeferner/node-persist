@@ -19,12 +19,7 @@ exports['Update'] = nodeunit.testCase({
 
     testUtils.connect(persist, function(err, connection) {
       self.connection = connection;
-      self.connection.runSql([
-        testUtils.personCreateStmt,
-        "DELETE FROM Person;"
-      ], function() {
-        callback();
-      });
+      callback();
     });
   },
 

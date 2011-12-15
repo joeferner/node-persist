@@ -9,20 +9,15 @@ exports['Delete'] = nodeunit.testCase({
 
     testUtils.connect(persist, function(err, connection) {
       self.connection = connection;
-      self.connection.runSql([
-        testUtils.personCreateStmt,
-        "DELETE FROM Person;"
-      ], function() {
-        self.Person = persist.define("Person", {
-          "name": type.STRING
-        });
+      self.Person = persist.define("Person", {
+        "name": type.STRING
+      });
 
-        self.person1 = new self.Person({ name: "bob" });
-        self.person2 = new self.Person({ name: "john" });
-        self.person1.save(self.connection, function(err, p1) {
-          self.person2.save(self.connection, function(err, p2) {
-            callback();
-          });
+      self.person1 = new self.Person({ name: "bob" });
+      self.person2 = new self.Person({ name: "john" });
+      self.person1.save(self.connection, function(err, p1) {
+        self.person2.save(self.connection, function(err, p2) {
+          callback();
         });
       });
     });
