@@ -63,6 +63,7 @@ You can install using Node Package Manager (npm):
  * [count](#queryCount)
  * [min](#queryMin)
  * [max](#queryMax)
+ * [deleteAll](#queryDeleteAll)
 
 ## Transaction
 
@@ -351,6 +352,7 @@ __Example__
 
 <a name="queryWhere" />
 ### query.where(clause, [values...]): query
+### query.where(hash): query
 
 Filters the results by a where clause.
 
@@ -358,6 +360,7 @@ __Arguments__
 
  * clause - A clause to filter the results by.
  * values - (Optional) A single value or array of values to substitute in for '?'s in the clause.
+ * hash - A hash of columns and values to match on (see example)
 
 __Returns__
 
@@ -367,6 +370,10 @@ __Example__
 
     Person.where('name = ?', 'bob').all(connection, function(err, people) {
       // All the people named 'bob'
+    });
+
+    Person.where({'name': 'bob', 'age': 23}).all(connection, function(err, people) {
+      // All the people named 'bob' with the age of 23
     });
 
 <a name="queryCount" />
@@ -418,6 +425,24 @@ __Example__
     Person.where('name = ?', 'bob').max(connection, 'age', function(err, min) {
       // the maximum age of all bobs
     });
+
+
+<a name="queryDeleteAll" />
+### query.deleteAll([connection], callback)
+
+Deletes all the items specified by the query.
+
+__Arguments__
+
+ * connection - (Optional) The connection to use. If this is not specified a [using](#modelUsing) statement must be specified earlier.
+ * callback(err) - Callback called upon completion.
+
+__Example__
+
+    Person.where('name = ?', 'bob').deleteAll(connection, function(err) {
+      // all people name 'bob' have been deleted.
+    });
+
 
 <a name="tx"/>
 ## Transaction
