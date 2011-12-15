@@ -526,6 +526,9 @@ __Example__
 Includes the associated data linked by (hasMany or hasMany(through)) the propertyName when retrieving data from the database.
 This will replace obj.propertyName with an array of results as opposed to the default before which is a query.
 
+Internally this will do a join to the associated table in the case of a one to many. And will do a join to the associated through table
+and the associated table in the case of a many to many.
+
 __Arguments__
 
  * propertyName - This can be a single property name or an array of property names to include.
@@ -533,7 +536,9 @@ __Arguments__
 __Example__
 
     Person.include("phones").where('name = ?', 'bob').all(connection, function(err, people) {
-      // all people name 'bob' and all their phone numbers
+      // all people named 'bob' and all their phone numbers
+      // so you can do... people[0].phones[0].number
+      // as opposed to... people[0].phones.all(function(err, phones) {});
     });
 
 <a name="tx"/>
