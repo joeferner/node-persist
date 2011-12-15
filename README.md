@@ -38,6 +38,11 @@ You can install using Node Package Manager (npm):
 
 # Index
 
+## persist
+ * [connect](#persistConnect)
+ * [define](#persistDefine)
+ * [setDefaultConnectOptions](#persistSetDefaultConnectOptions)
+
 ## Connection
 
  * [chain](#connectionChain)
@@ -45,7 +50,6 @@ You can install using Node Package Manager (npm):
 
 ## Model
 
- * [define](#modelDefine)
  * [hasMany](#modelHasMany)
  * [using](#modelUsing)
  * [save](#modelSave)
@@ -70,7 +74,97 @@ You can install using Node Package Manager (npm):
  * [commit](#txCommit)
  * [rollback](#txRollback)
 
+# database.json
+
+If the current working directory contains a file called database.json this file will be loaded upon requiring persist.
+The file should follow a format like this:
+
+    {
+      "default": "dev",
+
+      "dev": {
+        "driver": "sqlite3",
+        "filename": ":memory:"
+      },
+
+      "test": {
+        "driver": "sqlite3",
+        "filename": ":memory:"
+      },
+
+      "prod": {
+        "driver": "sqlite3",
+        "filename": "prod.db"
+      }
+    }
+
+"default" specifies which environment to load.
+
 # API Documentation
+
+<a name="persist"/>
+## persist
+
+<a name="persistConnect" />
+### persist.connect([options], callback)
+
+Connects to a database.
+
+__Arguments__
+
+ * options - (optional) Options used to connect to the database. If options are not specified the global connect options are used.
+  * driver - The driver to use to connect (ie sqlite3 or mysql).
+  * _other_ - see the documentation for your driver. The options hash will be passed to that driver.
+ * callback(err, connection) - Callback to be called when the connection is established.
+
+__Example__
+    persist.connect({
+      driver: 'sqlite3',
+      filename: 'test.db',
+      trace: true
+    }, function(err, connection) {
+      // connnection esablished
+    });
+
+<a name="persistDefine" />
+### persist.define(modelName, properties): Model
+
+Defines a model object for use in persist.
+
+__Arguments__
+
+ * modelName - The name of the model. This name will map to the database name.
+ * properties - Hash of properties (or columns). The value of each property can simply be the type name (ie type.String)
+                or it can be a hash of more options.
+  * type - type of the property (ie type.String)
+  * defaultValue - this can be a value or a function that will be called each time this model object is created
+  * dbColumnName - the name of the database column. (default: name of the property, all lower case, seperated by '_')
+
+__Returns__
+
+ A model class.
+
+__Example__
+
+    Person = persist.define("Person", {
+      "name": type.String,
+      "createdDate": { type: persist.DateTime, defaultValue: function() { return self.testDate1 }, dbColumnName: 'new_date' },
+      "lastUpdated": { type: persist.DateTime }
+    })
+
+<a name="persistSetDefaultConnectOptions"/>
+### persist.setDefaultConnectOptions(options)
+
+Sets the default connection options to be used on future connect calls.
+
+__Arguments__
+ * options - See [connect](#persistConnect) for the description of options
+
+__Example__
+    persist.setDefaultConnectOptions({
+      driver: 'sqlite3',
+      filename: 'test.db',
+      trace: true});
 
 <a name="connection"/>
 ## Connection
@@ -134,32 +228,6 @@ __Example__
 
 <a name="model" />
 ## Model
-
-<a name="modelDefine" />
-### persist.define(modelName, properties): Model
-
-Defines a model object for use in persist.
-
-__Arguments__
-
- * modelName - The name of the model. This name will map to the database name.
- * properties - Hash of properties (or columns). The value of each property can simply be the type name (ie type.String)
-                or it can be a hash of more options.
-  * type - type of the property (ie type.String)
-  * defaultValue - this can be a value or a function that will be called each time this model object is created
-  * dbColumnName - the name of the database column. (default: name of the property, all lower case, seperated by '_')
-
-__Returns__
-
- A model class.
-
-__Example__
-
-    Person = persist.define("Person", {
-      "name": type.String,
-      "createdDate": { type: persist.DateTime, defaultValue: function() { return self.testDate1 }, dbColumnName: 'new_date' },
-      "lastUpdated": { type: persist.DateTime }
-    })
 
 <a name="modelHasMany" />
 ### Model.hasMany(AssociatedModel, [options]): Model
