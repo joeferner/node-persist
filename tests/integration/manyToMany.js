@@ -51,8 +51,8 @@ exports['Select'] = nodeunit.testCase({
   "all": function(test) {
     var self = this;
 
-    this.Person.using(this.connection).all(function(err, people) {
-      test.ifError(err);
+    this.Person.using(this.connection).orderBy("name").all(function(err, people) {
+      if(err) { console.error(err); return; }
       test.equals(people.length, 2);
 
       test.equals(people[0].name, "bob");
@@ -72,6 +72,33 @@ exports['Select'] = nodeunit.testCase({
         test.equals(results[1][1].number, '333-4444');
 
         test.done();
+      });
+    });
+  },
+
+  "get, change, and save again": function(test) {
+    var self = this;
+
+    this.Person.using(this.connection).orderBy("name").first(function(err, person) {
+      if(err) { console.error(err); return; }
+      test.equals(person.name, "bob");
+
+      person.phones.all(function(err, phones) {
+        if(err) { console.error(err); return; }
+        test.equals(phones.length, 2);
+        test.equals(phones[0].number, '111-2222');
+        test.equals(phones[1].number, '222-3333');
+
+        person.phones = [self.phone1];
+        person.save(self.connection, function(err) {
+          if(err) { console.error(err); return; }
+
+          person.phones.all(function(err, phones) {
+            test.equals(phones.length, 1);
+            test.equals(phones[0].number, '111-2222');
+            test.done();
+          });
+        });
       });
     });
   }
