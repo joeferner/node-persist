@@ -103,6 +103,16 @@ exports['Select'] = nodeunit.testCase({
     });
   },
 
+  "hash based where": function(test) {
+    this.Person.using(this.connection).where({'name': "Bob O'Neill", 'age': '21'}).all(function(err, people) {
+      test.ifError(err);
+      test.equals(people.length, 1);
+      test.equals(people[0].name, "Bob O'Neill");
+
+      test.done();
+    });
+  },
+
   "first": function(test) {
     this.Person.using(this.connection).where("name = ?", "Bob O'Neill").first(function(err, person) {
       test.ifError(err);
