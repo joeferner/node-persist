@@ -157,7 +157,14 @@ exports['Select'] = nodeunit.testCase({
         test.equals(phones[0].personId, person.id);
         test.equals(phones[1].number, '222-3333');
         test.equals(phones[1].personId, person.id);
-        test.done();
+
+        phones[0].person.first(function(err, p) {
+          if(err) { console.log(err); return; }
+
+          test.equals(p.name, "Bob O'Neill");
+
+          test.done();
+        });
       });
     });
   }
