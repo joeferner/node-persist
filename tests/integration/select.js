@@ -59,9 +59,29 @@ exports['Select'] = nodeunit.testCase({
     });
   },
 
+  "all with include": function(test) {
+    this.Person
+      .include("phones")
+      .all(this.connection, function(err, people) {
+        if(err) { console.error(err); return; }
+        test.equals(people.length, 2);
+        test.equals(people[0].name, "Bob O'Neill");
+        test.equals(people[0].phones.length, 2);
+        test.equals(people[0].phones[0].number, "111-2222");
+        test.equals(people[0].phones[1].number, "222-3333");
+        //TODO: console.log(JSON.stringify(people[0]));
+        //TODO: test.equals(JSON.stringify(people[0]), '{"name":"Bob O\'Neill","age":21,"id":1,"phones":[{"number":"111-2222"},{"number":"222-3333"}]}');
+        test.equals(people[1].name, 'john');
+        test.equals(people[1].phones.length, 1);
+        test.equals(people[1].phones[0].number, "333-4444");
+
+        test.done();
+    });
+  },
+
   "count": function(test) {
     this.Person.using(this.connection).count(function(err, count) {
-      test.ifError(err);
+      if(err) { console.error(err); return; }
       test.equals(count, 2);
       test.done();
     });

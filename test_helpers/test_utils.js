@@ -11,9 +11,9 @@ exports.connect = function(persist, callback) {
     fs.unlink('test.db', function() {
       persist.connect({
         driver: 'sqlite3',
-        filename: ':memory:',
-        //filename: 'test.db',
-        trace: true
+        //trace: true
+        filename: ':memory:'
+        //filename: 'test.db'
       }, callback);
     });
   } else {
