@@ -5,13 +5,15 @@ var driver = "sqlite3";
 
 exports.personCreateStmt = "CREATE TABLE IF NOT EXISTS Person (id INTEGER PRIMARY KEY " + (driver=='mysql'?'auto_increment':'') + ", name text, age INTEGER, txt TEXT, last_updated text, created_date text) " + (driver=='mysql'?'engine=innodb':'') + ";";
 exports.phoneCreateStmt = "CREATE TABLE IF NOT EXISTS Phone (id INTEGER PRIMARY KEY " + (driver=='mysql'?'auto_increment':'') + ", number text, person_id INTEGER) " + (driver=='mysql'?'engine=innodb':'') + ";";
+exports.companyCreateStmt = "CREATE TABLE IF NOT EXISTS Company (id INTEGER PRIMARY KEY " + (driver=='mysql'?'auto_increment':'') + ", name text) " + (driver=='mysql'?'engine=innodb':'') + ";";
+exports.companyPersonCreateStmt = "CREATE TABLE IF NOT EXISTS CompanyPerson ( company_id INTEGER, person_id INTEGER, PRIMARY KEY(company_id, person_id)) " + (driver=='mysql'?'engine=innodb':'') + ";";
 
 exports.connect = function(persist, callback) {
   if(driver == 'sqlite3') {
     fs.unlink('test.db', function() {
       persist.connect({
         driver: 'sqlite3',
-        //trace: true
+        //trace: true,
         filename: ':memory:'
         //filename: 'test.db'
       }, callback);

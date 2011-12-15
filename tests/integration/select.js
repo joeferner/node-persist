@@ -18,13 +18,21 @@ exports['Select'] = nodeunit.testCase({
       "age": type.INTEGER
     }).hasMany(this.Phone);
 
+    this.Company = persist.define("Company", {
+      "name": type.STRING
+    }).hasMany(this.Person, { through: "CompanyPerson" });
+
     testUtils.connect(persist, function(err, connection) {
       self.connection = connection;
       self.connection.runSql([
         testUtils.personCreateStmt,
         testUtils.phoneCreateStmt,
+        testUtils.companyPersonCreateStmt,
+        testUtils.companyCreateStmt,
         "DELETE FROM Phone;",
-        "DELETE FROM Person;"
+        "DELETE FROM Person;",
+        "DELETE FROM CompanyPerson;",
+        "DELETE FROM Company;"
       ], function(err) {
         if(err) { console.log(err); return; }
         self.person1 = new self.Person({ name: "Bob O'Neill", age: 21 });
@@ -32,7 +40,8 @@ exports['Select'] = nodeunit.testCase({
         self.phone1 = new self.Phone({ person: self.person1, number: '111-2222' });
         self.phone2 = new self.Phone({ person: self.person1, number: '222-3333' });
         self.phone3 = new self.Phone({ person: self.person2, number: '333-4444' });
-        self.connection.save([self.person1, self.person2, self.phone1, self.phone2, self.phone3], function(err) {
+        self.company1 = new self.Company({ people: [self.person1, self.person2], name: "Near Infinity" });
+        self.connection.save([self.person1, self.person2, self.phone1, self.phone2, self.phone3, self.company1], function(err) {
           if(err) { console.log(err); return; }
           callback();
         });
@@ -52,7 +61,7 @@ exports['Select'] = nodeunit.testCase({
       test.ifError(err);
       test.equals(people.length, 2);
       test.equals(people[0].name, "Bob O'Neill");
-      test.equals(JSON.stringify(people[0]), '{"phones":{},"name":"Bob O\'Neill","age":21,"id":1}');
+      test.equals(JSON.stringify(people[0]), '{"phones":{},"companies":{},"name":"Bob O\'Neill","age":21,"id":1}');
       test.equals(people[1].name, 'john');
 
       test.done();
@@ -62,18 +71,24 @@ exports['Select'] = nodeunit.testCase({
   "all with include": function(test) {
     this.Person
       .include("phones")
+      .include("companies")
       .all(this.connection, function(err, people) {
         if(err) { console.error(err); return; }
+
         test.equals(people.length, 2);
         test.equals(people[0].name, "Bob O'Neill");
         test.equals(people[0].phones.length, 2);
         test.equals(people[0].phones[0].number, "111-2222");
         test.equals(people[0].phones[1].number, "222-3333");
+        test.equals(people[0].companies.length, 1);
+        test.equals(people[0].companies[0].name, "Near Infinity");
         //TODO: console.log(JSON.stringify(people[0]));
         //TODO: test.equals(JSON.stringify(people[0]), '{"name":"Bob O\'Neill","age":21,"id":1,"phones":[{"number":"111-2222"},{"number":"222-3333"}]}');
         test.equals(people[1].name, 'john');
         test.equals(people[1].phones.length, 1);
         test.equals(people[1].phones[0].number, "333-4444");
+        test.equals(people[1].companies.length, 1);
+        test.equals(people[1].companies[0].name, "Near Infinity");
 
         test.done();
     });
