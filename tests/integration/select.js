@@ -67,8 +67,9 @@ exports['Select'] = nodeunit.testCase({
         test.equals(people.length, 2);
         test.equals(people[0].name, "Bob O'Neill");
         test.equals(people[0].phones.length, 2);
-        test.equals(people[0].phones[0].number, "111-2222");
-        test.equals(people[0].phones[1].number, "222-3333");
+        var phones = people[0].phones.sort(function(a, b) { return a.number > b.number; });
+        test.equals(phones[0].number, "111-2222");
+        test.equals(phones[1].number, "222-3333");
         test.equals(people[0].companies.length, 1);
         test.equals(people[0].companies[0].name, "Near Infinity");
         //TODO: console.log(JSON.stringify(people[0]));
