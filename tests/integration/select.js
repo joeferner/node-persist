@@ -84,6 +84,19 @@ exports['Select'] = nodeunit.testCase({
     });
   },
 
+  "include one from the many": function(test) {
+    this.Phone
+      .include("person")
+      .where("number = ?", "111-2222")
+      .first(this.connection, function(err, phone) {
+        test.equals(phone.number, "111-2222");
+        test.ok(phone.person);
+        test.equals(phone.person.name, "Bob O'Neill");
+
+        test.done();
+      });
+  },
+
   "count": function(test) {
     this.Person.using(this.connection).count(function(err, count) {
       if(err) { console.error(err); return; }
