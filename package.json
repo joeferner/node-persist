@@ -1,6 +1,6 @@
 {
   "name": "persist",
-  "description": "Node.js ORM framework supporting 0 relational databases",
+  "description": "Node.js ORM framework supporting various relational databases",
   "keywords": ["database", "db", "orm", "sqlite", "mysql", "PostgreSQL"],
   "homepage": "https://github.com/nearinfinity/node-persist",
   "version": "0.1.0",
