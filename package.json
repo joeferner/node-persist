@@ -15,11 +15,6 @@
     { "type": "git", "url": "https://github.com/nearinfinity/node-persist.git" }
   ],
   "dependencies": {
-    /*
-    "sqlite3": "~>2.1.1",
-    "mysql": "~>0.9.5",
-    "pg": "~>0.6.8",
-    */
     "async": "0.1.15"
   },
   "devDependencies": {
