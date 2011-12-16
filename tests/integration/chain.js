@@ -10,7 +10,7 @@ exports['Chain'] = nodeunit.testCase({
     var self = this;
 
     this.Phone = persist.define("Phone", {
-      "number": type.STRING
+      "number": { type: type.STRING, dbColumnName: 'numbr' }
     });
 
     this.Person = persist.define("Person", {

@@ -10,7 +10,7 @@ exports['Select'] = nodeunit.testCase({
     var self = this;
 
     this.Phone = persist.define("Phone", {
-      "number": type.STRING
+      "number": { type: type.STRING, dbColumnName: 'numbr' }
     });
 
     this.Person = persist.define("Person", {
@@ -87,7 +87,7 @@ exports['Select'] = nodeunit.testCase({
   "include one from the many": function(test) {
     this.Phone
       .include("person")
-      .where("number = ?", "111-2222")
+      .where("numbr = ?", "111-2222")
       .first(this.connection, function(err, phone) {
         test.equals(phone.number, "111-2222");
         test.ok(phone.person);

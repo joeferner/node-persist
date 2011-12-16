@@ -16,5 +16,12 @@
   "postgresql": {
     "driver": "pg",
     "connectionString": "tcp://test:test@localhost/test"
+  },
+
+  "oracle": {
+    "driver": "db-oracle",
+    "hostname": "localhost",
+    "user": "test",
+    "password": "test"
   }
 }

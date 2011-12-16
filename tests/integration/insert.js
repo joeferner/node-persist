@@ -10,7 +10,7 @@ exports['Insert'] = nodeunit.testCase({
     var self = this;
 
     this.Phone = persist.define("Phone", {
-      "number": type.STRING
+      "number": { type: type.STRING, dbColumnName: 'numbr' }
     });
 
     this.testDate1 = new Date(2011, 10, 30, 12, 15);

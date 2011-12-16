@@ -6,7 +6,8 @@ The following databases are currently supported:
 
  * sqlite3 - via: [node-sqlite3](https://github.com/developmentseed/node-sqlite3)
  * mysql - via: [node-mysql](https://github.com/felixge/node-mysql)
- * PostgreSQL - via: [node-postgres](https://github.com/brianc/node-postgres) 
+ * PostgreSQL - via: [node-postgres](https://github.com/brianc/node-postgres)
+ * Oracle - via: [node-oracle](https://github.com/mariano/node-db-oracle)
 
 # Quick Examples
     var persist = require("persist");

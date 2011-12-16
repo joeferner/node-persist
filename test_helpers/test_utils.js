@@ -3,19 +3,46 @@ var fs = require("fs");
 
 var driver = "sqlite3";
 
-exports.personCreateStmt = personCreateStmt = "CREATE TABLE IF NOT EXISTS Person (id INTEGER PRIMARY KEY "
+/* oracle
+  CREATE SEQUENCE phone_seq start with 1 increment by 1 nomaxvalue;
+  CREATE SEQUENCE person_seq start with 1 increment by 1 nomaxvalue;
+  CREATE SEQUENCE company_seq start with 1 increment by 1 nomaxvalue;
+  CREATE TRIGGER phone_pk_trigger BEFORE INSERT ON phone FOR EACH row
+    BEGIN
+      select phone_seq.nextval into :new.id from dual;
+    END;
+  /
+  CREATE TRIGGER person_pk_trigger BEFORE INSERT ON person FOR EACH row
+    BEGIN
+      select person_seq.nextval into :new.id from dual;
+    END;
+  /
+  CREATE TRIGGER company_pk_trigger BEFORE INSERT ON company FOR EACH row
+    BEGIN
+      select company_seq.nextval into :new.id from dual;
+    END;
+  /
+*/
+
+var ifNotExistsSql = 'IF NOT EXISTS';
+var textDateType = 'TEXT';
+if(driver == 'oracle') {
+  ifNotExistsSql = '';
+  textDateType = 'VARCHAR2(255)';
+}
+exports.personCreateStmt = personCreateStmt = "CREATE TABLE "+ifNotExistsSql+" Person (id INTEGER PRIMARY KEY "
   + (driver=='mysql'?'auto_increment':'')
-  + ", name text, age INTEGER, txt TEXT, last_updated text, created_date text) "
-  + (driver=='mysql'?'engine=innodb':'') + ";";
-exports.phoneCreateStmt = phoneCreateStmt = "CREATE TABLE IF NOT EXISTS Phone (id INTEGER PRIMARY KEY "
+  + ", name "+textDateType+", age INTEGER, txt "+textDateType+", last_updated "+textDateType+", created_date "+textDateType+") "
+  + (driver=='mysql'?'engine=innodb':'');
+exports.phoneCreateStmt = phoneCreateStmt = "CREATE TABLE "+ifNotExistsSql+" Phone (id INTEGER PRIMARY KEY "
   + (driver=='mysql'?'auto_increment':'')
-  + ", number text, person_id INTEGER) "
-  + (driver=='mysql'?'engine=innodb':'') + ";";
-exports.companyCreateStmt = companyCreateStmt = "CREATE TABLE IF NOT EXISTS Company (id INTEGER PRIMARY KEY "
+  + ", numbr "+textDateType+", person_id INTEGER) "
+  + (driver=='mysql'?'engine=innodb':'');
+exports.companyCreateStmt = companyCreateStmt = "CREATE TABLE "+ifNotExistsSql+" Company (id INTEGER PRIMARY KEY "
   + (driver=='mysql'?'auto_increment':'')
-  + ", name text) "
-  + (driver=='mysql'?'engine=innodb':'') + ";";
-exports.companyPersonCreateStmt = companyPersonCreateStmt = "CREATE TABLE IF NOT EXISTS CompanyPerson ( company_id INTEGER, person_id INTEGER, PRIMARY KEY(company_id, person_id)) " + (driver=='mysql'?'engine=innodb':'') + ";";
+  + ", name "+textDateType+") "
+  + (driver=='mysql'?'engine=innodb':'');
+exports.companyPersonCreateStmt = companyPersonCreateStmt = "CREATE TABLE "+ifNotExistsSql+" CompanyPerson ( company_id INTEGER, person_id INTEGER, PRIMARY KEY(company_id, person_id)) " + (driver=='mysql'?'engine=innodb':'');
 
 exports.connect = function(persist, callback) {
   var mycallback = function(err, connection) {
@@ -25,11 +52,16 @@ exports.connect = function(persist, callback) {
       phoneCreateStmt,
       companyPersonCreateStmt,
       companyCreateStmt,
-      "DELETE FROM Phone;",
-      "DELETE FROM Person;",
-      "DELETE FROM CompanyPerson;",
-      "DELETE FROM Company;"
     ];
+    if(driver == 'oracle') {
+      stmts = [];
+    }
+    stmts = stmts.concat([
+      "DELETE FROM Phone",
+      "DELETE FROM Person",
+      "DELETE FROM CompanyPerson",
+      "DELETE FROM Company"
+    ]);
     connection.runSql(stmts, function(err, results) {
       if(err) { callback(err); return; }
 
@@ -65,6 +97,13 @@ exports.connect = function(persist, callback) {
       driver: 'pg',
       "connectionString": "tcp://test:test@localhost/test"
     }, mycallback);
+  } else if(driver == 'oracle') {
+    persist.connect({
+      driver: "db-oracle",
+      hostname: "localhost",
+      user: "test",
+      password: "test"
+    }, mycallback);
   } else {
     persist.connect({
       driver: 'mysql',
@@ -72,6 +111,5 @@ exports.connect = function(persist, callback) {
       password: 'root',
       database: 'test'
     }, mycallback);
-
   }
 }
