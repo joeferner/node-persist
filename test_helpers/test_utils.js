@@ -3,15 +3,15 @@ var fs = require("fs");
 
 var driver = "sqlite3";
 
-exports.personCreateStmt = personCreateStmt = "CREATE TABLE IF NOT EXISTS Person (id INTEGER PRIMARY KEY "
+exports.personCreateStmt = personCreateStmt = "CREATE TABLE IF NOT EXISTS People (id INTEGER PRIMARY KEY "
   + (driver=='mysql'?'auto_increment':'')
   + ", name text, age INTEGER, txt TEXT, last_updated text, created_date text) "
   + (driver=='mysql'?'engine=innodb':'') + ";";
-exports.phoneCreateStmt = phoneCreateStmt = "CREATE TABLE IF NOT EXISTS Phone (id INTEGER PRIMARY KEY "
+exports.phoneCreateStmt = phoneCreateStmt = "CREATE TABLE IF NOT EXISTS Phones (id INTEGER PRIMARY KEY "
   + (driver=='mysql'?'auto_increment':'')
   + ", number text, person_id INTEGER) "
   + (driver=='mysql'?'engine=innodb':'') + ";";
-exports.companyCreateStmt = companyCreateStmt = "CREATE TABLE IF NOT EXISTS Company (id INTEGER PRIMARY KEY "
+exports.companyCreateStmt = companyCreateStmt = "CREATE TABLE IF NOT EXISTS Companies (id INTEGER PRIMARY KEY "
   + (driver=='mysql'?'auto_increment':'')
   + ", name text) "
   + (driver=='mysql'?'engine=innodb':'') + ";";
@@ -25,10 +25,10 @@ exports.connect = function(persist, callback) {
       phoneCreateStmt,
       companyPersonCreateStmt,
       companyCreateStmt,
-      "DELETE FROM Phone;",
-      "DELETE FROM Person;",
+      "DELETE FROM Phones;",
+      "DELETE FROM People;",
       "DELETE FROM CompanyPerson;",
-      "DELETE FROM Company;"
+      "DELETE FROM Companies;"
     ];
     connection.runSql(stmts, function(err, results) {
       if(err) { callback(err); return; }
@@ -38,9 +38,9 @@ exports.connect = function(persist, callback) {
           'CREATE SEQUENCE phone_seq',
           'CREATE SEQUENCE person_seq',
           'CREATE SEQUENCE company_seq',
-          "ALTER TABLE Phone ALTER COLUMN id SET DEFAULT NEXTVAL('phone_seq')",
-          "ALTER TABLE Person ALTER COLUMN id SET DEFAULT NEXTVAL('person_seq')",
-          "ALTER TABLE Company ALTER COLUMN id SET DEFAULT NEXTVAL('company_seq')"
+          "ALTER TABLE Phones ALTER COLUMN id SET DEFAULT NEXTVAL('phone_seq')",
+          "ALTER TABLE People ALTER COLUMN id SET DEFAULT NEXTVAL('person_seq')",
+          "ALTER TABLE Companies ALTER COLUMN id SET DEFAULT NEXTVAL('company_seq')"
         ];
         connection.runSql(stmts, function(err, results) {
           callback(null, connection); // CREATE SEQUENCE may have already ran so throw away the errors
