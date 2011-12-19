@@ -89,12 +89,33 @@ exports['Select'] = nodeunit.testCase({
       .include("person")
       .where("number = ?", "111-2222")
       .first(this.connection, function(err, phone) {
+        if(err) { console.error(err); return; }
+
         test.equals(phone.number, "111-2222");
         test.ok(phone.person);
         test.equals(phone.person.name, "Bob O'Neill");
 
         test.done();
       });
+  },
+
+  "include with conflicting column names": function(test) {
+    var self = this;
+    this.Person.using(this.connection).where("name = ?", "Bob O'Neill").first(function(err, p1) {
+      if(err) { console.error(err); return; }
+
+      self.Person
+        .include("phones")
+        .where("id = ?", p1.id)
+        .first(self.connection, function(err, p2) {
+          if(err) { console.error(err); return; }
+
+          test.ok(p2);
+          test.ok(p2.phones);
+
+          test.done();
+        });
+    });
   },
 
   "count": function(test) {
