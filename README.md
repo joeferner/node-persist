@@ -6,7 +6,7 @@ The following databases are currently supported:
 
  * sqlite3 - via: [node-sqlite3](https://github.com/developmentseed/node-sqlite3)
  * mysql - via: [node-mysql](https://github.com/felixge/node-mysql)
- * PostgreSQL - via: [node-postgres](https://github.com/brianc/node-postgres) 
+ * PostgreSQL - via: [node-postgres](https://github.com/brianc/node-postgres)
 
 # Quick Examples
     var persist = require("persist");
@@ -120,6 +120,7 @@ __Arguments__
  * options - (optional) Options used to connect to the database. If options are not specified the default connect options are used.
              see [database.json](#databaseJson) and [SetDefaultConnectOptions](#persistSetDefaultConnectOptions)
   * driver - The driver to use to connect (ie sqlite3, mysql, or postgresql).
+  * db - If db is specified this parameter will be assumed to be an already open connection to the database.
   * _other_ - see the documentation for your driver. The options hash will be passed to that driver.
  * callback(err, connection) - Callback to be called when the connection is established.
 
