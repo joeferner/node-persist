@@ -118,6 +118,26 @@ exports['Select'] = nodeunit.testCase({
     });
   },
 
+  "include with no children": function(test) {
+    var self = this;
+    this.Phone.deleteAll(this.connection, function(err) {
+      if(err) { console.error(err); return; }
+
+      self.Person
+        .include("phones")
+        .where("name = ?", "Bob O'Neill")
+        .first(self.connection, function(err, p2) {
+          if(err) { console.error(err); return; }
+
+          test.ok(p2);
+          test.ok(p2.phones);
+          test.equal(p2.phones.length, 0);
+
+          test.done();
+        });
+    });
+  },
+
   "count": function(test) {
     this.Person.using(this.connection).count(function(err, count) {
       if(err) { console.error(err); return; }
