@@ -99,6 +99,19 @@ exports['Select'] = nodeunit.testCase({
       });
   },
 
+  "where query for associated data": function(test) {
+    this.Person
+      .include("phones")
+      .where("phones.number = ?", "111-2222")
+      .first(this.connection, function(err, person) {
+        if(err) { console.error(err); return; }
+
+        test.equals(person.name, "Bob O'Neill");
+
+        test.done();
+      });
+  },
+
   "include with conflicting column names": function(test) {
     var self = this;
     this.Person.using(this.connection).where("name = ?", "Bob O'Neill").first(function(err, p1) {
