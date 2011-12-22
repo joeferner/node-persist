@@ -56,6 +56,7 @@ You can install using Node Package Manager (npm):
  * [hasMany](#modelHasMany)
  * [using](#modelUsing)
  * [save](#modelSave)
+ * [update](#modelUpdate)
  * [delete](#modelDelete)
  * [Associated Object Properties](#associatedObjectProperties)
 
@@ -294,6 +295,23 @@ __Arguments__
 __Example__
 
     person1.save(connection, function() {
+      // person1 saved
+    });
+
+<a name="modelUpdate" />
+### Model.update(connection, params, callback)
+
+Updates the model object to the database
+
+__Arguments__
+
+ * connection - The connection to use to update the object with.
+ * params - Object containing properties to update.
+ * callback(err) - The callback to be called when the update is complete
+
+__Example__
+
+    person1.update(connection, { name: 'Tom' }, function() {
       // person1 saved
     });
 
