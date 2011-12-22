@@ -39,8 +39,8 @@ exports['Update'] = nodeunit.testCase({
         test.equal("Bob O'Neill", rows[0].name);
 
         // update
-        person1.name = 'tom';
-        person1.save(self.connection, function(err) {
+        rows[0].name = 'tom';
+        rows[0].save(self.connection, function(err) {
           test.ifError(err);
           self.Person.using(self.connection).all(function(err, rows) {
             test.ifError(err);
@@ -65,7 +65,7 @@ exports['Update'] = nodeunit.testCase({
         test.equal("Bob O'Neill", rows[0].name);
 
         // update
-        person1.update(self.connection, {name: 'tom'}, function(err) {
+        rows[0].update(self.connection, {name: 'tom'}, function(err) {
           test.ifError(err);
           self.Person.using(self.connection).all(function(err, rows) {
             test.ifError(err);
