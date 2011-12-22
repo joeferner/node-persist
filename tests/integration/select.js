@@ -112,6 +112,19 @@ exports['Select'] = nodeunit.testCase({
       });
   },
 
+  "where query for associated data (count)": function(test) {
+    this.Person
+      .include("phones")
+      .where("phones.number = ?", "111-2222")
+      .count(this.connection, function(err, count) {
+        if(err) { console.error(err); return; }
+
+        test.equals(count, 1);
+
+        test.done();
+      });
+  },
+
   "include with conflicting column names": function(test) {
     var self = this;
     this.Person.using(this.connection).where("name = ?", "Bob O'Neill").first(function(err, p1) {
