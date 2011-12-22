@@ -187,11 +187,13 @@ Chains multiple statements together in order and gets the results.
 __Arguments__
 
  * chainables - An array of chainable queries. These can be save, updates, selects, or deletes. Each item in the array will be
-   executed, wait for the results, and then execute the next.
+   executed, wait for the results, and then execute the next. This can also be a hash of queries in which case the results
+   will contain a hash of results where each key corresponds to a key in the results.
  * callback(err, results) - Callback called when all the items have been executed.
 
 __Example__
 
+    // array chaining
     connection.chain([
       person3.save,
       Person.min('age'),
@@ -214,6 +216,15 @@ __Example__
       // results[7] = 100
       // results[8] = []
       // results[9] = [] -- nobody left
+    });
+
+    // mapped chaining
+    connection.chain({
+      minAge: Person.min('age'),
+      maxAge: Person.max('age')
+    }, function(err, results) {
+      // results.minAge = 21
+      // results.maxAge = 25
     });
 
 <a name="connectionTx"/>
