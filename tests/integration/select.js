@@ -240,7 +240,7 @@ exports['Select'] = nodeunit.testCase({
 
   "min": function(test) {
     this.Person.using(this.connection).min("age", function(err, age) {
-      test.ifError(err);
+      if(err) { console.log(err); return; }
       test.equals(age, 21);
       test.done();
     });
@@ -248,8 +248,17 @@ exports['Select'] = nodeunit.testCase({
 
   "max": function(test) {
     this.Person.using(this.connection).max("age", function(err, age) {
-      test.ifError(err);
+      if(err) { console.log(err); return; }
       test.equals(age, 23);
+      test.done();
+    });
+  },
+
+  "limit": function(test) {
+    this.Phone.using(this.connection).orderBy("number").limit(1, 1).all(function(err, phones) {
+      if(err) { console.log(err); return; }
+      test.equals(phones.length, 1);
+      test.equals(phones[0].number, "222-3333");
       test.done();
     });
   },
@@ -257,7 +266,7 @@ exports['Select'] = nodeunit.testCase({
   "associated data": function(test) {
     var self = this;
     this.Person.using(this.connection).where("name = ?", "Bob O'Neill").first(function(err, person) {
-      test.ifError(err);
+      if(err) { console.log(err); return; }
       person.phones.all(function(err, phones) {
         if(err) { console.log(err); return; }
         test.equals(phones.length, 2);
