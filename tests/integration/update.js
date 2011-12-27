@@ -39,8 +39,33 @@ exports['Update'] = nodeunit.testCase({
         test.equal("Bob O'Neill", rows[0].name);
 
         // update
-        person1.name = 'tom';
-        person1.save(self.connection, function(err) {
+        rows[0].name = 'tom';
+        rows[0].save(self.connection, function(err) {
+          test.ifError(err);
+          self.Person.using(self.connection).all(function(err, rows) {
+            test.ifError(err);
+            test.equal(1, rows.length);
+            test.equal('tom', rows[0].name);
+
+            test.done();
+          });
+        });
+      });
+    });
+  },
+
+  "update with attributes": function(test) {
+    var self = this;
+    var person1 = new this.Person({ name: "Bob O'Neill" });
+    person1.save(this.connection, function(err, p) {
+      test.ifError(err);
+      self.Person.using(self.connection).all(function(err, rows) {
+        test.ifError(err);
+        test.equal(1, rows.length);
+        test.equal("Bob O'Neill", rows[0].name);
+
+        // update
+        rows[0].update(self.connection, {name: 'tom'}, function(err) {
           test.ifError(err);
           self.Person.using(self.connection).all(function(err, rows) {
             test.ifError(err);

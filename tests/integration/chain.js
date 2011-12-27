@@ -93,6 +93,20 @@ exports['Chain'] = nodeunit.testCase({
 
       test.done();
     });
+  },
+
+  "named chain": function(test) {
+    var self = this;
+
+    this.connection.chain({
+      minAge: self.Person.min('age'),
+      maxAge: self.Person.max('age'),
+    }, function(err, results) {
+      if(err) { console.error(err); return; }
+      test.equal(results.minAge, 21);
+      test.equal(results.maxAge, 23);
+      test.done();
+    });
   }
 
 });

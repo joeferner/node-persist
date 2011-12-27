@@ -89,12 +89,79 @@ exports['Select'] = nodeunit.testCase({
       .include("person")
       .where("numbr = ?", "111-2222")
       .first(this.connection, function(err, phone) {
+        if(err) { console.error(err); return; }
+
         test.equals(phone.number, "111-2222");
         test.ok(phone.person);
         test.equals(phone.person.name, "Bob O'Neill");
 
         test.done();
       });
+  },
+
+  "where query for associated data": function(test) {
+    this.Person
+      .include("phones")
+      .where("phones.number = ?", "111-2222")
+      .first(this.connection, function(err, person) {
+        if(err) { console.error(err); return; }
+
+        test.equals(person.name, "Bob O'Neill");
+
+        test.done();
+      });
+  },
+
+  "where query for associated data (count)": function(test) {
+    this.Person
+      .include("phones")
+      .where("phones.number = ?", "111-2222")
+      .count(this.connection, function(err, count) {
+        if(err) { console.error(err); return; }
+
+        test.equals(count, 1);
+
+        test.done();
+      });
+  },
+
+  "include with conflicting column names": function(test) {
+    var self = this;
+    this.Person.using(this.connection).where("name = ?", "Bob O'Neill").first(function(err, p1) {
+      if(err) { console.error(err); return; }
+
+      self.Person
+        .include("phones")
+        .where("id = ?", p1.id)
+        .first(self.connection, function(err, p2) {
+          if(err) { console.error(err); return; }
+
+          test.ok(p2);
+          test.ok(p2.phones);
+
+          test.done();
+        });
+    });
+  },
+
+  "include with no children": function(test) {
+    var self = this;
+    this.Phone.deleteAll(this.connection, function(err) {
+      if(err) { console.error(err); return; }
+
+      self.Person
+        .include("phones")
+        .where("name = ?", "Bob O'Neill")
+        .first(self.connection, function(err, p2) {
+          if(err) { console.error(err); return; }
+
+          test.ok(p2);
+          test.ok(p2.phones);
+          test.equal(p2.phones.length, 0);
+
+          test.done();
+        });
+    });
   },
 
   "count": function(test) {

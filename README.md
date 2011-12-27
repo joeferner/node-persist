@@ -57,6 +57,7 @@ You can install using Node Package Manager (npm):
  * [hasMany](#modelHasMany)
  * [using](#modelUsing)
  * [save](#modelSave)
+ * [update](#modelUpdate)
  * [delete](#modelDelete)
  * [Associated Object Properties](#associatedObjectProperties)
 
@@ -121,6 +122,7 @@ __Arguments__
  * options - (optional) Options used to connect to the database. If options are not specified the default connect options are used.
              see [database.json](#databaseJson) and [SetDefaultConnectOptions](#persistSetDefaultConnectOptions)
   * driver - The driver to use to connect (ie sqlite3, mysql, or postgresql).
+  * db - If db is specified this parameter will be assumed to be an already open connection to the database.
   * _other_ - see the documentation for your driver. The options hash will be passed to that driver.
  * callback(err, connection) - Callback to be called when the connection is established.
 
@@ -186,11 +188,13 @@ Chains multiple statements together in order and gets the results.
 __Arguments__
 
  * chainables - An array of chainable queries. These can be save, updates, selects, or deletes. Each item in the array will be
-   executed, wait for the results, and then execute the next.
+   executed, wait for the results, and then execute the next. This can also be a hash of queries in which case the results
+   will contain a hash of results where each key corresponds to a key in the results.
  * callback(err, results) - Callback called when all the items have been executed.
 
 __Example__
 
+    // array chaining
     connection.chain([
       person3.save,
       Person.min('age'),
@@ -213,6 +217,15 @@ __Example__
       // results[7] = 100
       // results[8] = []
       // results[9] = [] -- nobody left
+    });
+
+    // mapped chaining
+    connection.chain({
+      minAge: Person.min('age'),
+      maxAge: Person.max('age')
+    }, function(err, results) {
+      // results.minAge = 21
+      // results.maxAge = 25
     });
 
 <a name="connectionTx"/>
@@ -294,6 +307,23 @@ __Arguments__
 __Example__
 
     person1.save(connection, function() {
+      // person1 saved
+    });
+
+<a name="modelUpdate" />
+### Model.update(connection, params, callback)
+
+Updates the model object to the database
+
+__Arguments__
+
+ * connection - The connection to use to update the object with.
+ * params - Object containing properties to update.
+ * callback(err) - The callback to be called when the update is complete
+
+__Example__
+
+    person1.update(connection, { name: 'Tom' }, function() {
       // person1 saved
     });
 
