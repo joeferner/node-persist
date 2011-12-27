@@ -1,5 +1,5 @@
 {
-  "default": "oracle",
+  "default": "sqlite3",
 
   "sqlite3": {
     "driver": "sqlite3",

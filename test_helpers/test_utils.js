@@ -1,7 +1,7 @@
 
 var fs = require("fs");
 
-var driver = "oracle";
+var driver = "sqlite3";
 
 /* oracle
   CREATE SEQUENCE phone_seq start with 1 increment by 1 nomaxvalue;
@@ -48,7 +48,11 @@ exports.companyCreateStmt = companyCreateStmt = "CREATE TABLE "+ifNotExistsSql+"
   + (driver=='mysql'?'engine=innodb':'');
 exports.companyPersonCreateStmt = companyPersonCreateStmt = "CREATE TABLE "+ifNotExistsSql+" CompanyPerson ( company_id INTEGER, person_id INTEGER, PRIMARY KEY(company_id, person_id)) " + (driver=='mysql'?'engine=innodb':'');
 
-exports.doNothingSql = "SELECT * FROM People";
+if(driver == "oracle") {
+  exports.doNothingSql = "SELECT * FROM People";
+} else {
+  exports.doNothingSql = exports.personCreateStmt;
+}
 
 exports.connect = function(persist, callback) {
   var mycallback = function(err, connection) {
