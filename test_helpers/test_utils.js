@@ -7,21 +7,25 @@ var driver = "oracle";
   CREATE SEQUENCE phone_seq start with 1 increment by 1 nomaxvalue;
   CREATE SEQUENCE person_seq start with 1 increment by 1 nomaxvalue;
   CREATE SEQUENCE company_seq start with 1 increment by 1 nomaxvalue;
-  CREATE TRIGGER phone_pk_trigger BEFORE INSERT ON phone FOR EACH row
+  CREATE TABLE  Phones (id INTEGER PRIMARY KEY, numbr VARCHAR2(255), person_id INTEGER);
+  CREATE TRIGGER phone_pk_trigger BEFORE INSERT ON Phones FOR EACH row
     BEGIN
       select phone_seq.nextval into :new.id from dual;
     END;
   /
-  CREATE TRIGGER person_pk_trigger BEFORE INSERT ON person FOR EACH row
+  CREATE TABLE People (id INTEGER PRIMARY KEY , name VARCHAR2(255), age INTEGER, txt VARCHAR2(255), last_updated VARCHAR2(255), created_date VARCHAR2(255));
+  CREATE TRIGGER person_pk_trigger BEFORE INSERT ON People FOR EACH row
     BEGIN
       select person_seq.nextval into :new.id from dual;
     END;
   /
-  CREATE TRIGGER company_pk_trigger BEFORE INSERT ON company FOR EACH row
+  CREATE TABLE Companies (id INTEGER PRIMARY KEY , name VARCHAR2(255));
+  CREATE TRIGGER company_pk_trigger BEFORE INSERT ON Companies FOR EACH row
     BEGIN
       select company_seq.nextval into :new.id from dual;
     END;
   /
+  CREATE TABLE CompanyPerson ( company_id INTEGER, person_id INTEGER, PRIMARY KEY(company_id, person_id));
 */
 
 var ifNotExistsSql = 'IF NOT EXISTS';
@@ -44,6 +48,8 @@ exports.companyCreateStmt = companyCreateStmt = "CREATE TABLE "+ifNotExistsSql+"
   + (driver=='mysql'?'engine=innodb':'');
 exports.companyPersonCreateStmt = companyPersonCreateStmt = "CREATE TABLE "+ifNotExistsSql+" CompanyPerson ( company_id INTEGER, person_id INTEGER, PRIMARY KEY(company_id, person_id)) " + (driver=='mysql'?'engine=innodb':'');
 
+exports.doNothingSql = "SELECT * FROM People";
+
 exports.connect = function(persist, callback) {
   var mycallback = function(err, connection) {
     if(err) { callback(err); return; }
@@ -51,20 +57,16 @@ exports.connect = function(persist, callback) {
       personCreateStmt,
       phoneCreateStmt,
       companyPersonCreateStmt,
-      companyCreateStmt,
-      "DELETE FROM Phones;",
-      "DELETE FROM People;",
-      "DELETE FROM CompanyPerson;",
-      "DELETE FROM Companies;"
+      companyCreateStmt
     ];
     if(driver == 'oracle') {
       stmts = [];
     }
     stmts = stmts.concat([
-      "DELETE FROM Phone",
-      "DELETE FROM Person",
+      "DELETE FROM Phones",
+      "DELETE FROM People",
       "DELETE FROM CompanyPerson",
-      "DELETE FROM Company"
+      "DELETE FROM Companies"
     ]);
     connection.runSql(stmts, function(err, results) {
       if(err) { callback(err); return; }
@@ -103,7 +105,7 @@ exports.connect = function(persist, callback) {
     }, mycallback);
   } else if(driver == 'oracle') {
     persist.connect({
-      driver: "db-oracle",
+      driver: "oracle",
       hostname: "localhost",
       user: "test",
       password: "test"

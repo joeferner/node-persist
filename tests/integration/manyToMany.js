@@ -55,10 +55,12 @@ exports['ManyToMany'] = nodeunit.testCase({
         if(err) { console.error(err); return; }
 
         test.equals(results[0].length, 2);
+        results[0].sort(function(a,b) { return a.name < b.name; });
         test.equals(results[0][0].name, 'Near Infinity');
         test.equals(results[0][1].name, 'Microsoft');
 
         test.equals(results[1].length, 2);
+        results[1].sort(function(a,b) { return a.name < b.name; });
         test.equals(results[1][0].name, 'Microsoft');
         test.equals(results[1][1].name, 'Google');
 

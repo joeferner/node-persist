@@ -24,6 +24,7 @@ exports['Select'] = nodeunit.testCase({
 
     testUtils.connect(persist, function(err, connection) {
       if(err) { console.log(err); return; }
+
       self.connection = connection;
       self.person1 = new self.Person({ name: "Bob O'Neill", age: 21 });
       self.person2 = new self.Person({ name: "john", age: 23 });
@@ -47,7 +48,7 @@ exports['Select'] = nodeunit.testCase({
 
   "all": function(test) {
     this.Person.using(this.connection).all(function(err, people) {
-      test.ifError(err);
+      if(err) { console.error(err); return; }
       test.equals(people.length, 2);
       test.equals(people[0].name, "Bob O'Neill");
       test.equals(JSON.stringify(people[0]), '{"phones":{},"companies":{},"name":"Bob O\'Neill","age":21,"id":'+people[0].id+'}');
@@ -64,6 +65,7 @@ exports['Select'] = nodeunit.testCase({
       .all(this.connection, function(err, people) {
         if(err) { console.error(err); return; }
 
+        people.sort(function(a,b) { return a.name > b.name; });
         test.equals(people.length, 2);
         test.equals(people[0].name, "Bob O'Neill");
         test.equals(people[0].phones.length, 2);
@@ -308,5 +310,4 @@ exports['Select'] = nodeunit.testCase({
       });
     });
   }
-
 });

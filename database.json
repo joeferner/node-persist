@@ -19,7 +19,7 @@
   },
 
   "oracle": {
-    "driver": "db-oracle",
+    "driver": "oracle",
     "hostname": "localhost",
     "user": "test",
     "password": "test"
