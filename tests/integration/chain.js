@@ -44,6 +44,7 @@ exports['Chain'] = nodeunit.testCase({
   "chain": function(test) {
     var self = this;
     var person3 = new self.Person({ name: "fred", age: 25 });
+    var phone1Id = self.phone1.id;
 
     this.connection.chain([
       person3.save,
@@ -54,6 +55,8 @@ exports['Chain'] = nodeunit.testCase({
       self.Person.orderBy('name').all,
       self.Phone.orderBy('number').first,
       self.Phone.count,
+      self.Phone.update(phone1Id, { number: '555-5555' }),
+      self.Phone.all,
       self.Phone.deleteAll,
       self.Phone.all
     ], function(err, results) {
@@ -85,11 +88,19 @@ exports['Chain'] = nodeunit.testCase({
       // phone select count
       test.equal(results[7], 2);
 
-      // phone.deleteAll
+      // phone.update
       test.ok(results[8]);
 
+      // phone all
+      test.equal(results[9].length, 2);
+      var updatedPhone1 = results[9].getById(phone1Id);
+      test.equal(updatedPhone1.number, '555-5555');
+
+      // phone.deleteAll
+      test.ok(results[10]);
+
       // phone.all
-      test.equal(results[9].length, 0);
+      test.equal(results[11].length, 0);
 
       test.done();
     });

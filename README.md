@@ -81,6 +81,9 @@ You can install using Node Package Manager (npm):
  * [commit](#txCommit)
  * [rollback](#txRollback)
 
+## Results Set
+ * [getById](#resultSetGetById)
+
 <a name="databaseJson"/>
 # database.json
 
@@ -331,7 +334,8 @@ __Example__
 <a name="modelUpdate" />
 ### Model.update(connection, id, params, callback)
 
-Updates the model object specified with id to the database
+Updates the model object specified with id to the database. This will only update the values
+specified and will not retreive the item from the database first.
 
 __Arguments__
 
@@ -343,7 +347,14 @@ __Arguments__
 __Example__
 
     Person.update(connection, 5, { name: 'Tom' }, function() {
-      // This will update the name of the person with id = 5.
+      // person with id = 5 updated with name 'Tom'.
+    });
+
+    // or chaining
+    connection.chain([
+      Person.update(5, { name: 'Tom' })
+    ], function(err, results) {
+      // person with id = 5 updated with name 'Tom'.
     });
 
 <a name="modelDelete" />
@@ -391,7 +402,8 @@ __Example__
 <a name="queryAll" />
 ### query.all([connection], callback)
 
-Gets all items from a query as a single array of items.
+Gets all items from a query as a single array of items. The array returned will have additional
+methods see [here for documentation](#resultSetMethods).
 
 __Arguments__
 
@@ -632,3 +644,22 @@ __Example__
         });
       });
     });
+
+<a name="resultSetMethods"/>
+## Result Set
+
+<a name="resultSetGetById"/>
+### rs.getById(id)
+
+Gets an item from the result set by id.
+
+__Arguments__
+
+ * id - The id of the item to get.
+
+__Example__
+
+    Person.all(connection, function(err, people) {
+      var person2 = people.getById(2);
+    });
+
