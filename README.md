@@ -1,6 +1,6 @@
 # persist
 
-persis is an orm framework for node.js.
+persist is an ORM framework for node.js.
 
 The following databases are currently supported:
 
