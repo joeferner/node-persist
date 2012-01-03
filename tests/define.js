@@ -1,8 +1,8 @@
 
-var persist = require("../../lib/persist");
+var persist = require("../lib/persist");
 var type = persist.type;
 var nodeunit = require("nodeunit");
-var assert = require("../../test_helpers/assert");
+var assert = require("../test_helpers/assert");
 
 exports['Define'] = nodeunit.testCase({
   "create simple property": function(test) {

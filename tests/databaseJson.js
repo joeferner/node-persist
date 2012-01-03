@@ -1,9 +1,9 @@
 
-var persist = require("../../lib/persist");
+var persist = require("../lib/persist");
 var type = persist.type;
 var nodeunit = require("nodeunit");
 var util = require("util");
-var testUtils = require("../../test_helpers/test_utils");
+var testUtils = require("../test_helpers/test_utils");
 
 exports['Select'] = nodeunit.testCase({
   "use database.json to connect": function(test) {

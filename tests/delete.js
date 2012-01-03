@@ -1,7 +1,7 @@
-var persist = require("../../lib/persist");
+var persist = require("../lib/persist");
 var type = persist.type;
 var nodeunit = require("nodeunit");
-var testUtils = require("../../test_helpers/test_utils");
+var testUtils = require("../test_helpers/test_utils");
 
 exports['Delete'] = nodeunit.testCase({
   setUp: function(callback) {
