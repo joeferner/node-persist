@@ -59,7 +59,8 @@ exports['Chain'] = nodeunit.testCase({
       self.Phone.update(phone1Id, { number: '555-5555' }),
       self.Phone.all,
       self.Phone.deleteAll,
-      self.Phone.all
+      self.Phone.all,
+      self.Person.first,
     ], function(err, results) {
       if(err) { console.error(err); return; }
 
@@ -106,6 +107,9 @@ exports['Chain'] = nodeunit.testCase({
 
       // phone.all
       test.equal(results[12].length, 0);
+
+      // Person.first
+      test.ok(results[13]);
 
       test.done();
     });

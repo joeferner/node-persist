@@ -60,8 +60,7 @@ exports['Select'] = nodeunit.testCase({
 
   "all with include": function(test) {
     this.Person
-      .include("phones")
-      .include("companies")
+      .include(["phones", "companies"])
       .all(this.connection, function(err, people) {
         if(err) { console.error(err); return; }
 
