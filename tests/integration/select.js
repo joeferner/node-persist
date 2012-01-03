@@ -166,6 +166,36 @@ exports['Select'] = nodeunit.testCase({
     });
   },
 
+  "get by id": function(test) {
+    var self = this;
+    var person1Id = self.person1.id;
+
+    this.Person
+      .getById(this.connection, person1Id, function(err, person) {
+        if(err) { console.error(err); return; }
+
+        test.equals(person.name, "Bob O'Neill");
+
+        test.done();
+      });
+  },
+
+  "get by id with include": function(test) {
+    var self = this;
+    var person1Id = self.person1.id;
+
+    this.Person
+      .include("phones")
+      .getById(this.connection, person1Id, function(err, person) {
+        if(err) { console.error(err); return; }
+
+        test.equals(person.name, "Bob O'Neill");
+        test.equals(person.phones.length, 2);
+
+        test.done();
+      });
+  },
+
   "count": function(test) {
     this.Person.using(this.connection).count(function(err, count) {
       if(err) { console.error(err); return; }
@@ -226,6 +256,19 @@ exports['Select'] = nodeunit.testCase({
       test.ifError(err);
       test.ok(person);
       test.equals(person.name, "Bob O'Neill");
+      test.done();
+    });
+  },
+
+  "first with include": function(test) {
+    var self = this;
+    this.Person
+      .include("phones")
+      .where("name = ?", "Bob O'Neill").first(self.connection, function(err, person) {
+      test.ifError(err);
+      test.ok(person);
+      test.equals(person.name, "Bob O'Neill");
+      test.equals(person.phones.length, 2);
       test.done();
     });
   },
@@ -319,4 +362,5 @@ exports['Select'] = nodeunit.testCase({
       });
     });
   }
+
 });

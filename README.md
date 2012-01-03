@@ -60,6 +60,7 @@ You can install using Node Package Manager (npm):
  * [update (instance)](#modelInstanceUpdate)
  * [update](#modelUpdate)
  * [delete](#modelDelete)
+ * [getById](#modelGetById)
  * [Associated Object Properties](#associatedObjectProperties)
 
 ## Query
@@ -209,7 +210,8 @@ __Example__
       Phone.orderBy('number').first,
       Phone.count,
       Phone.deleteAll,
-      Phone.all
+      Phone.all,
+      Person.getById(1)
     ], function(err, results) {
       // results[0] = person3
       // results[1] = 21
@@ -221,6 +223,7 @@ __Example__
       // results[7] = 100
       // results[8] = []
       // results[9] = [] -- nobody left
+      // results[10] = -- the person with id 1
     });
 
     // mapped chaining
@@ -371,6 +374,23 @@ __Example__
 
     person1.delete(connection, function() {
       // person1 deleted
+    });
+
+<a name="modelGetById" />
+### Model.getById(connection, id, callback)
+
+Gets an object from the database by id.
+
+__Arguments__
+
+ * connection - The connection to use to delete the object with.
+ * id - The if of the item to get.
+ * callback(err, obj) - The callback to be called when the delete is complete
+
+__Example__
+
+    Person.getById(connection, 1, function(err, person) {
+      // person is the person with id equal to 1. Or null if not found
     });
 
 <a name="associatedObjectProperties" />
@@ -662,4 +682,3 @@ __Example__
     Person.all(connection, function(err, people) {
       var person2 = people.getById(2);
     });
-

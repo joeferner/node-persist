@@ -55,6 +55,7 @@ exports['Chain'] = nodeunit.testCase({
       self.Person.orderBy('name').all,
       self.Phone.orderBy('number').first,
       self.Phone.count,
+      self.Phone.getById(phone1Id),
       self.Phone.update(phone1Id, { number: '555-5555' }),
       self.Phone.all,
       self.Phone.deleteAll,
@@ -88,19 +89,23 @@ exports['Chain'] = nodeunit.testCase({
       // phone select count
       test.equal(results[7], 2);
 
-      // phone.update
+      // phone.getById
       test.ok(results[8]);
+      test.ok(results[8].number, '111-2222');
+
+      // phone.update
+      test.ok(results[9]);
 
       // phone all
-      test.equal(results[9].length, 2);
-      var updatedPhone1 = results[9].getById(phone1Id);
+      test.equal(results[10].length, 2);
+      var updatedPhone1 = results[10].getById(phone1Id);
       test.equal(updatedPhone1.number, '555-5555');
 
       // phone.deleteAll
-      test.ok(results[10]);
+      test.ok(results[11]);
 
       // phone.all
-      test.equal(results[11].length, 0);
+      test.equal(results[12].length, 0);
 
       test.done();
     });
