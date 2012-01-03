@@ -1,6 +1,6 @@
 # persist
 
-persis is an orm framework for node.js.
+persist is an ORM framework for node.js.
 
 The following databases are currently supported:
 
@@ -149,9 +149,9 @@ Defines a model object for use in persist.
 __Arguments__
 
  * modelName - The name of the model. This name will map to the database name.
- * properties - Hash of properties (or columns). The value of each property can simply be the type name (ie type.String)
+ * properties - Hash of properties (or columns). The value of each property can simply be the type name (ie type.STRING)
                 or it can be a hash of more options.
-  * type - type of the property (ie type.String)
+  * type - type of the property (ie type.STRING)
   * defaultValue - this can be a value or a function that will be called each time this model object is created
   * dbColumnName - the name of the database column. (default: name of the property, all lower case, seperated by '_')
 
@@ -162,9 +162,9 @@ __Returns__
 __Example__
 
     Person = persist.define("Person", {
-      "name": type.String,
-      "createdDate": { type: persist.DateTime, defaultValue: function() { return self.testDate1 }, dbColumnName: 'new_date' },
-      "lastUpdated": { type: persist.DateTime }
+      "name": type.STRING,
+      "createdDate": { type: type.DATETIME, defaultValue: function() { return self.testDate1 }, dbColumnName: 'new_date' },
+      "lastUpdated": { type: type.DATETIME }
     })
 
 <a name="persistSetDefaultConnectOptions"/>
