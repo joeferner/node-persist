@@ -96,5 +96,63 @@ exports['Update'] = nodeunit.testCase({
         });
       });
     });
+  },
+
+  "update without fetch foreign key id": function(test) {
+    var self = this;
+    var person1 = new this.Person({ name: "Bob O'Neill" });
+    var person2 = new this.Person({ name: "Tom Jones" });
+    var phone1 = new this.Phone({ number: "555-5555", person: person1 });
+    this.connection.save([person1, person2, phone1], function(err) {
+      if(err) { console.error(err); return; }
+
+      test.ok(phone1.personId);
+      test.equal(phone1.personId, person1.id);
+
+      self.Phone.update(self.connection, phone1.id, {
+        personId: person2.id
+      }, function(err) {
+        if(err) { console.error(err); return; }
+        self.Person.include("phones").getById(self.connection, person1.id, function(err, row) {
+          if(err) { console.error(err); return; }
+          test.equal(row.phones.length, 0);
+
+          self.Person.include("phones").getById(self.connection, person2.id, function(err, row) {
+            if(err) { console.error(err); return; }
+            test.equal(row.phones.length, 1);
+            test.done();
+          });
+        });
+      });
+    });
+  },
+
+  "update without fetch foreign key": function(test) {
+    var self = this;
+    var person1 = new this.Person({ name: "Bob O'Neill" });
+    var person2 = new this.Person({ name: "Tom Jones" });
+    var phone1 = new this.Phone({ number: "555-5555", person: person1 });
+    this.connection.save([person1, person2, phone1], function(err) {
+      if(err) { console.error(err); return; }
+
+      test.ok(phone1.personId);
+      test.equal(phone1.personId, person1.id);
+
+      self.Phone.update(self.connection, phone1.id, {
+        person: person2
+      }, function(err) {
+        if(err) { console.error(err); return; }
+        self.Person.include("phones").getById(self.connection, person1.id, function(err, row) {
+          if(err) { console.error(err); return; }
+          test.equal(row.phones.length, 0);
+
+          self.Person.include("phones").getById(self.connection, person2.id, function(err, row) {
+            if(err) { console.error(err); return; }
+            test.equal(row.phones.length, 1);
+            test.done();
+          });
+        });
+      });
+    });
   }
 });
