@@ -28,6 +28,8 @@ app.configure('production', function(){
 
 app.get('/', home.index);
 app.get('/blogs', blog.blogs);
+app.get('/blogs/:id', blog.blog);
+app.post('/blogs/:id', blog.blogSave);
 
 app.listen(3000);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);

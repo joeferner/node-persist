@@ -1,0 +1,27 @@
+
+<form method="POST">
+  <p>
+    <b>Title: </b><br>
+    <input type="text" name="title" value="<%= blog.title %>" size="50"/>
+  </p>
+
+  <p>
+    <b>Category: </b><br>
+    <select name="categoryId">
+      <% for(var i=0; i<categories.length; i++) { %>
+        <option value="<%= categories[i].id %>" <%= blog.categoryId == categories[i].id ? "selected='yes'" : "" %> ><%= categories[i].name %></option>
+      <% } %>
+    </select>
+  </p>
+
+  <p>
+    <b>Body: </b><br>
+    <textarea name="body" rows="10" cols="50">
+      <%= blog.body %>
+    </textarea>
+  </p>
+
+  <p>
+    <input type='submit' value='Save'>
+  </p>
+</form>

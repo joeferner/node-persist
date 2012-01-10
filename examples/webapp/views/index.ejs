@@ -8,13 +8,14 @@
 $(function() {
   $("#blogsList").jqGrid({
     datatype: 'json',
-    colNames: ['Id', 'Title', 'Category', 'Created Date', 'Updated Date'],
+    colNames: ['Id', 'Title', 'Category', 'Created Date', 'Updated Date', 'Actions'],
     colModel: [
       { name: 'id', index: 'id', width: 50, searchtype: "integer" },
       { name: 'title', index: 'title' },
-      { name: 'category', index: 'category' },
-      { name: 'created', index: 'created' },
-      { name: 'lastUpdated', index: 'lastUpdated' },
+      { name: 'category', index: 'category', sortable: false },
+      { name: 'created', index: 'created', formatter:'date', formatoptions: {srcformat:'ISO8601Long', newformat:'m/d/Y H:i:s'} },
+      { name: 'lastUpdated', index: 'lastUpdated', formatter:'date', formatoptions: {srcformat:'ISO8601Long', newformat:'m/d/Y H:i:s'} },
+      { name: 'actions', index: 'actions', sortable: false}
     ],
     pager: '#blogsListPager',
     height: 260,
