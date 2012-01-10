@@ -1,0 +1,47 @@
+
+<div>
+  <table id="blogsList"></table>
+  <div id="blogsListPager"></div>
+</div>
+
+<script>
+$(function() {
+  $("#blogsList").jqGrid({
+    datatype: 'json',
+    colNames: ['Id', 'Title', 'Category', 'Created Date', 'Updated Date'],
+    colModel: [
+      { name: 'id', index: 'id', width: 50, searchtype: "integer" },
+      { name: 'title', index: 'title' },
+      { name: 'category', index: 'category' },
+      { name: 'created', index: 'created' },
+      { name: 'lastUpdated', index: 'lastUpdated' },
+    ],
+    pager: '#blogsListPager',
+    height: 260,
+    rowNum: 10,
+    rowList: [10, 25, 50, 100],
+    sortname: 'created',
+    sortorder: 'asc',
+    viewrecords: true,
+    gridview: true,
+    url: '/blogs'
+  })
+  .jqGrid('navGrid', '#blogsListPager',
+    {
+      add: false,
+      edit: false,
+      del: false
+    },
+    {}, // settings for edit
+    {}, // settings for add
+    {},
+    {
+      multipleSearch: true,
+      multipleGroup: false,
+      showQuery: true
+    })
+  .jqGrid('filterToolbar', {
+    autosearch: true
+  });
+});
+</script>

@@ -1,0 +1,15 @@
+{
+    "name": "example-persist-webapp",
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {
+        "express": "2.5.1",
+        "sqlite3": ">=2.1.1",
+        "persist": ">=0.2.0",
+        "ejs": ">=0.4.3",
+        "async": ">=0.1.15"
+    },
+    "devDependencies": {
+        "db-migrate": ">=0.0.3"
+    }
+}
