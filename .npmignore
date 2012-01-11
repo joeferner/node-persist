@@ -1,0 +1,4 @@
+.git*
+examples/
+tests/
+test_helpers/
