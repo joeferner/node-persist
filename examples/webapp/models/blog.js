@@ -13,6 +13,6 @@ module.exports = Blog = persist.define("Blog", {
   .hasOne(Category)
   .hasMany(Keyword, { through: "blogs_keywords" });
 
-Blog.prototype.onUpdate = function() {
-  this.lastUpdated = new Date();
+Blog.onSave = function(obj) {
+  obj.lastUpdated = new Date();
 }

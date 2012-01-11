@@ -29,9 +29,10 @@ $(function() {
   })
   .jqGrid('navGrid', '#blogsListPager',
     {
-      add: false,
+      add: true,
       edit: false,
-      del: false
+      del: false,
+      addfunc: function() { document.location = '/blogs/new'; }
     },
     {}, // settings for edit
     {}, // settings for add

@@ -47,15 +47,30 @@ exports.blog = function(req, res, next){
   persist.connect(function(err, conn) {
     if(err) { next(err); return; }
 
-    conn.chain({
-      blog: models.Blog.getById(id),
+    var queries = {
       categories: models.Category.all
-    }, function(err, results) {
+    };
+
+    if(id != 'new') {
+      queries.blog = models.Blog.getById(id);
+    }
+
+    conn.chain(queries, function(err, results) {
       if(err) { next(err); return; }
+
+      var blog;
+      if(id == 'new') {
+        blog = {
+          title: "",
+          body: ""
+        };
+      } else {
+        blog = results.blog;
+      }
 
       res.render('blog/index', {
         title: 'Blog',
-        blog: results.blog,
+        blog: blog,
         categories: results.categories
       });
     });
@@ -69,10 +84,17 @@ exports.blogSave = function(req, res, next){
   persist.connect(function(err, conn) {
     if(err) { next(err); return; }
 
-    models.Blog.update(conn, id, req.body, function(err) {
-      if(err) { next(err); return; }
-      
-      res.redirect('home');
-    });
+    if(id == 'new') {
+      var blog = new models.Blog(req.body);
+      blog.save(conn, function(err) {
+        if(err) { next(err); return; }
+        res.redirect('home');
+      });
+    } else {
+      models.Blog.update(conn, id, req.body, function(err) {
+        if(err) { next(err); return; }
+        res.redirect('home');
+      });
+    }
   });
 };

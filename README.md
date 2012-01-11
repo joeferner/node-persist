@@ -61,6 +61,7 @@ You can install using Node Package Manager (npm):
  * [update](#modelUpdate)
  * [delete](#modelDelete)
  * [getById](#modelGetById)
+ * [onSave](#modelOnSave)
  * [Associated Object Properties](#associatedObjectProperties)
 
 ## Query
@@ -392,6 +393,22 @@ __Example__
     Person.getById(connection, 1, function(err, person) {
       // person is the person with id equal to 1. Or null if not found
     });
+
+<a name="modelOnSave" />
+### Model.onSave(obj)
+
+If preset this function will be called when an update or save occures. You would typically create this method
+in your model file.
+
+__Arguments__
+
+ * obj - The object or partial object, in the case of [update](#modelUpdate), being saved.
+
+__Example__
+
+    Person.onSave = function(obj) {
+      obj.lastUpdated = new Date();
+    };
 
 <a name="associatedObjectProperties" />
 ### Associated Object Properties
