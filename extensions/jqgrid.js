@@ -1,5 +1,5 @@
 
-var persist = require('persist');
+var persist = require('../lib/persist');
 
 persist.Query.prototype._jqgridGetSearchValues = function(field, op, val) {
   var ruleStr = field + " ";
