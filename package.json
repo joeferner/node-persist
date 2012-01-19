@@ -1,6 +1,7 @@
 {
   "name": "persist",
   "description": "Node.js ORM framework supporting various relational databases",
+  "author": "Joe Ferner <joe.ferner@nearinfinity.com>",
   "keywords": ["database", "db", "orm", "sqlite", "mysql", "PostgreSQL", "oracle", "db-oracle"],
   "homepage": "https://github.com/nearinfinity/node-persist",
   "version": "0.2.1",
@@ -11,13 +12,15 @@
   ],
   "bugs": { "url": "https://github.com/nearinfinity/node-persist/issues" },
   "licenses": [ { "type" : "MIT" } ],
-  "repositories": [
-    { "type": "git", "url": "https://github.com/nearinfinity/node-persist.git" }
-  ],
+  "repository": { "type": "git", "url": "https://github.com/nearinfinity/node-persist.git" },
   "dependencies": {
     "async": "0.1.15"
   },
   "devDependencies": {
     "nodeunit": "~>0.6.4"
-  }
+  },
+  "scripts": {
+    "test": "nodeunit test"
+  },
+  "main": "./index.js"
 }
