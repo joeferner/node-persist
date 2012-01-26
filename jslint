@@ -1,0 +1,4 @@
+DEFAULTFILES="lib/connection.js lib/driver.js lib/model.js lib/persist.js lib/persist_utils.js lib/drivers/* lib/query.js lib/sqltree.js lib/transaction.js lib/type.js"
+FILES=${1:-$DEFAULTFILES}
+echo $FILES
+jslint --indent=2 --nomen --vars --node --continue --forin --plusplus --color $FILES
