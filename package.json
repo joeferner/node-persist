@@ -4,7 +4,7 @@
   "author": "Joe Ferner <joe.ferner@nearinfinity.com>",
   "keywords": ["database", "db", "orm", "sqlite", "mysql", "PostgreSQL", "oracle", "db-oracle"],
   "homepage": "https://github.com/nearinfinity/node-persist",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "engines": { "node" : ">=0.6.0" },
   "maintainers": [
     { "name": "Joe Ferner", "email": "joe.ferner@nearinfinity.com" },
