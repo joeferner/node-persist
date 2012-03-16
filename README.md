@@ -51,6 +51,9 @@ You can install using Node Package Manager (npm):
 
  * [chain](#connectionChain)
  * [tx](#connectionTx)
+ * [runSql](#connectionRunSql)
+ * [runSqlAll](#connectionRunSqlAll)
+ * [runSqlEach](#connectionRunSqlEach)
 
 ## Model
 
@@ -254,6 +257,62 @@ __Example__
           // person1 saved and committed to database
         });
       });
+    });
+
+<a name="connectionRunSql"/>
+### connection.runSql(sql, values, callback)
+
+Runs a sql statement that does not return results (INSERT, UPDATE, etc).
+
+__Arguments__
+
+ * sql - The SQL statement to run.
+ * values - The values to substitute in the SQL statement. This is DB specific but typically you would use "?".
+ * callback(err, results) - Callback called when SQL statement completes. results will contain the number of affected
+   rows or last insert id.
+
+__Example__
+
+    connection.runSql("UPDATE people SET age = ?", [32], function(err, results) {
+      // people updated
+    });
+
+<a name="connectionRunSqlAll"/>
+### connection.runSqlAll(sql, values, callback)
+
+Runs a sql statement that returns results (ie SELECT).
+
+__Arguments__
+
+ * sql - The SQL statement to run.
+ * values - The values to substitute in the SQL statement. This is DB specific but typically you would use "?".
+ * callback(err, results) - Callback called when SQL statement completes. results will contain the row data.
+
+__Example__
+
+    connection.runSqlAll("SELECT * FROM people WHERE age = ?", [32], function(err, people) {
+      // people contains all the people with age 32
+    });
+
+<a name="connectionRunSqlEach"/>
+### connection.runSqlEach(sql, values, callback, doneCallback)
+
+Runs a sql statement that returns results (ie SELECT). This is different from runSqlAll in that it returns each row
+in a seperate callback.
+
+__Arguments__
+
+ * sql - The SQL statement to run.
+ * values - The values to substitute in the SQL statement. This is DB specific but typically you would use "?".
+ * callback(err, row) - Callback called for each row returned.
+ * doneCallback(err) - Callback called after all the rows have returned.
+
+__Example__
+
+    connection.runSqlEach("SELECT * FROM people WHERE age = ?", [32], function(err, person) {
+      // a single person
+    }, function(err) {
+      // all done
     });
 
 <a name="model" />
