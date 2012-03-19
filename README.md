@@ -79,6 +79,7 @@ You can install using Node Package Manager (npm):
  * [min](#queryMin)
  * [max](#queryMax)
  * [deleteAll](#queryDeleteAll)
+ * [updateAll](#queryUpdateAll)
  * [include](#queryInclude)
 
 ## Transaction
@@ -677,6 +678,23 @@ __Example__
 
     Person.where('name = ?', 'bob').deleteAll(connection, function(err) {
       // all people name 'bob' have been deleted.
+    });
+
+<a name="queryUpdateAll" />
+### query.updateAll([connection], data, callback)
+
+Updates all the items specified by the query.
+
+__Arguments__
+
+ * connection - (Optional) The connection to use. If this is not specified a [using](#modelUsing) statement must be specified earlier.
+ * data - A hash of properties to update. Key is the property name to update. Value is the value to update the property to.
+ * callback(err) - Callback called upon completion.
+
+__Example__
+
+    Person.where('name = ?', 'bob').updateAll(connection, { age: 25 }, function(err) {
+      // all people name 'bob' have their age set to 25.
     });
 
 <a name="queryInclude" />

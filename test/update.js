@@ -14,7 +14,9 @@ exports['Update'] = nodeunit.testCase({
     });
 
     this.Person = persist.define("Person", {
-      "name": type.STRING
+      "name": type.STRING,
+      "age": type.INTEGER,
+      "lastUpdated": type.DATETIME
     }).hasMany(this.Phone);
 
     testUtils.connect(persist, function(err, connection) {
@@ -151,6 +153,78 @@ exports['Update'] = nodeunit.testCase({
             test.equal(row.phones.length, 1);
             test.done();
           });
+        });
+      });
+    });
+  },
+
+  "update all with query": function(test) {
+    var self = this;
+    var origDate = new Date(2011, 1, 1);
+    var person1 = new this.Person({ name: "Bob Smith", age: 20, lastUpdated: origDate });
+    var person2 = new this.Person({ name: "Joe Blow", age: 35, lastUpdated: origDate });
+    var person3 = new this.Person({ name: "Joe Smith", age: 36, lastUpdated: origDate });
+    self.connection.save([person1, person2, person3], function(err) {
+      if(err) { console.log(err); return; }
+
+      var lastUpdated = new Date(2012, 1, 2);
+      self.Person.where("name LIKE ?", "Joe%").updateAll(self.connection, { age: 19, lastUpdated: lastUpdated }, function(err) {
+        if(err) { console.log(err); return; }
+
+        self.Person.orderBy("name").all(self.connection, function(err, results) {
+          if(err) { console.log(err); return; }
+
+          test.equals(3, results.length);
+
+          test.equals("Bob Smith", results[0].name);
+          test.equals(20, results[0].age);
+          test.equals(origDate.getTime(), results[0].lastUpdated);
+
+          test.equals("Joe Blow", results[1].name);
+          test.equals(19, results[1].age);
+          test.equals(lastUpdated.getTime(), results[1].lastUpdated);
+
+          test.equals("Joe Smith", results[2].name);
+          test.equals(19, results[2].age);
+          test.equals(lastUpdated.getTime(), results[2].lastUpdated);
+
+          test.done();
+        });
+      });
+    });
+  },
+
+  "update all": function(test) {
+    var self = this;
+    var origDate = new Date(2011, 1, 1);
+    var person1 = new this.Person({ name: "Bob Smith", age: 20, lastUpdated: origDate });
+    var person2 = new this.Person({ name: "Joe Blow", age: 35, lastUpdated: origDate });
+    var person3 = new this.Person({ name: "Joe Smith", age: 36, lastUpdated: origDate });
+    self.connection.save([person1, person2, person3], function(err) {
+      if(err) { console.log(err); return; }
+
+      var lastUpdated = new Date(2012, 1, 2);
+      self.Person.updateAll(self.connection, { age: 19, lastUpdated: lastUpdated }, function(err) {
+        if(err) { console.log(err); return; }
+
+        self.Person.orderBy("name").all(self.connection, function(err, results) {
+          if(err) { console.log(err); return; }
+
+          test.equals(3, results.length);
+
+          test.equals("Bob Smith", results[0].name);
+          test.equals(19, results[0].age);
+          test.equals(lastUpdated.getTime(), results[0].lastUpdated);
+
+          test.equals("Joe Blow", results[1].name);
+          test.equals(19, results[1].age);
+          test.equals(lastUpdated.getTime(), results[1].lastUpdated);
+
+          test.equals("Joe Smith", results[2].name);
+          test.equals(19, results[2].age);
+          test.equals(lastUpdated.getTime(), results[2].lastUpdated);
+
+          test.done();
         });
       });
     });
