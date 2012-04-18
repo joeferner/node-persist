@@ -47,6 +47,10 @@ exports.companyCreateStmt = companyCreateStmt = "CREATE TABLE "+ifNotExistsSql+"
   + ", name "+textDateType+") "
   + (driver=='mysql'?'engine=innodb':'');
 exports.companyPersonCreateStmt = companyPersonCreateStmt = "CREATE TABLE "+ifNotExistsSql+" CompanyPerson ( company_id INTEGER, person_id INTEGER, PRIMARY KEY(company_id, person_id)) " + (driver=='mysql'?'engine=innodb':'');
+exports.primaryKeyTestCreateStmt = primaryKeyTestCreateStmt = "CREATE TABLE "+ifNotExistsSql+" PrimaryKeyTests (my_pk_id INTEGER PRIMARY KEY "
+  + (driver=='mysql'?'auto_increment':'')
+  + ", name "+textDateType+") "
+  + (driver=='mysql'?'engine=innodb':'');
 
 if(driver == "oracle") {
   exports.doNothingSql = "SELECT * FROM People";
@@ -61,7 +65,8 @@ exports.connect = function(persist, callback) {
       personCreateStmt,
       phoneCreateStmt,
       companyPersonCreateStmt,
-      companyCreateStmt
+      companyCreateStmt,
+      primaryKeyTestCreateStmt
     ];
     if(driver == 'oracle') {
       stmts = [];
@@ -70,7 +75,8 @@ exports.connect = function(persist, callback) {
       "DELETE FROM Phones",
       "DELETE FROM People",
       "DELETE FROM CompanyPerson",
-      "DELETE FROM Companies"
+      "DELETE FROM Companies",
+      "DELETE FROM PrimaryKeyTests"
     ]);
     connection.runSql(stmts, function(err, results) {
       if(err) { callback(err); return; }

@@ -1,4 +1,3 @@
-
 var persist = require("../lib/persist");
 var type = persist.type;
 var nodeunit = require("nodeunit");
@@ -6,7 +5,7 @@ var util = require("util");
 var testUtils = require("../test_helpers/test_utils");
 
 exports['Select'] = nodeunit.testCase({
-  setUp: function(callback) {
+  setUp: function (callback) {
     var self = this;
 
     this.Phone = persist.define("Phone", {
@@ -22,8 +21,11 @@ exports['Select'] = nodeunit.testCase({
       "name": type.STRING
     }).hasMany(this.Person, { through: "CompanyPerson" });
 
-    testUtils.connect(persist, function(err, connection) {
-      if(err) { console.log(err); return; }
+    testUtils.connect(persist, function (err, connection) {
+      if (err) {
+        console.log(err);
+        return;
+      }
 
       self.connection = connection;
       self.person1 = new self.Person({ name: "Bob O'Neill", age: 21 });
@@ -32,43 +34,52 @@ exports['Select'] = nodeunit.testCase({
       self.phone2 = new self.Phone({ person: self.person1, number: '222-3333' });
       self.phone3 = new self.Phone({ person: self.person2, number: '333-4444' });
       self.company1 = new self.Company({ people: [self.person1, self.person2], name: "Near Infinity" });
-      self.connection.save([self.person1, self.person2, self.phone1, self.phone2, self.phone3, self.company1], function(err) {
-        if(err) { console.log(err); return; }
+      self.connection.save([self.person1, self.person2, self.phone1, self.phone2, self.phone3, self.company1], function (err) {
+        if (err) {
+          console.log(err);
+          return;
+        }
         callback();
       });
     });
   },
 
-  tearDown: function(callback) {
-    if(this.connection) {
+  tearDown: function (callback) {
+    if (this.connection) {
       this.connection.close();
     }
     callback();
   },
 
-  "all": function(test) {
-    this.Person.using(this.connection).all(function(err, people) {
-      if(err) { console.error(err); return; }
+  "all": function (test) {
+    this.Person.using(this.connection).all(function (err, people) {
+      if (err) {
+        console.error(err);
+        return;
+      }
       test.equals(people.length, 2);
       test.equals(people[0].name, "Bob O'Neill");
-      test.equals(JSON.stringify(people[0]), '{"phones":{},"companies":{},"name":"Bob O\'Neill","age":21,"id":'+people[0].id+'}');
+      test.equals(JSON.stringify(people[0]), '{"phones":{},"companies":{},"name":"Bob O\'Neill","age":21,"id":' + people[0].id + '}');
       test.equals(people[1].name, 'john');
 
       test.done();
     });
   },
 
-  "all with include": function(test) {
+  "all with include": function (test) {
     this.Person
       .include(["phones", "companies"])
-      .all(this.connection, function(err, people) {
-        if(err) { console.error(err); return; }
+      .all(this.connection, function (err, people) {
+        if (err) {
+          console.error(err);
+          return;
+        }
 
-        people.sort(function(a,b) { return a.name > b.name; });
+        people.sort(function (a, b) { return a.name > b.name; });
         test.equals(people.length, 2);
         test.equals(people[0].name, "Bob O'Neill");
         test.equals(people[0].phones.length, 2);
-        var phones = people[0].phones.sort(function(a, b) { return a.number > b.number; });
+        var phones = people[0].phones.sort(function (a, b) { return a.number > b.number; });
         test.equals(phones[0].number, "111-2222");
         test.equals(phones[1].number, "222-3333");
         test.equals(people[0].companies.length, 1);
@@ -82,15 +93,18 @@ exports['Select'] = nodeunit.testCase({
         test.equals(people[1].companies[0].name, "Near Infinity");
 
         test.done();
-    });
+      });
   },
 
-  "include one from the many": function(test) {
+  "include one from the many": function (test) {
     this.Phone
       .include("person")
       .where("numbr = ?", "111-2222")
-      .first(this.connection, function(err, phone) {
-        if(err) { console.error(err); return; }
+      .first(this.connection, function (err, phone) {
+        if (err) {
+          console.error(err);
+          return;
+        }
 
         test.equals(phone.number, "111-2222");
         test.ok(phone.person);
@@ -100,12 +114,15 @@ exports['Select'] = nodeunit.testCase({
       });
   },
 
-  "where query for associated data": function(test) {
+  "where query for associated data": function (test) {
     this.Person
       .include("phones")
       .where("phones.number = ?", "111-2222")
-      .first(this.connection, function(err, person) {
-        if(err) { console.error(err); return; }
+      .first(this.connection, function (err, person) {
+        if (err) {
+          console.error(err);
+          return;
+        }
 
         test.equals(person.name, "Bob O'Neill");
 
@@ -113,12 +130,15 @@ exports['Select'] = nodeunit.testCase({
       });
   },
 
-  "where query for associated data (count)": function(test) {
+  "where query for associated data (count)": function (test) {
     this.Person
       .include("phones")
       .where("phones.number = ?", "111-2222")
-      .count(this.connection, function(err, count) {
-        if(err) { console.error(err); return; }
+      .count(this.connection, function (err, count) {
+        if (err) {
+          console.error(err);
+          return;
+        }
 
         test.equals(count, 1);
 
@@ -126,16 +146,22 @@ exports['Select'] = nodeunit.testCase({
       });
   },
 
-  "include with conflicting column names": function(test) {
+  "include with conflicting column names": function (test) {
     var self = this;
-    this.Person.using(this.connection).where("name = ?", "Bob O'Neill").first(function(err, p1) {
-      if(err) { console.error(err); return; }
+    this.Person.using(this.connection).where("name = ?", "Bob O'Neill").first(function (err, p1) {
+      if (err) {
+        console.error(err);
+        return;
+      }
 
       self.Person
         .include("phones")
         .where("id = ?", p1.id)
-        .first(self.connection, function(err, p2) {
-          if(err) { console.error(err); return; }
+        .first(self.connection, function (err, p2) {
+          if (err) {
+            console.error(err);
+            return;
+          }
 
           test.ok(p2);
           test.ok(p2.phones);
@@ -145,16 +171,22 @@ exports['Select'] = nodeunit.testCase({
     });
   },
 
-  "include with no children": function(test) {
+  "include with no children": function (test) {
     var self = this;
-    this.Phone.deleteAll(this.connection, function(err) {
-      if(err) { console.error(err); return; }
+    this.Phone.deleteAll(this.connection, function (err) {
+      if (err) {
+        console.error(err);
+        return;
+      }
 
       self.Person
         .include("phones")
         .where("name = ?", "Bob O'Neill")
-        .first(self.connection, function(err, p2) {
-          if(err) { console.error(err); return; }
+        .first(self.connection, function (err, p2) {
+          if (err) {
+            console.error(err);
+            return;
+          }
 
           test.ok(p2);
           test.ok(p2.phones);
@@ -165,28 +197,34 @@ exports['Select'] = nodeunit.testCase({
     });
   },
 
-  "get by id": function(test) {
+  "get by id": function (test) {
     var self = this;
     var person1Id = self.person1.id;
 
     this.Person
-      .getById(this.connection, person1Id, function(err, person) {
-        if(err) { console.error(err); return; }
+      .getById(this.connection, person1Id, function (err, person) {
+      if (err) {
+        console.error(err);
+        return;
+      }
 
-        test.equals(person.name, "Bob O'Neill");
+      test.equals(person.name, "Bob O'Neill");
 
-        test.done();
-      });
+      test.done();
+    });
   },
 
-  "get by id with include": function(test) {
+  "get by id with include": function (test) {
     var self = this;
     var person1Id = self.person1.id;
 
     this.Person
       .include("phones")
-      .getById(this.connection, person1Id, function(err, person) {
-        if(err) { console.error(err); return; }
+      .getById(this.connection, person1Id, function (err, person) {
+        if (err) {
+          console.error(err);
+          return;
+        }
 
         test.equals(person.name, "Bob O'Neill");
         test.equals(person.phones.length, 2);
@@ -195,16 +233,19 @@ exports['Select'] = nodeunit.testCase({
       });
   },
 
-  "count": function(test) {
-    this.Person.using(this.connection).count(function(err, count) {
-      if(err) { console.error(err); return; }
+  "count": function (test) {
+    this.Person.using(this.connection).count(function (err, count) {
+      if (err) {
+        console.error(err);
+        return;
+      }
       test.equals(count, 2);
       test.done();
     });
   },
 
-  "order by desc": function(test) {
-    this.Person.using(this.connection).orderBy("name", persist.Descending).all(function(err, people) {
+  "order by desc": function (test) {
+    this.Person.using(this.connection).orderBy("name", persist.Descending).all(function (err, people) {
       test.ifError(err);
       test.equals(people.length, 2);
       test.equals(people[0].name, 'john');
@@ -214,24 +255,24 @@ exports['Select'] = nodeunit.testCase({
     });
   },
 
-  "each": function(test) {
+  "each": function (test) {
     var count = 0;
-    this.Person.using(this.connection).orderBy("name").each(function(err, person) {
+    this.Person.using(this.connection).orderBy("name").each(function (err, person) {
       test.ifError(err);
-      if(count == 0) {
+      if (count == 0) {
         test.equals(person.name, "Bob O'Neill");
         count++;
-      } else if(count == 1) {
+      } else if (count == 1) {
         test.equals(person.name, 'john');
         count++;
       } else {
         throw new Error("Invalid count");
       }
-    }, function() { test.done(); });
+    }, function () { test.done(); });
   },
 
-  "where": function(test) {
-    this.Person.using(this.connection).where("name = ?", "Bob O'Neill").all(function(err, people) {
+  "where": function (test) {
+    this.Person.using(this.connection).where("name = ?", "Bob O'Neill").all(function (err, people) {
       test.ifError(err);
       test.equals(people.length, 1);
       test.equals(people[0].name, "Bob O'Neill");
@@ -240,8 +281,8 @@ exports['Select'] = nodeunit.testCase({
     });
   },
 
-  "hash based where": function(test) {
-    this.Person.using(this.connection).where({'name': "Bob O'Neill", 'age': '21'}).all(function(err, people) {
+  "hash based where": function (test) {
+    this.Person.using(this.connection).where({'name': "Bob O'Neill", 'age': '21'}).all(function (err, people) {
       test.ifError(err);
       test.equals(people.length, 1);
       test.equals(people[0].name, "Bob O'Neill");
@@ -250,8 +291,8 @@ exports['Select'] = nodeunit.testCase({
     });
   },
 
-  "first": function(test) {
-    this.Person.using(this.connection).where("name = ?", "Bob O'Neill").first(function(err, person) {
+  "first": function (test) {
+    this.Person.using(this.connection).where("name = ?", "Bob O'Neill").first(function (err, person) {
       test.ifError(err);
       test.ok(person);
       test.equals(person.name, "Bob O'Neill");
@@ -259,66 +300,84 @@ exports['Select'] = nodeunit.testCase({
     });
   },
 
-  "first with include": function(test) {
+  "first with include": function (test) {
     var self = this;
     this.Person
       .include("phones")
-      .where("name = ?", "Bob O'Neill").first(self.connection, function(err, person) {
-      test.ifError(err);
-      test.ok(person);
-      test.equals(person.name, "Bob O'Neill");
-      test.equals(person.phones.length, 2);
-      test.done();
-    });
+      .where("name = ?", "Bob O'Neill").first(self.connection, function (err, person) {
+        test.ifError(err);
+        test.ok(person);
+        test.equals(person.name, "Bob O'Neill");
+        test.equals(person.phones.length, 2);
+        test.done();
+      });
   },
 
-  "first that doesn't match anything": function(test) {
-    this.Person.using(this.connection).where("name = ?", "Bad Name").first(function(err, person) {
+  "first that doesn't match anything": function (test) {
+    this.Person.using(this.connection).where("name = ?", "Bad Name").first(function (err, person) {
       test.ifError(err);
       test.equals(person, null);
       test.done();
     });
   },
 
-  "min": function(test) {
-    this.Person.using(this.connection).min("age", function(err, age) {
-      if(err) { console.log(err); return; }
+  "min": function (test) {
+    this.Person.using(this.connection).min("age", function (err, age) {
+      if (err) {
+        console.log(err);
+        return;
+      }
       test.equals(age, 21);
       test.done();
     });
   },
 
-  "max": function(test) {
-    this.Person.using(this.connection).max("age", function(err, age) {
-      if(err) { console.log(err); return; }
+  "max": function (test) {
+    this.Person.using(this.connection).max("age", function (err, age) {
+      if (err) {
+        console.log(err);
+        return;
+      }
       test.equals(age, 23);
       test.done();
     });
   },
 
-  "limit": function(test) {
-    this.Phone.using(this.connection).orderBy("number").limit(1, 1).all(function(err, phones) {
-      if(err) { console.log(err); return; }
+  "limit": function (test) {
+    this.Phone.using(this.connection).orderBy("number").limit(1, 1).all(function (err, phones) {
+      if (err) {
+        console.log(err);
+        return;
+      }
       test.equals(phones.length, 1);
       test.equals(phones[0].number, "222-3333");
       test.done();
     });
   },
 
-  "associated data": function(test) {
+  "associated data": function (test) {
     var self = this;
-    this.Person.using(this.connection).where("name = ?", "Bob O'Neill").first(function(err, person) {
-      if(err) { console.log(err); return; }
-      person.phones.all(function(err, phones) {
-        if(err) { console.log(err); return; }
+    this.Person.using(this.connection).where("name = ?", "Bob O'Neill").first(function (err, person) {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      person.phones.all(function (err, phones) {
+        if (err) {
+          console.log(err);
+          return;
+        }
         test.equals(phones.length, 2);
         test.equals(phones[0].number, '111-2222');
         test.equals(phones[0].personId, person.id);
         test.equals(phones[1].number, '222-3333');
         test.equals(phones[1].personId, person.id);
 
-        phones[0].person.first(function(err, p) {
-          if(err) { console.log(err); return; }
+        phones[0].person.first(function (err, p) {
+          if (err) {
+            console.log(err);
+            return;
+          }
 
           test.equals(p.name, "Bob O'Neill");
 
@@ -328,7 +387,7 @@ exports['Select'] = nodeunit.testCase({
     });
   },
 
-  "JSON datatype": function(test) {
+  "JSON datatype": function (test) {
     var self = this;
     MyPerson = persist.define("Person", {
       "name": type.STRING,
@@ -338,11 +397,17 @@ exports['Select'] = nodeunit.testCase({
     var person1 = new MyPerson({"name": "joe1", "txt": '{"address": "123 Elm St", "emails": [ "a@b.com", "b@c.com" ]}'});
     var person2 = new MyPerson({"name": "joe2", "txt": 'invalid JSON'});
 
-    this.connection.save([person1, person2], function(err) {
-      if(err) { console.log(err); return; }
+    this.connection.save([person1, person2], function (err) {
+      if (err) {
+        console.log(err);
+        return;
+      }
 
-      MyPerson.where("name = ?", "joe1").first(self.connection, function(err, p) {
-        if(err) { console.log(err); return; }
+      MyPerson.where("name = ?", "joe1").first(self.connection, function (err, p) {
+        if (err) {
+          console.log(err);
+          return;
+        }
 
         test.ok(p.txt);
         test.equal(p.txt.address, '123 Elm St');
@@ -350,8 +415,11 @@ exports['Select'] = nodeunit.testCase({
         test.equal(p.txt.emails[0], 'a@b.com');
         test.equal(p.txt.emails[1], 'b@c.com');
 
-        MyPerson.where("name = ?", "joe2").first(self.connection, function(err, p) {
-          if(err) { console.log(err); return; }
+        MyPerson.where("name = ?", "joe2").first(self.connection, function (err, p) {
+          if (err) {
+            console.log(err);
+            return;
+          }
 
           test.ok(p.txt);
           test.equal(p.txt, 'invalid JSON');

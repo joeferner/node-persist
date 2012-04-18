@@ -151,6 +151,9 @@ __Example__
 
 Defines a model object for use in persist.
 
+The primary key column does not need to be specified and will default to the name 'id' with the attributes dbColumnName='id',
+type='integer'. You can override the database name using dbColumnName or setting the primaryKey attribute on any column.
+
 __Arguments__
 
  * modelName - The name of the model. This name will map to the database name.
@@ -159,6 +162,7 @@ __Arguments__
   * type - type of the property (ie type.STRING)
   * defaultValue - this can be a value or a function that will be called each time this model object is created
   * dbColumnName - the name of the database column. (default: name of the property, all lower case, seperated by '_')
+  * primaryKey - Marks this column as being the primary key column. You can have only one primary key column.
 
 __Returns__
 
