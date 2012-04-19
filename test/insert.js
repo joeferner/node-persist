@@ -66,8 +66,32 @@ exports['Insert'] = nodeunit.testCase({
         test.ok(items[0].id);
         test.equals(items[1].name, 'item2');
         test.ok(items[1].id);
+        var item2Id = items[1].id;
 
-        test.done();
+        items[0].delete(self.connection, function (err) {
+          if (err) {
+            return console.log(err);
+          }
+
+          items[1].name = 'only item';
+          items[1].save(self.connection, function (err) {
+            if (err) {
+              return console.log(err);
+            }
+
+            self.PrimaryKeyTest.all(self.connection, function (err, items) {
+              if (err) {
+                return console.log(err);
+              }
+
+              test.equals(items.length, 1);
+              test.equals(items[0].name, 'only item');
+              test.equals(items[0].id, item2Id);
+
+              test.done();
+            });
+          });
+        });
       });
     });
   },
