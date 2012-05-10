@@ -613,6 +613,10 @@ __Example__
       // All the people named 'bob'
     });
 
+    Person.where('name = ? or age = ?', ['bob', 23]).all(connection, function(err, people) {
+      // All the people named 'bob' or people with age 23
+    });
+
     Person.where({'name': 'bob', 'age': 23}).all(connection, function(err, people) {
       // All the people named 'bob' with the age of 23
     });
