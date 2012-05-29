@@ -7,7 +7,7 @@ var driver = "sqlite3";
   CREATE SEQUENCE phone_seq start with 1 increment by 1 nomaxvalue;
   CREATE SEQUENCE person_seq start with 1 increment by 1 nomaxvalue;
   CREATE SEQUENCE company_seq start with 1 increment by 1 nomaxvalue;
-  CREATE TABLE  Phones (id INTEGER PRIMARY KEY, numbr VARCHAR2(255), person_id INTEGER);
+  CREATE TABLE  Phones (id INTEGER PRIMARY KEY, numbr VARCHAR2(255), person_id INTEGER, modified_by_person_id INTEGER);
   CREATE TRIGGER phone_pk_trigger BEFORE INSERT ON Phones FOR EACH row
     BEGIN
       select phone_seq.nextval into :new.id from dual;
@@ -40,7 +40,7 @@ exports.personCreateStmt = personCreateStmt = "CREATE TABLE "+ifNotExistsSql+" P
   + (driver=='mysql'?'engine=innodb':'');
 exports.phoneCreateStmt = phoneCreateStmt = "CREATE TABLE "+ifNotExistsSql+" Phones (id INTEGER PRIMARY KEY "
   + (driver=='mysql'?'auto_increment':'')
-  + ", numbr "+textDateType+", person_id INTEGER) "
+  + ", numbr "+textDateType+", person_id INTEGER, modified_by_person_id INTEGER) "
   + (driver=='mysql'?'engine=innodb':'');
 exports.companyCreateStmt = companyCreateStmt = "CREATE TABLE "+ifNotExistsSql+" Companies (id INTEGER PRIMARY KEY "
   + (driver=='mysql'?'auto_increment':'')
@@ -128,4 +128,4 @@ exports.connect = function(persist, callback) {
       database: 'test'
     }, mycallback);
   }
-}
+};

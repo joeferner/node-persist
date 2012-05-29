@@ -335,6 +335,7 @@ __Arguments__
  * AssociatedModel - The name of the model to associate to.
  * options - (optional) An hash of options.
   * through - creates a many to many relationship using the value of through as the join table.
+  * name - the name of the property to expose.
 
 __Returns__
 
@@ -361,6 +362,7 @@ __Arguments__
  * AssociatedModel - The name of the model to associate to.
  * options - (optional) An hash of options.
   * foreignKey - The foreign key to use for the relationship
+  * name - the name of the property to expose.
 
 __Returns__
 

@@ -16,7 +16,8 @@
     "async": "0.1.15"
   },
   "devDependencies": {
-    "nodeunit": "~>0.6.4"
+    "nodeunit": "~>0.6.4",
+    "sqlite3": "git://github.com/joeferner/node-sqlite3.git"
   },
   "scripts": {
     "test": "nodeunit test"

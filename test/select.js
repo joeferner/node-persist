@@ -21,6 +21,8 @@ exports['Select'] = nodeunit.testCase({
       "name": type.STRING
     }).hasMany(this.Person, { through: "CompanyPerson" });
 
+    this.Phone.hasOne(this.Person, { name: "modifiedBy", foreignKey: "modified_by_person_id" });
+
     testUtils.connect(persist, function (err, connection) {
       if (err) {
         console.log(err);
@@ -30,9 +32,9 @@ exports['Select'] = nodeunit.testCase({
       self.connection = connection;
       self.person1 = new self.Person({ name: "Bob O'Neill", age: 21 });
       self.person2 = new self.Person({ name: "john", age: 23 });
-      self.phone1 = new self.Phone({ person: self.person1, number: '111-2222' });
-      self.phone2 = new self.Phone({ person: self.person1, number: '222-3333' });
-      self.phone3 = new self.Phone({ person: self.person2, number: '333-4444' });
+      self.phone1 = new self.Phone({ person: self.person1, number: '111-2222', modifiedBy: self.person1 });
+      self.phone2 = new self.Phone({ person: self.person1, number: '222-3333', modifiedBy: self.person1 });
+      self.phone3 = new self.Phone({ person: self.person2, number: '333-4444', modifiedBy: self.person1 });
       self.company1 = new self.Company({ people: [self.person1, self.person2], name: "Near Infinity" });
       self.connection.save([self.person1, self.person2, self.phone1, self.phone2, self.phone3, self.company1], function (err) {
         if (err) {
@@ -59,7 +61,7 @@ exports['Select'] = nodeunit.testCase({
       }
       test.equals(people.length, 2);
       test.equals(people[0].name, "Bob O'Neill");
-      test.equals(JSON.stringify(people[0]), '{"phones":{},"companies":{},"name":"Bob O\'Neill","age":21,"id":' + people[0].id + '}');
+      test.equals(JSON.stringify(people[0]), '{"phones":{},"companies":{},"modifiedBy":{},"name":"Bob O\'Neill","age":21,"id":' + people[0].id + '}');
       test.equals(people[1].name, 'john');
 
       test.done();
@@ -99,6 +101,7 @@ exports['Select'] = nodeunit.testCase({
   "include one from the many": function (test) {
     this.Phone
       .include("person")
+      .include("modifiedBy")
       .where("numbr = ?", "111-2222")
       .first(this.connection, function (err, phone) {
         if (err) {
@@ -109,6 +112,8 @@ exports['Select'] = nodeunit.testCase({
         test.equals(phone.number, "111-2222");
         test.ok(phone.person);
         test.equals(phone.person.name, "Bob O'Neill");
+        test.ok(phone.modifiedBy);
+        test.equals(phone.modifiedBy.name, "Bob O'Neill");
 
         test.done();
       });
