@@ -363,6 +363,7 @@ __Arguments__
  * options - (optional) An hash of options.
   * foreignKey - The foreign key to use for the relationship
   * name - the name of the property to expose.
+  * createHasMany - true/false to create the other side of the relationship.
 
 __Returns__
 
