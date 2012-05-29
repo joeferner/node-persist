@@ -58,6 +58,7 @@ You can install using Node Package Manager (npm):
 ## Model
 
  * [hasMany](#modelHasMany)
+ * [hasOne](#modelHasOne)
  * [using](#modelUsing)
  * [save](#modelSave)
  * [update (instance)](#modelInstanceUpdate)
@@ -348,6 +349,32 @@ __Example__
     Person = persist.define("Person", {
       "name": persist.String
     }).hasMany(Phone);
+
+<a name="modelHasOne" />
+### Model.hasOne(AssociatedModel, [options]): Model
+
+Adds a has one relationship to a model. This will automatically add a property to the associated model which links to this
+model. It will also define a property on instances of this model to get the releated objects - see [Associated Object Properties](#associatedObjectProperties)
+
+__Arguments__
+
+ * AssociatedModel - The name of the model to associate to.
+ * options - (optional) An hash of options.
+  * foreignKey - The foreign key to use for the relationship
+
+__Returns__
+
+ The model class object suitable for chaining.
+
+__Example__
+
+    Phone = persist.define("Phone", {
+      "number": persist.String
+    }).hasMany(Person);
+
+    Person = persist.define("Person", {
+      "name": persist.String
+    });
 
 <a name="modelUsing" />
 ### Model.using(connection): query
