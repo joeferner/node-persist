@@ -17,6 +17,10 @@ exports['Select'] = nodeunit.testCase({
       "age": type.INTEGER
     }).hasMany(this.Phone);
 
+    this.Person.onLoad = function (person) {
+      person.nameAndAge = person.name + ": " + person.age;
+    };
+
     this.Company = persist.define("Company", {
       "name": type.STRING
     }).hasMany(this.Person, { through: "CompanyPerson" });
@@ -61,7 +65,8 @@ exports['Select'] = nodeunit.testCase({
       }
       test.equals(people.length, 2);
       test.equals(people[0].name, "Bob O'Neill");
-      test.equals(JSON.stringify(people[0]), '{"phones":{},"companies":{},"modifiedBy":{},"name":"Bob O\'Neill","age":21,"id":' + people[0].id + '}');
+      console.log(people[0].nameAndAge, "Bob O\'Neill: 21");
+      test.equals(JSON.stringify(people[0]), '{"phones":{},"companies":{},"modifiedBy":{},"name":"Bob O\'Neill","age":21,"id":' + people[0].id + ',"nameAndAge":"Bob O\'Neill: 21"}');
       test.equals(people[1].name, 'john');
 
       test.done();
@@ -208,15 +213,15 @@ exports['Select'] = nodeunit.testCase({
 
     this.Person
       .getById(this.connection, person1Id, function (err, person) {
-      if (err) {
-        console.error(err);
-        return;
-      }
+        if (err) {
+          console.error(err);
+          return;
+        }
 
-      test.equals(person.name, "Bob O'Neill");
+        test.equals(person.name, "Bob O'Neill");
 
-      test.done();
-    });
+        test.done();
+      });
   },
 
   "get by id with include": function (test) {

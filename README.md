@@ -66,6 +66,7 @@ You can install using Node Package Manager (npm):
  * [delete](#modelDelete)
  * [getById](#modelGetById)
  * [onSave](#modelOnSave)
+ * [onLoad](#modelOnLoad)
  * [Associated Object Properties](#associatedObjectProperties)
 
 ## Query
@@ -502,6 +503,22 @@ __Example__
 
     Person.onSave = function(obj) {
       obj.lastUpdated = new Date();
+    };
+
+<a name="modelOnLoad" />
+### Model.onLoad(obj)
+
+If preset this function will be called after an object is loaded from the database. You would typically
+create this method in your model file.
+
+__Arguments__
+
+ * obj - The object that was just loaded from the database.
+
+__Example__
+
+    Person.onLoad = function(obj) {
+      obj.fullName = obj.firstName + ' ' + obj.lastName;
     };
 
 <a name="associatedObjectProperties" />
