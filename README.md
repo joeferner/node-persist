@@ -333,7 +333,7 @@ __Example__
 ### connection.runSqlAllFromFile(filename, values, callback)
 ### connection.runSqlEachFromFile(filename, values, callback, doneCallback)
 
-Same as [runSql](#connectionRunSql) except the first parameter is a filename of where to load the SQL from.
+Same as [runSql](#connectionRunSql), [runSql](#connectionRunSqlAll), [runSql](#connectionRunSqlEach) except the first parameter is a filename of where to load the SQL from.
 
 __Example__
 
