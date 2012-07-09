@@ -54,6 +54,9 @@ You can install using Node Package Manager (npm):
  * [runSql](#connectionRunSql)
  * [runSqlAll](#connectionRunSqlAll)
  * [runSqlEach](#connectionRunSqlEach)
+ * [runSqlFromFile](#connectionRunSqlFromFile)
+ * [runSqlAllFromFile](#connectionRunSqlAllFromFile)
+ * [runSqlEachFromFile](#connectionRunSqlEachFromFile)
 
 ## Model
 
@@ -114,6 +117,7 @@ The file should follow a format like this:
       "prod": {
         "driver": "sqlite3",
         "filename": "prod.db"
+        "sqlDir": "./prodSql"
       }
     }
 
@@ -317,6 +321,23 @@ __Arguments__
 __Example__
 
     connection.runSqlEach("SELECT * FROM people WHERE age = ?", [32], function(err, person) {
+      // a single person
+    }, function(err) {
+      // all done
+    });
+
+<a name="connectionRunSqlFromFile"/>
+<a name="connectionRunSqlAllFromFile"/>
+<a name="connectionRunSqlEachFromFile"/>
+### connection.runSqlFromFile(filename, values, callback)
+### connection.runSqlAllFromFile(filename, values, callback)
+### connection.runSqlEachFromFile(filename, values, callback, doneCallback)
+
+Same as [runSql](#connectionRunSql) except the first parameter is a filename of where to load the SQL from.
+
+__Example__
+
+    connection.runSqlFromFile('report.sql', [32], function(err, person) {
       // a single person
     }, function(err) {
       // all done
