@@ -22,6 +22,7 @@ exports['Insert'] = nodeunit.testCase({
 
     this.Person = persist.define("Person", {
       "name": type.STRING,
+      "age": type.INTEGER,
       "createdDate": { type: persist.DateTime, defaultValue: function () { return self.testDate1 } },
       "lastUpdated": { type: persist.DateTime }
     })
@@ -112,6 +113,19 @@ exports['Insert'] = nodeunit.testCase({
         test.equals(p.updateCount, 2);
         test.done();
       });
+    });
+  },
+
+  "new person age set to 0": function (test) {
+    var self = this;
+    var person1 = new this.Person({ name: "Bob O'Neill", age: 0 });
+
+    person1.save(self.connection, function (err, p) {
+      test.ifError(err);
+      assert.isNotNullOrUndefined(p.id, "p.id is null or undefined");
+      test.equals(p.name, "Bob O'Neill");
+      test.equals(p.age, 0);
+      test.done();
     });
   }
 
