@@ -37,7 +37,7 @@ exports['Run SQL'] = nodeunit.testCase({
   "runSql": function(test) {
     var self = this;
 
-    this.connection.runSql("UPDATE people SET age = ?", [ 32 ], function(err, results) {
+    persist.runSql(this.connection, "UPDATE people SET age = ?", [ 32 ], function(err, results) {
       if(err) { console.error(err); return; }
       test.ok(results);
 
@@ -55,7 +55,7 @@ exports['Run SQL'] = nodeunit.testCase({
   "runSqlAll": function(test) {
     var self = this;
 
-    this.connection.runSqlAll("SELECT * FROM people WHERE age = ?", [ 21 ], function(err, results) {
+    persist.runSqlAll(this.connection, "SELECT * FROM people WHERE age = ?", [ 21 ], function(err, results) {
       if(err) { console.error(err); return; }
       test.equals(results.length, 1);
       test.equals(results[0].name, "Bob O'Neill");
@@ -66,7 +66,7 @@ exports['Run SQL'] = nodeunit.testCase({
   "runSqlEach": function(test) {
     var self = this;
 
-    this.connection.runSqlEach("SELECT * FROM people WHERE age = ?", [ 21 ], function(err, result) {
+    persist.runSqlEach(this.connection, "SELECT * FROM people WHERE age = ?", [ 21 ], function(err, result) {
       if(err) { console.error(err); return; }
       test.equals(result.name, "Bob O'Neill");
     }, function(err) {

@@ -61,6 +61,7 @@ exports['Chain'] = nodeunit.testCase({
       self.Phone.deleteAll,
       self.Phone.all,
       self.Person.first,
+      persist.runSqlAll('SELECT * FROM People')
     ], function(err, results) {
       if(err) { console.error(err); return; }
 
@@ -110,6 +111,9 @@ exports['Chain'] = nodeunit.testCase({
 
       // Person.first
       test.ok(results[13]);
+
+      // Person.first
+      test.ok(results[14].length, 5);
 
       test.done();
     });
