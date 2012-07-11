@@ -43,6 +43,7 @@ You can install using Node Package Manager (npm):
 ## [database.json](#databaseJson)
 
 ## persist
+ * [env](#persistEnv)
  * [connect](#persistConnect)
  * [define](#persistDefine)
  * [setDefaultConnectOptions](#persistSetDefaultConnectOptions)
@@ -127,6 +128,15 @@ The file should follow a format like this:
 
 <a name="persist"/>
 ## persist
+
+<a name="persistEnv" />
+### persist.env
+
+The environment to read from the database.json file. If not set will use the value of default from the database.json.
+
+__Example__
+
+    persist.env = 'prod';
 
 <a name="persistConnect" />
 ### persist.connect([options], callback)
@@ -226,7 +236,8 @@ __Example__
       Phone.count,
       Phone.deleteAll,
       Phone.all,
-      Person.getById(1)
+      Person.getById(1),
+      persist.runSql('SELECT * FROM Person')
     ], function(err, results) {
       // results[0] = person3
       // results[1] = 21
@@ -239,6 +250,7 @@ __Example__
       // results[8] = []
       // results[9] = [] -- nobody left
       // results[10] = -- the person with id 1
+      // results[11] = Results of select.
     });
 
     // mapped chaining
