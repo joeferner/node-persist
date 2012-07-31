@@ -81,6 +81,7 @@ You can install using Node Package Manager (npm):
  * [orderBy](#queryOrderBy)
  * [limit](#queryLimit)
  * [where](#queryWhere)
+ * [whereIn](#queryWhereIn)
  * [count](#queryCount)
  * [min](#queryMin)
  * [max](#queryMax)
@@ -699,6 +700,28 @@ __Example__
 
     Person.where({'name': 'bob', 'age': 23}).all(connection, function(err, people) {
       // All the people named 'bob' with the age of 23
+    });
+
+<a name="queryWhereIn" />
+### query.whereIn(property, [values...]): query
+Filters the results by a where clause using an IN clause.
+
+__Arguments__
+ * property - The property to invoke the IN clause on.
+ * values - An array of values to include in the IN clause.
+
+__Returns__
+
+ The query object suitable for chaining.
+
+__Example__
+
+    Person.whereIn('name', ['bob', 'alice', 'cindy']).all(connection, function(err,people) {
+      // All the people named 'bob', 'alice', or 'cindy'
+    });
+
+    Person.include("phones").whereIn('phones.number', ['111-2222','333-4444']).all(connection, function(err,people){
+      // All the people whose phone numbers are '111-2222' or '333-4444'
     });
 
 <a name="queryCount" />
