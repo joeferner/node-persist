@@ -291,6 +291,26 @@ exports['Select'] = nodeunit.testCase({
     });
   },
 
+  "whereIn count": function(test) {
+    this.Person.using(this.connection).include("phones").whereIn("phones.number", ["111-2222", "222-3333"]).count(function(err, count){
+      test.ifError(err);
+      test.equals(count, 2);
+
+      test.done();
+    });
+  },
+
+  "whereIn names": function(test) {
+    this.Person.using(this.connection).include("phones").whereIn("phones.number", ["111-2222", "222-3333"]).all(function(err, people){
+      test.ifError(err);
+      test.equals(people.length, 1);
+      test.equals(people[0].name, "Bob O'Neill" );
+
+      test.done();
+    });
+  },
+
+
   "hash based where": function (test) {
     this.Person.using(this.connection).where({'name': "Bob O'Neill", 'age': '21'}).all(function (err, people) {
       test.ifError(err);
