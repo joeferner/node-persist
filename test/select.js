@@ -291,8 +291,8 @@ exports['Select'] = nodeunit.testCase({
     });
   },
 
-  "whereIn count": function(test) {
-    this.Person.using(this.connection).include("phones").whereIn("phones.number", ["111-2222", "222-3333"]).count(function(err, count){
+  "whereIn count": function (test) {
+    this.Person.using(this.connection).include("phones").whereIn("phones.number", ["111-2222", "222-3333"]).count(function (err, count) {
       test.ifError(err);
       test.equals(count, 2);
 
@@ -300,11 +300,11 @@ exports['Select'] = nodeunit.testCase({
     });
   },
 
-  "whereIn names": function(test) {
-    this.Person.using(this.connection).include("phones").whereIn("phones.number", ["111-2222", "222-3333"]).all(function(err, people){
+  "whereIn names": function (test) {
+    this.Person.using(this.connection).include("phones").whereIn("phones.number", ["111-2222", "222-3333"]).all(function (err, people) {
       test.ifError(err);
       test.equals(people.length, 1);
-      test.equals(people[0].name, "Bob O'Neill" );
+      test.equals(people[0].name, "Bob O'Neill");
 
       test.done();
     });
@@ -374,7 +374,7 @@ exports['Select'] = nodeunit.testCase({
   },
 
   "limit": function (test) {
-    this.Phone.using(this.connection).orderBy("number").limit(1, 1).all(function (err, phones) {
+    this.Phone.limit(1, 1).orderBy("number").all(this.connection, function (err, phones) {
       if (err) {
         console.log(err);
         return;
