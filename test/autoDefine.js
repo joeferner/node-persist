@@ -32,7 +32,7 @@ exports['Insert'] = nodeunit.testCase({
             obj.updateCount++;
           });
       });
-      persist.asyncQueue().drain = onComplete;   
+      persist.waitForDefinitionsToFinish(onComplete);
     });
     var onComplete = function(){
       callback();
