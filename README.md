@@ -205,6 +205,7 @@ __Arguments__
  * dbConfig - Hash of dbConfig. Should contain the driver, as well as the database name.
  * database - The database connection to use.
  * driver - The name of the database driver to use.
+
 __Returns__
 
  A model class.
