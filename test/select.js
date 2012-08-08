@@ -351,6 +351,36 @@ exports['Select'] = nodeunit.testCase({
     });
   },
 
+  "last": function(test) {
+    this.Person.using(this.connection).last(function (err, person) {
+      test.ifError(err);
+      test.ok(person);
+      test.equals(person.name, "john");
+      test.done();
+    });
+  },
+
+  "last with include": function (test) {
+    var self = this;
+    this.Person
+      .include("phones")
+      .last(self.connection, function (err, person) {
+        test.ifError(err);
+        test.ok(person);
+        test.equals(person.name, "john");
+        test.equals(person.phones.length, 1);
+        test.done();
+      });
+  },
+
+  "last that doesn't match anything": function (test) {
+    this.Person.using(this.connection).where("name = ?", "Bad Name").last(function (err, person) {
+      test.ifError(err);
+      test.equals(person, null);
+      test.done();
+    });
+  },
+
   "min": function (test) {
     this.Person.using(this.connection).min("age", function (err, age) {
       if (err) {
