@@ -664,13 +664,14 @@ __Example__
     });
 
 <a name="queryOrderBy" />
-### query.orderBy(propertyName): query
+### query.orderBy(propertyName, direction): query
 
 Orders the results of a query.
 
 __Arguments__
 
  * propertyName - Name of the property to order by.
+ * direction - The direction to orderBy. Can be persist.Ascending or persist.Descending.
 
 __Returns__
 
