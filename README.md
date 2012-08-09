@@ -46,6 +46,7 @@ You can install using Node Package Manager (npm):
  * [env](#persistEnv)
  * [connect](#persistConnect)
  * [define](#persistDefine)
+ * [defineAuto](#persistDefineAuto)
  * [setDefaultConnectOptions](#persistSetDefaultConnectOptions)
 
 ## Connection
@@ -192,6 +193,35 @@ __Example__
       "createdDate": { type: type.DATETIME, defaultValue: function() { return self.testDate1 }, dbColumnName: 'new_date' },
       "lastUpdated": { type: type.DATETIME }
     })
+
+<a name="persistDefineAuto" />
+### persist.defineAuto(modelName, dbConfig, callback): Model
+
+Defines a model object for use in persist. Columns are defined by the program in this method. Uses an existing database connection to retrieve column data.
+
+__Arguments__
+
+ * modelName - The name of the model. This name will map to the table name.
+ * dbConfig - Hash of dbConfig. Should contain the driver, as well as the database name.
+ * database - The database connection to use.
+ * driver - The name of the database driver to use.
+
+__Returns__
+
+ A model class.
+
+__Example__
+
+    persist.defineAuto("Person",{driver:dbDriver, db:self.connection.db},function(err,model){
+      Person = model.hasMany(Phone)
+        .on('beforeSave', function (obj) {
+          obj.lastUpdated = testDate;
+        })
+        .on('afterSave', function (obj) {
+          if (!obj.updateCount) obj.updateCount = 0;
+          obj.updateCount++;
+        });
+    });
 
 <a name="persistSetDefaultConnectOptions"/>
 ### persist.setDefaultConnectOptions(options)
