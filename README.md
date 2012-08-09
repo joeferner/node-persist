@@ -79,6 +79,7 @@ You can install using Node Package Manager (npm):
  * [all](#queryAll)
  * [each](#queryEach)
  * [first](#queryFirst)
+ * [last](#queryLast)
  * [orderBy](#queryOrderBy)
  * [limit](#queryLimit)
  * [where](#queryWhere)
@@ -662,6 +663,23 @@ __Example__
     Person.first(connection, function(err, person) {
       // gets the first person
     });
+
+<a name="queryLast" />
+### query.last([connection], callback)
+
+Gets the last item from a query.
+
+__Arguments__
+
+ * connection - (Optional) The connection to use. If this is not specified a [using](#modelUsing) statement must be specified earlier.
+ * callback(err, item) - Callback to be called after the row has been fetched. item is a model instance.
+
+__Example__
+
+    Person.last(connection, function(err, person) {
+      // gets the last person
+    });
+
 
 <a name="queryOrderBy" />
 ### query.orderBy(propertyName, direction): query
