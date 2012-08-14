@@ -2,19 +2,42 @@
   "name": "persist",
   "description": "Node.js ORM framework supporting various relational databases",
   "author": "Joe Ferner <joe.ferner@nearinfinity.com>",
-  "keywords": ["database", "db", "orm", "sqlite", "mysql", "PostgreSQL", "oracle", "db-oracle"],
-  "version": "0.2.5",
-  "engines": { "node" : ">=0.6.0" },
-  "maintainers": [
-    { "name": "Joe Ferner", "email": "joe.ferner@nearinfinity.com" },
-    { "name": "Jeff Kunkle", "email": "jeff.kunkle@nearinfinity.com" }
+  "keywords": [
+    "database",
+    "db",
+    "orm",
+    "sqlite",
+    "mysql",
+    "PostgreSQL",
+    "oracle",
+    "db-oracle"
   ],
-  "bugs": { "url": "https://github.com/nearinfinity/node-persist/issues" },
+  "version": "0.2.5",
+  "engines": {
+    "node": ">=0.6.0"
+  },
+  "maintainers": [
+    {
+      "name": "Joe Ferner",
+      "email": "joe.ferner@nearinfinity.com"
+    },
+    {
+      "name": "Jeff Kunkle",
+      "email": "jeff.kunkle@nearinfinity.com"
+    }
+  ],
+  "bugs": {
+    "url": "https://github.com/nearinfinity/node-persist/issues"
+  },
   "license": "MIT",
-  "repository": { "type": "git", "url": "https://github.com/nearinfinity/node-persist.git" },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nearinfinity/node-persist.git"
+  },
   "dependencies": {
     "async": "0.1.15",
-    "over": "git://github.com/nearinfinity/node-over.git"
+    "over": "git://github.com/nearinfinity/node-over.git",
+    "db-info": "0.0.3"
   },
   "devDependencies": {
     "nodeunit": "~>0.6.4",
