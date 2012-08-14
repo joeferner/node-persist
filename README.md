@@ -46,6 +46,7 @@ You can install using Node Package Manager (npm):
  * [env](#persistEnv)
  * [connect](#persistConnect)
  * [define](#persistDefine)
+ * [defineAuto](#persistDefineAuto)
  * [setDefaultConnectOptions](#persistSetDefaultConnectOptions)
 
 ## Connection
@@ -78,6 +79,7 @@ You can install using Node Package Manager (npm):
  * [all](#queryAll)
  * [each](#queryEach)
  * [first](#queryFirst)
+ * [last](#queryLast)
  * [orderBy](#queryOrderBy)
  * [limit](#queryLimit)
  * [where](#queryWhere)
@@ -192,6 +194,35 @@ __Example__
       "createdDate": { type: type.DATETIME, defaultValue: function() { return self.testDate1 }, dbColumnName: 'new_date' },
       "lastUpdated": { type: type.DATETIME }
     })
+
+<a name="persistDefineAuto" />
+### persist.defineAuto(modelName, dbConfig, callback): Model
+
+Defines a model object for use in persist. Columns are defined by the program in this method. Uses an existing database connection to retrieve column data.
+
+__Arguments__
+
+ * modelName - The name of the model. This name will map to the table name.
+ * dbConfig - Hash of dbConfig. Should contain the driver, as well as the database name.
+ * database - The database connection to use.
+ * driver - The name of the database driver to use.
+
+__Returns__
+
+ A model class.
+
+__Example__
+
+    persist.defineAuto("Person",{driver:dbDriver, db:self.connection.db},function(err,model){
+      Person = model.hasMany(Phone)
+        .on('beforeSave', function (obj) {
+          obj.lastUpdated = testDate;
+        })
+        .on('afterSave', function (obj) {
+          if (!obj.updateCount) obj.updateCount = 0;
+          obj.updateCount++;
+        });
+    });
 
 <a name="persistSetDefaultConnectOptions"/>
 ### persist.setDefaultConnectOptions(options)
@@ -633,14 +664,32 @@ __Example__
       // gets the first person
     });
 
+<a name="queryLast" />
+### query.last([connection], callback)
+
+Gets the last item from a query.
+
+__Arguments__
+
+ * connection - (Optional) The connection to use. If this is not specified a [using](#modelUsing) statement must be specified earlier.
+ * callback(err, item) - Callback to be called after the row has been fetched. item is a model instance.
+
+__Example__
+
+    Person.last(connection, function(err, person) {
+      // gets the last person
+    });
+
+
 <a name="queryOrderBy" />
-### query.orderBy(propertyName): query
+### query.orderBy(propertyName, direction): query
 
 Orders the results of a query.
 
 __Arguments__
 
  * propertyName - Name of the property to order by.
+ * direction - The direction to orderBy. Can be persist.Ascending or persist.Descending.
 
 __Returns__
 
