@@ -381,6 +381,14 @@ exports['Select'] = nodeunit.testCase({
     });
   },
 
+  "where empty string": function (test) {
+    this.Person.using(this.connection).where("name = ?", "").all(function (err, people) {
+      test.ifError(err);
+      test.equals(people.length, 0);
+      test.done();
+    });
+  },
+
   "min": function (test) {
     this.Person.using(this.connection).min("age", function (err, age) {
       if (err) {
