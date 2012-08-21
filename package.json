@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "async": "0.1.15",
-    "over": "git://github.com/nearinfinity/node-over.git",
+    "over": ">=0.0.5",
     "db-info": "0.0.3"
   },
   "devDependencies": {
