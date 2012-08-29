@@ -31,9 +31,18 @@ exports['Insert'] = nodeunit.testCase({
         obj.lastUpdated = self.testDate2;
       })
       .on('afterSave', function (obj) {
-        if (!obj.updateCount) obj.updateCount = 0;
+        if (!obj.updateCount) {
+          obj.updateCount = 0;
+        }
         obj.updateCount++;
       });
+
+    this.Person.validate = function (obj, callback) {
+      if (obj.name === 'bad name') {
+        return callback(false, 'You had a bad name');
+      }
+      return callback(true);
+    };
 
     testUtils.connect(persist, function (err, connection) {
       self.connection = connection;
@@ -125,6 +134,16 @@ exports['Insert'] = nodeunit.testCase({
       assert.isNotNullOrUndefined(p.id, "p.id is null or undefined");
       test.equals(p.name, "Bob O'Neill");
       test.equals(p.age, 0);
+      test.done();
+    });
+  },
+
+  "validation": function (test) {
+    var self = this;
+    var person1 = new this.Person({ name: "bad name", age: 0 });
+
+    person1.save(self.connection, function (err, p) {
+      test.equals('Validation failed: You had a bad name', err.message);
       test.done();
     });
   }
