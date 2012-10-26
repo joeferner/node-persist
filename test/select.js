@@ -411,6 +411,17 @@ exports['Select'] = nodeunit.testCase({
     });
   },
 
+  "sum": function (test) {
+    this.Person.using(this.connection).sum("age", function (err, age) {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      test.equals(age, 44);
+      test.done();
+    });
+  },
+
   "limit": function (test) {
     this.Phone.limit(1, 1).orderBy("number").all(this.connection, function (err, phones) {
       if (err) {

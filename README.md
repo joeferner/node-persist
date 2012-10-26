@@ -87,6 +87,7 @@ You can install using Node Package Manager (npm):
  * [count](#queryCount)
  * [min](#queryMin)
  * [max](#queryMax)
+ * [sum](#querySum)
  * [deleteAll](#queryDeleteAll)
  * [updateAll](#queryUpdateAll)
  * [include](#queryInclude)
@@ -823,6 +824,22 @@ __Example__
       // the maximum age of all bobs
     });
 
+<a name="querySum" />
+### query.sum([connection], fieldName, callback)
+
+Gets the sum of all values in the query of the given field.
+
+__Arguments__
+
+ * connection - (Optional) The connection to use. If this is not specified a [using](#modelUsing) statement must be specified earlier.
+ * fieldName - The field name you would like to sum.
+ * callback(err, sum) - Callback with the sum value.
+
+__Example__
+
+    Person.where('name = ?', 'bob').sum(connection, 'age', function(err, sum) {
+      // the sum of all ages whos name is bob
+    });
 
 <a name="queryDeleteAll" />
 ### query.deleteAll([connection], callback)
