@@ -1,4 +1,3 @@
-
 var persist = require("../lib/persist");
 var type = persist.type;
 var nodeunit = require("nodeunit");
@@ -178,15 +177,15 @@ exports['Update'] = nodeunit.testCase({
 
           test.equals("Bob Smith", results[0].name);
           test.equals(20, results[0].age);
-          test.equals(origDate.getTime(), results[0].lastUpdated);
+          test.equals(origDate.getTime(), new Date(results[0].lastUpdated).getTime());
 
           test.equals("Joe Blow", results[1].name);
           test.equals(19, results[1].age);
-          test.equals(lastUpdated.getTime(), results[1].lastUpdated);
+          test.equals(lastUpdated.getTime(), new Date(results[1].lastUpdated).getTime());
 
           test.equals("Joe Smith", results[2].name);
           test.equals(19, results[2].age);
-          test.equals(lastUpdated.getTime(), results[2].lastUpdated);
+          test.equals(lastUpdated.getTime(), new Date(results[2].lastUpdated).getTime());
 
           test.done();
         });
@@ -214,15 +213,15 @@ exports['Update'] = nodeunit.testCase({
 
           test.equals("Bob Smith", results[0].name);
           test.equals(19, results[0].age);
-          test.equals(lastUpdated.getTime(), results[0].lastUpdated);
+          test.equals(lastUpdated.getTime(), new Date(results[0].lastUpdated).getTime());
 
           test.equals("Joe Blow", results[1].name);
           test.equals(19, results[1].age);
-          test.equals(lastUpdated.getTime(), results[1].lastUpdated);
+          test.equals(lastUpdated.getTime(), new Date(results[1].lastUpdated).getTime());
 
           test.equals("Joe Smith", results[2].name);
           test.equals(19, results[2].age);
-          test.equals(lastUpdated.getTime(), results[2].lastUpdated);
+          test.equals(lastUpdated.getTime(), new Date(results[2].lastUpdated).getTime());
 
           test.done();
         });

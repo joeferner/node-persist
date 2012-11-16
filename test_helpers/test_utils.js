@@ -123,6 +123,7 @@ exports.connect = function(persist, callback) {
   } else {
     persist.connect({
       driver: 'mysql',
+      host: 'localhost',
       user: 'root',
       password: 'root',
       database: 'test'
