@@ -125,6 +125,7 @@ exports.connect = function(persist, opts, callback) {
   } else {
     opts.driver = opts.driver || 'mysql';
     opts.database = opts.database || 'test';
+    opts.host = opts.host || 'localhost';
     opts.user = opts.user || 'root';
     opts.password = opts.password || 'root';
     persist.connect(opts, mycallback);
