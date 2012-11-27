@@ -978,8 +978,11 @@ __Example__
       var person2 = people.getById(2);
     });
 
+<a name="connectionPooling"/>
+## Connection Pooling
+
 <a name="connectionPoolingUsing"/>
-### Connection Pooling
+### Using
 
 Persist uses [generic-pool](https://github.com/coopernurse/node-pool) to manage the connection pool. If you specify
 "pooling" in your configuration you must specify a pool name. See [generic-pool](https://github.com/coopernurse/node-pool)
