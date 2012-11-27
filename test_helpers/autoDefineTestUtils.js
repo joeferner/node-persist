@@ -58,7 +58,7 @@ if(driver == "oracle") {
   exports.doNothingSql = exports.personCreateStmt;
 }
 
-exports.connect = function(persist, callback) {
+exports.connect = function(persist, opts, callback) {
   var mycallback = function(err, connection) {
     if(err) { callback(err); return; }
     var stmts = [

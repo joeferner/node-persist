@@ -48,6 +48,7 @@ You can install using Node Package Manager (npm):
  * [define](#persistDefine)
  * [defineAuto](#persistDefineAuto)
  * [setDefaultConnectOptions](#persistSetDefaultConnectOptions)
+ * [shutdown](#persistShutdown)
 
 ## Connection
 
@@ -100,6 +101,9 @@ You can install using Node Package Manager (npm):
 ## Results Set
  * [getById](#resultSetGetById)
 
+## Connection Pooling
+ * [using](#connectionPoolingUsing)
+
 <a name="databaseJson"/>
 # database.json
 
@@ -122,7 +126,13 @@ The file should follow a format like this:
       "prod": {
         "driver": "sqlite3",
         "filename": "prod.db"
-        "sqlDir": "./prodSql"
+        "sqlDir": "./prodSql",
+        "pooling": {
+          "name": "testPool",
+          "max": 2,
+          "min": 1,
+          "idleTimeoutMillis": 30000
+        }
       }
     }
 
@@ -239,6 +249,20 @@ __Example__
       driver: 'sqlite3',
       filename: 'test.db',
       trace: true});
+
+<a name="persistShutdown"/>
+### persist.shutdown([callback])
+
+Shutdown persist. This is currently only required if you are using connection pooling. see [generic-pool](https://github.com/coopernurse/node-pool).
+
+__Arguments__
+ * [callback] - Optional callback on successful shutdown.
+
+__Example__
+
+    persist.shutdown(function() {
+      console.log('persist shutdown');
+    });
 
 <a name="connection"/>
 ## Connection
@@ -953,3 +977,10 @@ __Example__
     Person.all(connection, function(err, people) {
       var person2 = people.getById(2);
     });
+
+<a name="connectionPoolingUsing"/>
+### Connection Pooling
+
+Persist uses [generic-pool](https://github.com/coopernurse/node-pool) to manage the connection pool. If you specify
+"pooling" in your configuration you must specify a pool name. See [generic-pool](https://github.com/coopernurse/node-pool)
+for other options. To cleanly shutdown the connection pool you must also call persist.[shutdown](#persistShutdown).

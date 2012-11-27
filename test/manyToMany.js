@@ -17,7 +17,7 @@ exports['ManyToMany'] = nodeunit.testCase({
       "name": type.STRING
     }).hasMany(this.Company, { through: 'CompanyPerson' });
 
-    testUtils.connect(persist, function(err, connection) {
+    testUtils.connect(persist, {}, function(err, connection) {
       if(err) { console.log(err); return; }
       self.connection = connection;
       self.person1 = new self.Person({ name: "bob" });

@@ -37,7 +37,8 @@
   "dependencies": {
     "async": "0.1.15",
     "over": ">=0.0.5",
-    "db-info": "0.0.3"
+    "db-info": "0.0.3",
+    "generic-pool": "~2.0.2"
   },
   "devDependencies": {
     "nodeunit": "~>0.6.4",

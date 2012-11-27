@@ -1,66 +1,70 @@
-
 var fs = require("fs");
 
 var driver = "sqlite3";
 
 /* oracle
-  CREATE SEQUENCE phone_seq start with 1 increment by 1 nomaxvalue;
-  CREATE SEQUENCE person_seq start with 1 increment by 1 nomaxvalue;
-  CREATE SEQUENCE company_seq start with 1 increment by 1 nomaxvalue;
-  CREATE TABLE  Phones (id INTEGER PRIMARY KEY, numbr VARCHAR2(255), person_id INTEGER, modified_by_person_id INTEGER);
-  CREATE TRIGGER phone_pk_trigger BEFORE INSERT ON Phones FOR EACH row
-    BEGIN
-      select phone_seq.nextval into :new.id from dual;
-    END;
-  /
-  CREATE TABLE People (id INTEGER PRIMARY KEY , name VARCHAR2(255), age INTEGER, txt VARCHAR2(255), last_updated VARCHAR2(255), created_date VARCHAR2(255));
-  CREATE TRIGGER person_pk_trigger BEFORE INSERT ON People FOR EACH row
-    BEGIN
-      select person_seq.nextval into :new.id from dual;
-    END;
-  /
-  CREATE TABLE Companies (id INTEGER PRIMARY KEY , name VARCHAR2(255));
-  CREATE TRIGGER company_pk_trigger BEFORE INSERT ON Companies FOR EACH row
-    BEGIN
-      select company_seq.nextval into :new.id from dual;
-    END;
-  /
-  CREATE TABLE CompanyPerson ( company_id INTEGER, person_id INTEGER, PRIMARY KEY(company_id, person_id));
-*/
+ CREATE SEQUENCE phone_seq start with 1 increment by 1 nomaxvalue;
+ CREATE SEQUENCE person_seq start with 1 increment by 1 nomaxvalue;
+ CREATE SEQUENCE company_seq start with 1 increment by 1 nomaxvalue;
+ CREATE TABLE  Phones (id INTEGER PRIMARY KEY, numbr VARCHAR2(255), person_id INTEGER, modified_by_person_id INTEGER);
+ CREATE TRIGGER phone_pk_trigger BEFORE INSERT ON Phones FOR EACH row
+ BEGIN
+ select phone_seq.nextval into :new.id from dual;
+ END;
+ /
+ CREATE TABLE People (id INTEGER PRIMARY KEY , name VARCHAR2(255), age INTEGER, txt VARCHAR2(255), last_updated VARCHAR2(255), created_date VARCHAR2(255));
+ CREATE TRIGGER person_pk_trigger BEFORE INSERT ON People FOR EACH row
+ BEGIN
+ select person_seq.nextval into :new.id from dual;
+ END;
+ /
+ CREATE TABLE Companies (id INTEGER PRIMARY KEY , name VARCHAR2(255));
+ CREATE TRIGGER company_pk_trigger BEFORE INSERT ON Companies FOR EACH row
+ BEGIN
+ select company_seq.nextval into :new.id from dual;
+ END;
+ /
+ CREATE TABLE CompanyPerson ( company_id INTEGER, person_id INTEGER, PRIMARY KEY(company_id, person_id));
+ */
 
 var ifNotExistsSql = 'IF NOT EXISTS';
 var textDateType = 'TEXT';
-if(driver == 'oracle') {
+if (driver == 'oracle') {
   ifNotExistsSql = '';
   textDateType = 'VARCHAR2(255)';
 }
-exports.personCreateStmt = personCreateStmt = "CREATE TABLE "+ifNotExistsSql+" People (id INTEGER PRIMARY KEY "
-  + (driver=='mysql'?'auto_increment':'')
-  + ", name "+textDateType+", age INTEGER, txt "+textDateType+", last_updated "+textDateType+", created_date "+textDateType+") "
-  + (driver=='mysql'?'engine=innodb':'');
-exports.phoneCreateStmt = phoneCreateStmt = "CREATE TABLE "+ifNotExistsSql+" Phones (id INTEGER PRIMARY KEY "
-  + (driver=='mysql'?'auto_increment':'')
-  + ", numbr "+textDateType+", person_id INTEGER, modified_by_person_id INTEGER) "
-  + (driver=='mysql'?'engine=innodb':'');
-exports.companyCreateStmt = companyCreateStmt = "CREATE TABLE "+ifNotExistsSql+" Companies (id INTEGER PRIMARY KEY "
-  + (driver=='mysql'?'auto_increment':'')
-  + ", name "+textDateType+") "
-  + (driver=='mysql'?'engine=innodb':'');
-exports.companyPersonCreateStmt = companyPersonCreateStmt = "CREATE TABLE "+ifNotExistsSql+" CompanyPerson ( company_id INTEGER, person_id INTEGER, PRIMARY KEY(company_id, person_id)) " + (driver=='mysql'?'engine=innodb':'');
-exports.primaryKeyTestCreateStmt = primaryKeyTestCreateStmt = "CREATE TABLE "+ifNotExistsSql+" PrimaryKeyTests (my_pk_id INTEGER PRIMARY KEY "
-  + (driver=='mysql'?'auto_increment':'')
-  + ", name "+textDateType+") "
-  + (driver=='mysql'?'engine=innodb':'');
+exports.personCreateStmt = personCreateStmt = "CREATE TABLE " + ifNotExistsSql + " People (id INTEGER PRIMARY KEY "
+                                                + (driver == 'mysql' ? 'auto_increment' : '')
+                                                + ", name " + textDateType + ", age INTEGER, txt " + textDateType + ", last_updated " + textDateType + ", created_date " + textDateType + ") "
+  + (driver == 'mysql' ? 'engine=innodb' : '');
+exports.phoneCreateStmt = phoneCreateStmt = "CREATE TABLE " + ifNotExistsSql + " Phones (id INTEGER PRIMARY KEY "
+                                              + (driver == 'mysql' ? 'auto_increment' : '')
+                                              + ", numbr " + textDateType + ", person_id INTEGER, modified_by_person_id INTEGER) "
+  + (driver == 'mysql' ? 'engine=innodb' : '');
+exports.companyCreateStmt = companyCreateStmt = "CREATE TABLE " + ifNotExistsSql + " Companies (id INTEGER PRIMARY KEY "
+                                                  + (driver == 'mysql' ? 'auto_increment' : '')
+                                                  + ", name " + textDateType + ") "
+  + (driver == 'mysql' ? 'engine=innodb' : '');
+exports.companyPersonCreateStmt = companyPersonCreateStmt = "CREATE TABLE " + ifNotExistsSql + " CompanyPerson ( company_id INTEGER, person_id INTEGER, PRIMARY KEY(company_id, person_id)) " + (driver == 'mysql' ? 'engine=innodb' : '');
+exports.primaryKeyTestCreateStmt = primaryKeyTestCreateStmt = "CREATE TABLE " + ifNotExistsSql + " PrimaryKeyTests (my_pk_id INTEGER PRIMARY KEY "
+                                                                + (driver == 'mysql' ? 'auto_increment' : '')
+                                                                + ", name " + textDateType + ") "
+  + (driver == 'mysql' ? 'engine=innodb' : '');
 
-if(driver == "oracle") {
+if (driver == "oracle") {
   exports.doNothingSql = "SELECT * FROM People";
 } else {
   exports.doNothingSql = exports.personCreateStmt;
 }
 
-exports.connect = function(persist, callback) {
+exports.connect = function(persist, opts, callback) {
+  opts = opts || {};
+
   var mycallback = function(err, connection) {
-    if(err) { callback(err); return; }
+    if (err) {
+      callback(err);
+      return;
+    }
     var stmts = [
       personCreateStmt,
       phoneCreateStmt,
@@ -68,7 +72,7 @@ exports.connect = function(persist, callback) {
       companyCreateStmt,
       primaryKeyTestCreateStmt
     ];
-    if(driver == 'oracle') {
+    if (driver == 'oracle') {
       stmts = [];
     }
     stmts = stmts.concat([
@@ -79,9 +83,12 @@ exports.connect = function(persist, callback) {
       "DELETE FROM PrimaryKeyTests"
     ]);
     connection.runSql(stmts, function(err, results) {
-      if(err) { callback(err); return; }
+      if (err) {
+        callback(err);
+        return;
+      }
 
-      if(driver == 'postgresql') {
+      if (driver == 'postgresql') {
         stmts = [
           'CREATE SEQUENCE phone_seq',
           'CREATE SEQUENCE person_seq',
@@ -99,33 +106,27 @@ exports.connect = function(persist, callback) {
     });
   };
 
-  if(driver == 'sqlite3') {
+  if (driver == 'sqlite3') {
     fs.unlink('test.db', function() {
-      persist.connect({
-        driver: 'sqlite3',
-        //trace: true,
-        filename: ':memory:'
-        //filename: 'test.db'
-      }, mycallback);
+      opts.driver = opts.driver || 'sqlite3';
+      opts.filename = opts.filename || ':memory:';
+      persist.connect(opts, mycallback);
     });
-  } else if(driver == 'postgresql') {
-    persist.connect({
-      driver: 'pg',
-      "connectionString": "tcp://test:test@localhost/test"
-    }, mycallback);
-  } else if(driver == 'oracle') {
-    persist.connect({
-      driver: "oracle",
-      hostname: "localhost",
-      user: "test",
-      password: "test"
-    }, mycallback);
+  } else if (driver == 'postgresql') {
+    opts.driver = opts.driver || 'pg';
+    opts.connectionString = opts.connectionString || 'tcp://test:test@localhost/test';
+    persist.connect(opts, mycallback);
+  } else if (driver == 'oracle') {
+    opts.driver = opts.driver || 'oracle';
+    opts.hostname = opts.hostname || 'localhost';
+    opts.user = opts.user || 'test';
+    opts.password = opts.password || 'test';
+    persist.connect(opts, mycallback);
   } else {
-    persist.connect({
-      driver: 'mysql',
-      user: 'root',
-      password: 'root',
-      database: 'test'
-    }, mycallback);
+    opts.driver = opts.driver || 'mysql';
+    opts.database = opts.database || 'test';
+    opts.user = opts.user || 'root';
+    opts.password = opts.password || 'root';
+    persist.connect(opts, mycallback);
   }
 };

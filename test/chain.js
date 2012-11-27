@@ -18,7 +18,7 @@ exports['Chain'] = nodeunit.testCase({
       "age": type.INTEGER
     }).hasMany(this.Phone);
 
-    testUtils.connect(persist, function(err, connection) {
+    testUtils.connect(persist, {}, function(err, connection) {
       if(err) { console.log(err); return; }
       self.connection = connection;
       self.person1 = new self.Person({ name: "Bob O'Neill", age: 21 });

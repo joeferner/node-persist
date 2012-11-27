@@ -12,7 +12,7 @@ exports['Transaction'] = nodeunit.testCase({
       "name": type.STRING
     });
 
-    testUtils.connect(persist, function(err, connection) {
+    testUtils.connect(persist, {}, function(err, connection) {
       self.connection = connection;
       callback();
     });

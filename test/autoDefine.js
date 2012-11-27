@@ -2,7 +2,7 @@ var persist = require("../lib/persist");
 var type = persist.type;
 var nodeunit = require("nodeunit");
 var assert = require("../test_helpers/assert");
-var testUtils = require("../test_helpers/auto_define_test_utils");
+var testUtils = require("../test_helpers/autoDefineTestUtils");
 var Phone;
 var PrimaryKeyTest;
 var Person;
@@ -12,7 +12,7 @@ exports['Insert'] = nodeunit.testCase({
   setUp: function (callback) {
     var self = this;    
   
-    testUtils.connect(persist, function (err, connection) {
+    testUtils.connect(persist, {}, function (err, connection) {
       self.connection = connection;
       var dbDriver = connection.opts.driver;
       persist.defineAuto("Phone", {driver:dbDriver, db:self.connection.db},function(err,model){

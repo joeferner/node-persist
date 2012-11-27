@@ -7,7 +7,7 @@ exports['Delete'] = nodeunit.testCase({
   setUp: function (callback) {
     var self = this;
 
-    testUtils.connect(persist, function (err, connection) {
+    testUtils.connect(persist, {}, function (err, connection) {
       self.connection = connection;
       self.Person = persist.define("Person", {
         "name": type.STRING

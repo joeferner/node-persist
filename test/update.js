@@ -19,7 +19,7 @@ exports['Update'] = nodeunit.testCase({
       "lastUpdated": type.DATETIME
     }).hasMany(this.Phone);
 
-    testUtils.connect(persist, function(err, connection) {
+    testUtils.connect(persist, {}, function(err, connection) {
       self.connection = connection;
       callback();
     });

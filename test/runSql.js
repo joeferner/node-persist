@@ -14,7 +14,7 @@ exports['Run SQL'] = nodeunit.testCase({
       "age": type.INTEGER
     });
 
-    testUtils.connect(persist, function(err, connection) {
+    testUtils.connect(persist, {}, function(err, connection) {
       if(err) { console.log(err); return; }
 
       self.connection = connection;
