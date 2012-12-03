@@ -177,7 +177,7 @@ __Example__
     });
 
 <a name="persistDefine" />
-### persist.define(modelName, properties): Model
+### persist.define(modelName, properties, [opts]): Model
 
 Defines a model object for use in persist.
 
@@ -193,6 +193,8 @@ __Arguments__
   * defaultValue - this can be a value or a function that will be called each time this model object is created
   * dbColumnName - the name of the database column. (default: name of the property, all lower case, seperated by '_')
   * primaryKey - Marks this column as being the primary key column. You can have only one primary key column.
+ * opts - Options for this column.
+  * tableName - The name of the table (default: modelName pluralized).
 
 __Returns__
 
