@@ -13,7 +13,7 @@ module.exports = Blog = persist.define("Blog", {
   .hasOne(Category)
   .hasMany(Keyword, { through: "blogs_keywords" });
 
-Blog.onSave = function(obj, callback) {
+Blog.onSave = function(obj, connection, callback) {
   obj.lastUpdated = new Date();
   callback();
 }
