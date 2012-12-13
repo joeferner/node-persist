@@ -582,7 +582,7 @@ __Example__
     });
 
 <a name="modelOnSave" />
-### Model.onSave(obj)
+### Model.onSave(obj, callback)
 
 If preset this function will be called when an update or save occures. You would typically create this method
 in your model file.
@@ -590,11 +590,13 @@ in your model file.
 __Arguments__
 
  * obj - The object or partial object, in the case of [update](#modelUpdate), being saved.
+ * callback() - The callback to be called when the onSave is complete
 
 __Example__
 
-    Person.onSave = function(obj) {
+    Person.onSave = function(obj, callback) {
       obj.lastUpdated = new Date();
+      callback();
     };
 
 <a name="modelOnLoad" />
