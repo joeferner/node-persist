@@ -10,28 +10,29 @@ The following databases are currently supported:
  * Oracle - via: [node-oracle](https://github.com/nearinfinity/node-oracle)
 
 # Quick Examples
-    var persist = require("persist");
-    var type = persist.type;
+```javascript
+var persist = require("persist");
+var type = persist.type;
 
-    // define some model objects
-    Phone = persist.define("Phone", {
-      "number": type.STRING
-    });
+// define some model objects
+Phone = persist.define("Phone", {
+  "number": type.STRING
+});
 
-    Person = persist.define("Person", {
-      "name": type.STRING
-    }).hasMany(this.Phone);
+Person = persist.define("Person", {
+  "name": type.STRING
+}).hasMany(this.Phone);
 
-    persist.connect({
-      driver: 'sqlite3',
-      filename: 'test.db',
-      trace: true
-    }, function(err, connection) {
-      Person.using(connection).all(function(err, people) {
-        // people contains all the people
-      });
-    });
-
+persist.connect({
+  driver: 'sqlite3',
+  filename: 'test.db',
+  trace: true
+}, function(err, connection) {
+  Person.using(connection).all(function(err, people) {
+    // people contains all the people
+  });
+});
+```
 # Download
 
 You can install using Node Package Manager (npm):
@@ -167,15 +168,15 @@ __Arguments__
  * callback(err, connection) - Callback to be called when the connection is established.
 
 __Example__
-
-    persist.connect({
-      driver: 'sqlite3',
-      filename: 'test.db',
-      trace: true
-    }, function(err, connection) {
-      // connnection esablished
-    });
-
+```javascript
+persist.connect({
+  driver: 'sqlite3',
+  filename: 'test.db',
+  trace: true
+}, function(err, connection) {
+  // connnection esablished
+});
+```
 <a name="persistDefine" />
 ### persist.define(modelName, properties, [opts]): Model
 
@@ -201,13 +202,13 @@ __Returns__
  A model class.
 
 __Example__
-
-    Person = persist.define("Person", {
-      "name": type.STRING,
-      "createdDate": { type: type.DATETIME, defaultValue: function() { return self.testDate1 }, dbColumnName: 'new_date' },
-      "lastUpdated": { type: type.DATETIME }
-    })
-
+```javascript
+Person = persist.define("Person", {
+  "name": type.STRING,
+  "createdDate": { type: type.DATETIME, defaultValue: function() { return self.testDate1 }, dbColumnName: 'new_date' },
+  "lastUpdated": { type: type.DATETIME }
+})
+```
 <a name="persistDefineAuto" />
 ### persist.defineAuto(modelName, dbConfig, callback): Model
 
@@ -225,18 +226,18 @@ __Returns__
  A model class.
 
 __Example__
-
-    persist.defineAuto("Person",{driver:dbDriver, db:self.connection.db},function(err,model){
-      Person = model.hasMany(Phone)
-        .on('beforeSave', function (obj) {
-          obj.lastUpdated = testDate;
-        })
-        .on('afterSave', function (obj) {
-          if (!obj.updateCount) obj.updateCount = 0;
-          obj.updateCount++;
-        });
+```javascript
+persist.defineAuto("Person",{driver:dbDriver, db:self.connection.db},function(err,model){
+  Person = model.hasMany(Phone)
+    .on('beforeSave', function (obj) {
+      obj.lastUpdated = testDate;
+    })
+    .on('afterSave', function (obj) {
+      if (!obj.updateCount) obj.updateCount = 0;
+      obj.updateCount++;
     });
-
+});
+```
 <a name="persistSetDefaultConnectOptions"/>
 ### persist.setDefaultConnectOptions(options)
 
@@ -246,12 +247,12 @@ __Arguments__
  * options - See [connect](#persistConnect) for the description of options
 
 __Example__
-
-    persist.setDefaultConnectOptions({
-      driver: 'sqlite3',
-      filename: 'test.db',
-      trace: true});
-
+```javascript
+persist.setDefaultConnectOptions({
+  driver: 'sqlite3',
+  filename: 'test.db',
+  trace: true});
+```
 <a name="persistShutdown"/>
 ### persist.shutdown([callback])
 
@@ -261,11 +262,11 @@ __Arguments__
  * [callback] - Optional callback on successful shutdown.
 
 __Example__
-
-    persist.shutdown(function() {
-      console.log('persist shutdown');
-    });
-
+```javascript
+persist.shutdown(function() {
+  console.log('persist shutdown');
+});
+```
 <a name="connection"/>
 ## Connection
 
@@ -282,45 +283,45 @@ __Arguments__
  * callback(err, results) - Callback called when all the items have been executed.
 
 __Example__
+```javascript
+// array chaining
+connection.chain([
+  person3.save,
+  Person.min('age'),
+  Person.max('age'),
+  phone3.delete,
+  person2.delete,
+  Person.orderBy('name').all,
+  Phone.orderBy('number').first,
+  Phone.count,
+  Phone.deleteAll,
+  Phone.all,
+  Person.getById(1),
+  persist.runSql('SELECT * FROM Person')
+], function(err, results) {
+  // results[0] = person3
+  // results[1] = 21
+  // results[2] = 25
+  // results[3] = []
+  // results[4] = []
+  // results[5] = -- all people ordered by name
+  // results[6] = -- first phone ordered by number
+  // results[7] = 100
+  // results[8] = []
+  // results[9] = [] -- nobody left
+  // results[10] = -- the person with id 1
+  // results[11] = Results of select.
+});
 
-    // array chaining
-    connection.chain([
-      person3.save,
-      Person.min('age'),
-      Person.max('age'),
-      phone3.delete,
-      person2.delete,
-      Person.orderBy('name').all,
-      Phone.orderBy('number').first,
-      Phone.count,
-      Phone.deleteAll,
-      Phone.all,
-      Person.getById(1),
-      persist.runSql('SELECT * FROM Person')
-    ], function(err, results) {
-      // results[0] = person3
-      // results[1] = 21
-      // results[2] = 25
-      // results[3] = []
-      // results[4] = []
-      // results[5] = -- all people ordered by name
-      // results[6] = -- first phone ordered by number
-      // results[7] = 100
-      // results[8] = []
-      // results[9] = [] -- nobody left
-      // results[10] = -- the person with id 1
-      // results[11] = Results of select.
-    });
-
-    // mapped chaining
-    connection.chain({
-      minAge: Person.min('age'),
-      maxAge: Person.max('age')
-    }, function(err, results) {
-      // results.minAge = 21
-      // results.maxAge = 25
-    });
-
+// mapped chaining
+connection.chain({
+  minAge: Person.min('age'),
+  maxAge: Person.max('age')
+}, function(err, results) {
+  // results.minAge = 21
+  // results.maxAge = 25
+});
+```
 <a name="connectionTx"/>
 ### connection.tx(callback)
 
@@ -332,15 +333,15 @@ __Arguments__
    call [commit](#txCommit) or [rollback](#txRollback)
 
 __Example__
-
-    connection.tx(function(err, tx) {
-      person1.save(connection, function(err) {
-        tx.commit(function(err) {
-          // person1 saved and committed to database
-        });
-      });
+```javascript
+connection.tx(function(err, tx) {
+  person1.save(connection, function(err) {
+    tx.commit(function(err) {
+      // person1 saved and committed to database
     });
-
+  });
+});
+```
 <a name="connectionRunSql"/>
 ### connection.runSql(sql, values, callback)
 
@@ -354,11 +355,11 @@ __Arguments__
    rows or last insert id.
 
 __Example__
-
-    connection.runSql("UPDATE people SET age = ?", [32], function(err, results) {
-      // people updated
-    });
-
+```javascript
+connection.runSql("UPDATE people SET age = ?", [32], function(err, results) {
+  // people updated
+});
+```
 <a name="connectionRunSqlAll"/>
 ### connection.runSqlAll(sql, values, callback)
 
@@ -371,11 +372,11 @@ __Arguments__
  * callback(err, results) - Callback called when SQL statement completes. results will contain the row data.
 
 __Example__
-
-    connection.runSqlAll("SELECT * FROM people WHERE age = ?", [32], function(err, people) {
-      // people contains all the people with age 32
-    });
-
+```javascript
+connection.runSqlAll("SELECT * FROM people WHERE age = ?", [32], function(err, people) {
+  // people contains all the people with age 32
+});
+```
 <a name="connectionRunSqlEach"/>
 ### connection.runSqlEach(sql, values, callback, doneCallback)
 
@@ -390,13 +391,13 @@ __Arguments__
  * doneCallback(err) - Callback called after all the rows have returned.
 
 __Example__
-
-    connection.runSqlEach("SELECT * FROM people WHERE age = ?", [32], function(err, person) {
-      // a single person
-    }, function(err) {
-      // all done
-    });
-
+```javascript
+connection.runSqlEach("SELECT * FROM people WHERE age = ?", [32], function(err, person) {
+  // a single person
+}, function(err) {
+  // all done
+});
+```
 <a name="connectionRunSqlFromFile"/>
 <a name="connectionRunSqlAllFromFile"/>
 <a name="connectionRunSqlEachFromFile"/>
@@ -407,13 +408,13 @@ __Example__
 Same as [runSql](#connectionRunSql), [runSqlAll](#connectionRunSqlAll), [runSqlEach](#connectionRunSqlEach) except the first parameter is a filename of where to load the SQL from.
 
 __Example__
-
-    connection.runSqlFromFile('report.sql', [32], function(err, person) {
-      // a single person
-    }, function(err) {
-      // all done
-    });
-
+```javascript
+connection.runSqlFromFile('report.sql', [32], function(err, person) {
+  // a single person
+}, function(err) {
+  // all done
+});
+```
 <a name="model" />
 ## Model
 
@@ -435,15 +436,15 @@ __Returns__
  The model class object suitable for chaining.
 
 __Example__
+```javascript
+Phone = persist.define("Phone", {
+  "number": persist.String
+});
 
-    Phone = persist.define("Phone", {
-      "number": persist.String
-    });
-
-    Person = persist.define("Person", {
-      "name": persist.String
-    }).hasMany(Phone);
-
+Person = persist.define("Person", {
+  "name": persist.String
+}).hasMany(Phone);
+```
 <a name="modelHasOne" />
 ### Model.hasOne(AssociatedModel, [options]): Model
 
@@ -463,15 +464,15 @@ __Returns__
  The model class object suitable for chaining.
 
 __Example__
+```javascript
+Phone = persist.define("Phone", {
+  "number": persist.String
+}).hasMany(Person);
 
-    Phone = persist.define("Phone", {
-      "number": persist.String
-    }).hasMany(Person);
-
-    Person = persist.define("Person", {
-      "name": persist.String
-    });
-
+Person = persist.define("Person", {
+  "name": persist.String
+});
+```
 <a name="modelUsing" />
 ### Model.using(connection): query
 
@@ -486,9 +487,9 @@ __Returns__
  A new [Query](#query) object.
 
 __Example__
-
-    Person.using(connection).first(...);
-
+```javascript
+Person.using(connection).first(...);
+```
 <a name="modelSave" />
 ### Model.save(connection, callback)
 
@@ -500,11 +501,11 @@ __Arguments__
  * callback(err) - The callback to be called when the save is complete
 
 __Example__
-
-    person1.save(connection, function() {
-      // person1 saved
-    });
-
+```javascript
+person1.save(connection, function() {
+  // person1 saved
+});
+```
 <a name="modelInstanceUpdate" />
 ### modelInstance.update(connection, params, callback)
 
@@ -517,11 +518,11 @@ __Arguments__
  * callback(err) - The callback to be called when the update is complete
 
 __Example__
-
-    person1.update(connection, { name: 'Tom' }, function() {
-      // person1 saved
-    });
-
+```javascript
+person1.update(connection, { name: 'Tom' }, function() {
+  // person1 saved
+});
+```
 <a name="modelUpdate" />
 ### Model.update(connection, id, params, callback)
 
@@ -536,18 +537,18 @@ __Arguments__
  * callback(err) - The callback to be called when the update is complete
 
 __Example__
+```javascript
+Person.update(connection, 5, { name: 'Tom' }, function() {
+  // person with id = 5 updated with name 'Tom'.
+});
 
-    Person.update(connection, 5, { name: 'Tom' }, function() {
-      // person with id = 5 updated with name 'Tom'.
-    });
-
-    // or chaining
-    connection.chain([
-      Person.update(5, { name: 'Tom' })
-    ], function(err, results) {
-      // person with id = 5 updated with name 'Tom'.
-    });
-
+// or chaining
+connection.chain([
+  Person.update(5, { name: 'Tom' })
+], function(err, results) {
+  // person with id = 5 updated with name 'Tom'.
+});
+```
 <a name="modelDelete" />
 ### Model.delete(connection, callback)
 
@@ -559,11 +560,11 @@ __Arguments__
  * callback(err) - The callback to be called when the delete is complete
 
 __Example__
-
-    person1.delete(connection, function() {
-      // person1 deleted
-    });
-
+```javascript
+person1.delete(connection, function() {
+  // person1 deleted
+});
+```
 <a name="modelGetById" />
 ### Model.getById(connection, id, callback)
 
@@ -576,11 +577,11 @@ __Arguments__
  * callback(err, obj) - The callback to be called when the delete is complete
 
 __Example__
-
-    Person.getById(connection, 1, function(err, person) {
-      // person is the person with id equal to 1. Or null if not found
-    });
-
+```javascript
+Person.getById(connection, 1, function(err, person) {
+  // person is the person with id equal to 1. Or null if not found
+});
+```
 <a name="modelOnSave" />
 ### Model.onSave(obj, connection, callback)
 
@@ -594,12 +595,12 @@ __Arguments__
  * callback() - The callback to be called when the onSave is complete
 
 __Example__
-
-    Person.onSave = function(obj, connection, callback) {
-      obj.lastUpdated = new Date();
-      callback();
-    };
-
+```javascript
+Person.onSave = function(obj, connection, callback) {
+  obj.lastUpdated = new Date();
+  callback();
+};
+```
 <a name="modelOnLoad" />
 ### Model.onLoad(obj)
 
@@ -611,11 +612,11 @@ __Arguments__
  * obj - The object that was just loaded from the database.
 
 __Example__
-
-    Person.onLoad = function(obj) {
-      obj.fullName = obj.firstName + ' ' + obj.lastName;
-    };
-
+```javascript
+Person.onLoad = function(obj) {
+  obj.fullName = obj.firstName + ' ' + obj.lastName;
+};
+```
 <a name="associatedObjectProperties" />
 ### Associated Object Properties
 
@@ -624,21 +625,21 @@ which allows you to get the associated data. This property returns a [Query](#qu
 the results.
 
 __Example__
+```javascript
+Phone = persist.define("Phone", {
+  "number": persist.String
+});
 
-    Phone = persist.define("Phone", {
-      "number": persist.String
-    });
+Person = persist.define("Person", {
+  "name": persist.String
+}).hasMany(Phone);
 
-    Person = persist.define("Person", {
-      "name": persist.String
-    }).hasMany(Phone);
-
-    Person.using(connection).first(function(err, person) {
-      person.phones.orderBy('number').all(function(err, phones) {
-        // all the phones of the first person
-      });
-    });
-
+Person.using(connection).first(function(err, person) {
+  person.phones.orderBy('number').all(function(err, phones) {
+    // all the phones of the first person
+  });
+});
+```
 <a name="query" />
 ## Query
 
@@ -654,11 +655,11 @@ __Arguments__
  * callback(err, items) - Callback to be called after the rows have been fetched. items is an array of model instances.
 
 __Example__
-
-    Person.all(connection, function(err, people) {
-      // all the people
-    });
-
+```javascript
+Person.all(connection, function(err, people) {
+  // all the people
+});
+```
 <a name="queryEach" />
 ### query.each([connection], callback, doneCallback)
 
@@ -671,13 +672,13 @@ __Arguments__
  * doneCallback(err) - Callback called after all rows have been retrieved.
 
 __Example__
-
-    Person.each(connection, function(err, person) {
-      // a person
-    }, function() {
-      // all done
-    });
-
+```javascript
+Person.each(connection, function(err, person) {
+  // a person
+}, function() {
+  // all done
+});
+```
 <a name="queryFirst" />
 ### query.first([connection], callback)
 
@@ -689,11 +690,11 @@ __Arguments__
  * callback(err, item) - Callback to be called after the row has been fetched. item is a model instance.
 
 __Example__
-
-    Person.first(connection, function(err, person) {
-      // gets the first person
-    });
-
+```javascript
+Person.first(connection, function(err, person) {
+  // gets the first person
+});
+```
 <a name="queryLast" />
 ### query.last([connection], callback)
 
@@ -705,12 +706,11 @@ __Arguments__
  * callback(err, item) - Callback to be called after the row has been fetched. item is a model instance.
 
 __Example__
-
-    Person.last(connection, function(err, person) {
-      // gets the last person
-    });
-
-
+```javascript
+Person.last(connection, function(err, person) {
+  // gets the last person
+});
+```
 <a name="queryOrderBy" />
 ### query.orderBy(propertyName, direction): query
 
@@ -726,11 +726,11 @@ __Returns__
  The query object suitable for chaining.
 
 __Example__
-
-    Person.orderBy('name').all(connection, function(err, people) {
-      // all the people ordered by name
-    });
-
+```javascript
+Person.orderBy('name').all(connection, function(err, people) {
+  // all the people ordered by name
+});
+```
 <a name="queryLimit" />
 ### query.limit(count, [offset]): query
 
@@ -746,11 +746,11 @@ __Returns__
  The query object suitable for chaining.
 
 __Example__
-
-    Person.orderBy('name').limit(5, 5).all(connection, function(err, people) {
-      // The 5-10 people ordered by name
-    });
-
+```javascript
+Person.orderBy('name').limit(5, 5).all(connection, function(err, people) {
+  // The 5-10 people ordered by name
+});
+```
 <a name="queryWhere" />
 ### query.where(clause, [values...]): query
 ### query.where(hash): query
@@ -768,19 +768,19 @@ __Returns__
  The query object suitable for chaining.
 
 __Example__
+```javascript
+Person.where('name = ?', 'bob').all(connection, function(err, people) {
+  // All the people named 'bob'
+});
 
-    Person.where('name = ?', 'bob').all(connection, function(err, people) {
-      // All the people named 'bob'
-    });
+Person.where('name = ? or age = ?', ['bob', 23]).all(connection, function(err, people) {
+  // All the people named 'bob' or people with age 23
+});
 
-    Person.where('name = ? or age = ?', ['bob', 23]).all(connection, function(err, people) {
-      // All the people named 'bob' or people with age 23
-    });
-
-    Person.where({'name': 'bob', 'age': 23}).all(connection, function(err, people) {
-      // All the people named 'bob' with the age of 23
-    });
-
+Person.where({'name': 'bob', 'age': 23}).all(connection, function(err, people) {
+  // All the people named 'bob' with the age of 23
+});
+```
 <a name="queryWhereIn" />
 ### query.whereIn(property, [values...]): query
 Filters the results by a where clause using an IN clause.
@@ -794,15 +794,15 @@ __Returns__
  The query object suitable for chaining.
 
 __Example__
+```javascript
+Person.whereIn('name', ['bob', 'alice', 'cindy']).all(connection, function(err,people) {
+  // All the people named 'bob', 'alice', or 'cindy'
+});
 
-    Person.whereIn('name', ['bob', 'alice', 'cindy']).all(connection, function(err,people) {
-      // All the people named 'bob', 'alice', or 'cindy'
-    });
-
-    Person.include("phones").whereIn('phones.number', ['111-2222','333-4444']).all(connection, function(err,people){
-      // All the people whose phone numbers are '111-2222' or '333-4444'
-    });
-
+Person.include("phones").whereIn('phones.number', ['111-2222','333-4444']).all(connection, function(err,people){
+  // All the people whose phone numbers are '111-2222' or '333-4444'
+});
+```
 <a name="queryCount" />
 ### query.count([connection], callback)
 
@@ -814,11 +814,11 @@ __Arguments__
  * callback(err, count) - Callback with the count of items.
 
 __Example__
-
-    Person.where('name = ?', 'bob').count(connection, function(err, count) {
-      // count = the number of people with the name bob
-    });
-
+```javascript
+Person.where('name = ?', 'bob').count(connection, function(err, count) {
+  // count = the number of people with the name bob
+});
+```
 <a name="queryMin" />
 ### query.min([connection], fieldName, callback)
 
@@ -831,11 +831,11 @@ __Arguments__
  * callback(err, min) - Callback with the minimum value.
 
 __Example__
-
-    Person.where('name = ?', 'bob').min(connection, 'age', function(err, min) {
-      // the minimum age of all bobs
-    });
-
+```javascript
+Person.where('name = ?', 'bob').min(connection, 'age', function(err, min) {
+  // the minimum age of all bobs
+});
+```
 <a name="queryMax" />
 ### query.max([connection], fieldName, callback)
 
@@ -848,11 +848,11 @@ __Arguments__
  * callback(err, min) - Callback with the maximum value.
 
 __Example__
-
-    Person.where('name = ?', 'bob').max(connection, 'age', function(err, min) {
-      // the maximum age of all bobs
-    });
-
+```javascript
+Person.where('name = ?', 'bob').max(connection, 'age', function(err, min) {
+  // the maximum age of all bobs
+});
+```
 <a name="querySum" />
 ### query.sum([connection], fieldName, callback)
 
@@ -865,11 +865,11 @@ __Arguments__
  * callback(err, sum) - Callback with the sum value.
 
 __Example__
-
-    Person.where('name = ?', 'bob').sum(connection, 'age', function(err, sum) {
-      // the sum of all ages whos name is bob
-    });
-
+```javascript
+Person.where('name = ?', 'bob').sum(connection, 'age', function(err, sum) {
+  // the sum of all ages whos name is bob
+});
+```
 <a name="queryDeleteAll" />
 ### query.deleteAll([connection], callback)
 
@@ -881,11 +881,11 @@ __Arguments__
  * callback(err) - Callback called upon completion.
 
 __Example__
-
-    Person.where('name = ?', 'bob').deleteAll(connection, function(err) {
-      // all people name 'bob' have been deleted.
-    });
-
+```javascript
+Person.where('name = ?', 'bob').deleteAll(connection, function(err) {
+  // all people name 'bob' have been deleted.
+});
+```
 <a name="queryUpdateAll" />
 ### query.updateAll([connection], data, callback)
 
@@ -898,11 +898,11 @@ __Arguments__
  * callback(err) - Callback called upon completion.
 
 __Example__
-
-    Person.where('name = ?', 'bob').updateAll(connection, { age: 25 }, function(err) {
-      // all people name 'bob' have their age set to 25.
-    });
-
+```javascript
+Person.where('name = ?', 'bob').updateAll(connection, { age: 25 }, function(err) {
+  // all people name 'bob' have their age set to 25.
+});
+```
 <a name="queryInclude" />
 ### query.include(propertyName): query
 
@@ -917,13 +917,13 @@ __Arguments__
  * propertyName - This can be a single property name or an array of property names to include.
 
 __Example__
-
-    Person.include("phones").where('name = ?', 'bob').all(connection, function(err, people) {
-      // all people named 'bob' and all their phone numbers
-      // so you can do... people[0].phones[0].number
-      // as opposed to... people[0].phones.all(function(err, phones) {});
-    });
-
+```javascript
+Person.include("phones").where('name = ?', 'bob').all(connection, function(err, people) {
+  // all people named 'bob' and all their phone numbers
+  // so you can do... people[0].phones[0].number
+  // as opposed to... people[0].phones.all(function(err, phones) {});
+});
+```
 <a name="tx"/>
 ## Transaction
 
@@ -937,15 +937,15 @@ __Arguments__
  * callback(err) - Callback called when the transaction has committed.
 
 __Example__
-
-    connection.tx(function(err, tx) {
-      person1.save(connection, function(err) {
-        tx.commit(function(err) {
-          // person1 saved and committed to database
-        });
-      });
+```javascript
+connection.tx(function(err, tx) {
+  person1.save(connection, function(err) {
+    tx.commit(function(err) {
+      // person1 saved and committed to database
     });
-
+  });
+});
+```
 <a name="txRollback"/>
 ### tx.rollback(callback)
 
@@ -956,15 +956,15 @@ __Arguments__
  * callback(err) - Callback called when the transaction has rolledback.
 
 __Example__
-
-    connection.tx(function(err, tx) {
-      person1.save(connection, function(err) {
-        tx.rollback(function(err) {
-          // person1 not saved. Transaction rolledback.
-        });
-      });
+```javascript
+connection.tx(function(err, tx) {
+  person1.save(connection, function(err) {
+    tx.rollback(function(err) {
+      // person1 not saved. Transaction rolledback.
     });
-
+  });
+});
+```
 <a name="resultSetMethods"/>
 ## Result Set
 
@@ -978,11 +978,11 @@ __Arguments__
  * id - The id of the item to get.
 
 __Example__
-
-    Person.all(connection, function(err, people) {
-      var person2 = people.getById(2);
-    });
-
+```javascript
+Person.all(connection, function(err, people) {
+  var person2 = people.getById(2);
+});
+```
 <a name="connectionPooling"/>
 ## Connection Pooling
 
