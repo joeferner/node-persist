@@ -31,8 +31,8 @@ persist.connect({
   Person.using(connection).all(function(err, people) {
     // people contains all the people
   });
-    });
-
+});
+```
 # Download
 
 You can install using Node Package Manager (npm):
