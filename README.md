@@ -992,3 +992,17 @@ Person.all(connection, function(err, people) {
 Persist uses [generic-pool](https://github.com/coopernurse/node-pool) to manage the connection pool. If you specify
 "pooling" in your configuration you must specify a pool name. See [generic-pool](https://github.com/coopernurse/node-pool)
 for other options. To cleanly shutdown the connection pool you must also call persist.[shutdown](#persistShutdown).
+
+Example database.json to enable pooling:
+
+    {
+      "default": "dev",
+
+      "dev": {
+        "driver": "sqlite3",
+        "filename": ":memory:",
+        "pooling": {
+          "name": "myDatabasePool"
+        }
+      }
+    }
