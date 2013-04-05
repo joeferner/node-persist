@@ -75,6 +75,7 @@ You can install using Node Package Manager (npm):
  * [onSave](#modelOnSave)
  * [onLoad](#modelOnLoad)
  * [Associated Object Properties](#associatedObjectProperties)
+ * [Model events](#modelEvents)
 
 ## Query
 
@@ -200,6 +201,7 @@ __Arguments__
 __Returns__
 
  A model class.
+Events can also be registered with model instances - see [Model Events](#modelEvents)
 
 __Example__
 ```javascript
@@ -224,6 +226,7 @@ __Arguments__
 __Returns__
 
  A model class.
+Events can also be registered with model instances - see [Model Events](#modelEvents)
 
 __Example__
 ```javascript
@@ -638,6 +641,37 @@ Person.using(connection).first(function(err, person) {
   person.phones.orderBy('number').all(function(err, phones) {
     // all the phones of the first person
   });
+});
+```
+<a name="modelEvents" />
+### Model Events
+
+The following events can be registered when defining a new model:
+
+ * ```beforeCreate``` and ```afterCreate```: fired before/after a new object is being added to the DB
+ * ```beforeUpdate``` and ```afterUpdate```: fired before/after an existing object is being updated in the DB
+ * ```beforeSave``` and ```afterSave```: fired before/after an object is either created or updated.
+ * ```beforeDelete``` and ```afterDelete```: fired before/after an object is removed from the DB
+
+Each event function has the signature: function(obj) where 'obj' is the model instance that fired the event.
+
+__Limitation__
+
+Events are currently fired ONLY when invoking save/update/delete functions on model instances. So for instance, Model.update(connection,id,data) will not fire the save & update events.
+
+__Example__
+```javascript
+Phone = persist.define("Phone", {
+  "number": persist.String,
+  "created_at": persist.DATETIME,
+  "updated_at": persist.DATETIME
+})
+.on("beforeCreate", function(obj){
+  obj.created_at = new Date();
+})
+.on("beforeSave", function(obj){
+  // updated when creating or updating the model instance
+  obj.updated_at = new Date();
 });
 ```
 <a name="query" />
