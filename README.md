@@ -470,7 +470,7 @@ __Example__
 ```javascript
 Phone = persist.define("Phone", {
   "number": persist.String
-}).hasMany(Person);
+}).hasOne(Person);
 
 Person = persist.define("Person", {
   "name": persist.String
