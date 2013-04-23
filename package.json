@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "nodeunit": "~>0.6.4",
-    "sqlite3": "git://github.com/joeferner/node-sqlite3.git"
+    "sqlite3": "~>2.1.7"
   },
   "scripts": {
     "test": "nodeunit test"
