@@ -17,8 +17,9 @@ exports['Select'] = nodeunit.testCase({
       "age": type.INTEGER
     }).hasMany(this.Phone);
 
-    this.Person.onLoad = function (person) {
+    this.Person.onLoad = function (person, connection, callback) {
       person.nameAndAge = person.name + ": " + person.age;
+      callback();
     };
 
     this.Company = persist.define("Company", {

@@ -613,11 +613,14 @@ create this method in your model file.
 __Arguments__
 
  * obj - The object that was just loaded from the database.
+ * connection - The connection persist is currently using to do the save
+ * callback() - The callback to be called when the onLoad is complete
 
 __Example__
 ```javascript
-Person.onLoad = function(obj) {
+Person.onLoad = function(obj, connection, callback) {
   obj.fullName = obj.firstName + ' ' + obj.lastName;
+  callback();
 };
 ```
 <a name="associatedObjectProperties" />
