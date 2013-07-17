@@ -72,6 +72,7 @@ You can install using Node Package Manager (npm):
  * [update](#modelUpdate)
  * [delete](#modelDelete)
  * [getById](#modelGetById)
+ * [defineClause](#modelDefineClause)
  * [onSave](#modelOnSave)
  * [onLoad](#modelOnLoad)
  * [Associated Object Properties](#associatedObjectProperties)
@@ -583,6 +584,31 @@ __Example__
 ```javascript
 Person.getById(connection, 1, function(err, person) {
   // person is the person with id equal to 1. Or null if not found
+});
+```
+<a name="modelDefineClause" />
+### Model.defineClause(clauseName, clauses)
+
+Creates a custom method that is a composition of clauses. Only supports 
+clauses - where, orderBy, etc. Trying to chain a method that returns results
+(all, first, min, etc.) will not work.
+
+__Arguments__
+
+ * clauseName - The name of the clause to be attached to the model
+ * clauses - The object describing the clauses. Follows a name: arguments
+   structure.
+
+__Example__
+```javascript
+Person.defineClause('clauseName', {
+  where: 'id > 5',
+  orderBy: 'id',
+  limit: 5,
+});
+
+Person.clauseName.all(connection, function(err, people) {
+  // All the people with id > 5, ordered by id and limited to 5
 });
 ```
 <a name="modelOnSave" />
