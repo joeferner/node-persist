@@ -18,6 +18,11 @@ exports['Chain'] = nodeunit.testCase({
       "age": type.INTEGER
     }).hasMany(this.Phone);
 
+    this.Person.defineClause('testClause', {
+      where: ["age = ?", 21],
+      where: "name like '%Bob%'",
+    });
+
     testUtils.connect(persist, {}, function(err, connection) {
       if(err) { console.log(err); return; }
       self.connection = connection;
@@ -61,9 +66,13 @@ exports['Chain'] = nodeunit.testCase({
       self.Phone.deleteAll,
       self.Phone.all,
       self.Person.first,
-      persist.runSqlAll('SELECT * FROM People')
+      persist.runSqlAll('SELECT * FROM People'),
+      self.Person.testClause().all,
     ], function(err, results) {
-      if(err) { console.error(err); return; }
+      if (err) { 
+        console.error(err); 
+        return; 
+      }
 
       // person3.save
       test.equal(results[0].name, 'fred');
@@ -115,6 +124,10 @@ exports['Chain'] = nodeunit.testCase({
       // Person.first
       test.ok(results[14].length, 5);
 
+      // Person.testClause
+      test.ok(results[15].length, 1);
+      test.ok(results[15][0].name, "Bob O'Neill");
+
       test.done();
     });
   },
@@ -131,6 +144,6 @@ exports['Chain'] = nodeunit.testCase({
       test.equal(results.maxAge, 23);
       test.done();
     });
-  }
+  },
 
 });
