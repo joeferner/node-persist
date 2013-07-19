@@ -591,7 +591,7 @@ Person.getById(connection, 1, function(err, person) {
 
 Creates a custom method that is a composition of clauses. Only supports 
 clauses - where, orderBy, etc. Trying to chain a method that returns results
-(all, first, min, etc.) will not work. This is set to refer to the query
+(all, first, min, etc.) will not work. `this` is set to refer to the query
 you're constructing.
 
 __Arguments__
