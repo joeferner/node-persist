@@ -589,9 +589,7 @@ Person.getById(connection, 1, function(err, person) {
 <a name="modelDefineClause" />
 ### Model.defineClause(clauseName, clauses)
 
-Creates a custom method that is a composition of clauses. Only supports 
-clauses - where, orderBy, etc. Trying to chain a method that returns results
-(all, first, min, etc.) will not work. `this` is set to refer to the query
+Creates a custom method that is a composition of clauses. `this` is set to refer to the query.
 you're constructing.
 
 __Arguments__
@@ -606,6 +604,18 @@ Person.defineClause('clauseName', function(arg1, arg2, ...) {
 });
 
 Person.clauseName(5).all(connection, function(err, people) {
+  // All the people with id < 5, ordered by id and limited to 5
+});
+
+Person.defineClause('clauseName2', function(connection, callback) {
+  return this
+  .where('id < 5')
+  .orderBy('id')
+  .limit(5)
+  .all(connection, callback);
+});
+
+Person.clauseName2(connection, function(err, people) {
   // All the people with id < 5, ordered by id and limited to 5
 });
 ```
