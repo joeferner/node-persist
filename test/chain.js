@@ -18,9 +18,8 @@ exports['Chain'] = nodeunit.testCase({
       "age": type.INTEGER
     }).hasMany(this.Phone);
 
-    this.Person.defineClause('testClause', {
-      where: ["age = ?", 21],
-      where: "name like '%Bob%'",
+    this.Person.defineClause('testClause', function(query) {
+      return query.where('age = ?', 21).where('name like "%Bob%"');
     });
 
     testUtils.connect(persist, {}, function(err, connection) {
@@ -68,6 +67,7 @@ exports['Chain'] = nodeunit.testCase({
       self.Person.first,
       persist.runSqlAll('SELECT * FROM People'),
       self.Person.testClause().all,
+      self.Person.limit(5).testClause().all,
     ], function(err, results) {
       if (err) { 
         console.error(err); 
@@ -127,6 +127,10 @@ exports['Chain'] = nodeunit.testCase({
       // Person.testClause
       test.ok(results[15].length, 1);
       test.ok(results[15][0].name, "Bob O'Neill");
+
+      // Person.limit(5).testClause
+      test.ok(results[16].length, 1);
+      test.ok(results[16][0].name, "Bob O'Neill");
 
       test.done();
     });
