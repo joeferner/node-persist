@@ -66,6 +66,57 @@ exports['Define'] = nodeunit.testCase({
     test.done();
   },
 
+  "hasOne with hasManyName": function(test) {
+    var Phone = persist.define("Phone", {
+      "number": type.STRING
+    });
+    var Person = persist.define("Person", {
+      "name": type.STRING
+    }).hasOne(Phone, { hasManyName: 'owners' });
+
+    var person = new Person();
+    assert.isNotUndefined(person.phone, "person.phone is undefined");
+
+    var phone = new Phone();
+    assert.isNotUndefined(phone.owners, "phone.owners is undefined");
+
+    test.done();
+  },
+
+  "hasOne with name and hasManyName": function(test) {
+    var Phone = persist.define("Phone", {
+      "number": type.STRING
+    });
+    var Person = persist.define("Person", {
+      "name": type.STRING
+    }).hasOne(Phone, { name: 'cellular', hasManyName: 'owners' });
+
+    var person = new Person();
+    assert.isNotUndefined(person.cellular, "person.cellular is undefined");
+
+    var phone = new Phone();
+    assert.isNotUndefined(phone.people, "phone.owners is undefined");
+
+    test.done();
+  },
+
+  "hasOne with name and no hasManyName": function(test) {
+    var Phone = persist.define("Phone", {
+      "number": type.STRING
+    });
+    var Person = persist.define("Person", {
+      "name": type.STRING
+    }).hasOne(Phone, { name: 'cellular' });
+
+    var person = new Person();
+    assert.isNotUndefined(person.cellular, "person.cellular is undefined");
+
+    var phone = new Phone();
+    assert.isNotUndefined(phone.people, "phone.people is undefined");
+
+    test.done();
+  },
+
   "hasManyToMany": function(test) {
     var Phone = persist.define("Phone", {
       "number": type.STRING
