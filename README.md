@@ -589,26 +589,34 @@ Person.getById(connection, 1, function(err, person) {
 <a name="modelDefineClause" />
 ### Model.defineClause(clauseName, clauses)
 
-Creates a custom method that is a composition of clauses. Only supports 
-clauses - where, orderBy, etc. Trying to chain a method that returns results
-(all, first, min, etc.) will not work.
+Creates a custom method that is a composition of clauses. `this` is set to refer to the query.
+you're constructing.
 
 __Arguments__
 
  * clauseName - The name of the clause to be attached to the model
- * clauses - The object describing the clauses. Follows a name: arguments
-   structure.
+ * clauses - The function that describes the clause composition using a query.
 
 __Example__
 ```javascript
-Person.defineClause('clauseName', {
-  where: 'id > 5',
-  orderBy: 'id',
-  limit: 5,
+Person.defineClause('clauseName', function(arg1, arg2, ...) {
+  return this.where('id < ?', arg1).orderBy('id').limit(5);
 });
 
-Person.clauseName().all(connection, function(err, people) {
-  // All the people with id > 5, ordered by id and limited to 5
+Person.clauseName(5).all(connection, function(err, people) {
+  // All the people with id < 5, ordered by id and limited to 5
+});
+
+Person.defineClause('clauseName2', function(connection, callback) {
+  return this
+  .where('id < 5')
+  .orderBy('id')
+  .limit(5)
+  .all(connection, callback);
+});
+
+Person.clauseName2(connection, function(err, people) {
+  // All the people with id < 5, ordered by id and limited to 5
 });
 ```
 <a name="modelOnSave" />
