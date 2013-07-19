@@ -596,15 +596,12 @@ clauses - where, orderBy, etc. Trying to chain a method that returns results
 __Arguments__
 
  * clauseName - The name of the clause to be attached to the model
- * clauses - The object describing the clauses. Follows a name: arguments
-   structure.
+ * clauses - The function that describes the clause composition using a query.
 
 __Example__
 ```javascript
-Person.defineClause('clauseName', {
-  where: 'id > 5',
-  orderBy: 'id',
-  limit: 5,
+Person.defineClause('clauseName', function(query) {
+  return query.where('id < 5').orderBy('id').limit(5);
 });
 
 Person.clauseName().all(connection, function(err, people) {
