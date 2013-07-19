@@ -591,7 +591,8 @@ Person.getById(connection, 1, function(err, person) {
 
 Creates a custom method that is a composition of clauses. Only supports 
 clauses - where, orderBy, etc. Trying to chain a method that returns results
-(all, first, min, etc.) will not work.
+(all, first, min, etc.) will not work. This is set to refer to the query
+you're constructing.
 
 __Arguments__
 
@@ -600,12 +601,12 @@ __Arguments__
 
 __Example__
 ```javascript
-Person.defineClause('clauseName', function(query) {
-  return query.where('id < 5').orderBy('id').limit(5);
+Person.defineClause('clauseName', function(arg1, arg2, ...) {
+  return this.where('id < ?', arg1).orderBy('id').limit(5);
 });
 
 Person.clauseName().all(connection, function(err, people) {
-  // All the people with id > 5, ordered by id and limited to 5
+  // All the people with id < arg1, ordered by id and limited to 5
 });
 ```
 <a name="modelOnSave" />
