@@ -605,8 +605,8 @@ Person.defineClause('clauseName', function(arg1, arg2, ...) {
   return this.where('id < ?', arg1).orderBy('id').limit(5);
 });
 
-Person.clauseName().all(connection, function(err, people) {
-  // All the people with id < arg1, ordered by id and limited to 5
+Person.clauseName(5).all(connection, function(err, people) {
+  // All the people with id < 5, ordered by id and limited to 5
 });
 ```
 <a name="modelOnSave" />
