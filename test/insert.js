@@ -57,7 +57,7 @@ exports['Insert'] = nodeunit.testCase({
     callback();
   },
 
-  "primary key set customized": function (test) {
+  "primary key without auto increment": function (test) {
     var self = this;
     var ID = 1001,
         item = new this.PrimaryKeyTest({id: ID, name: 'item-1001'});
