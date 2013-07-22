@@ -13,7 +13,7 @@ exports['Insert'] = nodeunit.testCase({
     });
 
     this.PrimaryKeyTest = persist.define("PrimaryKeyTest", {
-      "id": { dbColumnName: 'my_pk_id' },
+      "id": { dbColumnName: 'my_pk_id', primaryKey: true },
       "name": type.STRING
     });
 
@@ -55,6 +55,29 @@ exports['Insert'] = nodeunit.testCase({
       this.connection.close();
     }
     callback();
+  },
+
+  "primary key without auto increment": function (test) {
+    var self = this;
+    var ID = 1001,
+        item = new this.PrimaryKeyTest({id: ID, name: 'item-1001'});
+    self.connection.save(item, function (err, obj) {
+      if (err) {
+        return console.log(err);
+      }
+
+      test.equals(obj.id, ID);
+
+      self.PrimaryKeyTest.all(self.connection, function (err, qItems) {
+        if (err) {
+          return console.log(err);
+        }
+        test.equals(qItems.length, 1);
+        test.equals(qItems[0].id, ID);
+
+        test.done();
+      });
+    });
   },
 
   "primary key not named id": function (test) {
