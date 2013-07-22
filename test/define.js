@@ -135,6 +135,30 @@ exports['Define'] = nodeunit.testCase({
     test.equals(person.phones.length, 0);
 
     test.done();
-  }
+  },
 
+  "defineClause": function(test) {
+    var Person = persist.define("Person", {
+      "name": type.STRING
+    }).defineClause('testClause', {
+      where: 'id = 1',
+    });
+
+    assert.isNotNullOrUndefined(Person.testClause, "Person.testClause is null or undefined");
+    test.done();
+  },
+
+  "defineClauseError": function(test) {
+    test.throws(function(){
+      var Person = persist.define("Person", {
+        "name": type.STRING
+      });
+
+      Person.property = 'hi';
+
+      Person.defineClause('property', {});
+    }, 'defineClause did not throw an error.');
+
+    test.done();
+  },
 });

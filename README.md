@@ -72,6 +72,7 @@ You can install using Node Package Manager (npm):
  * [update](#modelUpdate)
  * [delete](#modelDelete)
  * [getById](#modelGetById)
+ * [defineClause](#modelDefineClause)
  * [onSave](#modelOnSave)
  * [onLoad](#modelOnLoad)
  * [Associated Object Properties](#associatedObjectProperties)
@@ -584,6 +585,39 @@ __Example__
 ```javascript
 Person.getById(connection, 1, function(err, person) {
   // person is the person with id equal to 1. Or null if not found
+});
+```
+<a name="modelDefineClause" />
+### Model.defineClause(clauseName, clauses)
+
+Creates a custom method that is a composition of clauses. `this` is set to refer to the query.
+you're constructing.
+
+__Arguments__
+
+ * clauseName - The name of the clause to be attached to the model
+ * clauses - The function that describes the clause composition using a query.
+
+__Example__
+```javascript
+Person.defineClause('clauseName', function(arg1, arg2, ...) {
+  return this.where('id < ?', arg1).orderBy('id').limit(5);
+});
+
+Person.clauseName(5).all(connection, function(err, people) {
+  // All the people with id < 5, ordered by id and limited to 5
+});
+
+Person.defineClause('clauseName2', function(connection, callback) {
+  return this
+  .where('id < 5')
+  .orderBy('id')
+  .limit(5)
+  .all(connection, callback);
+});
+
+Person.clauseName2(connection, function(err, people) {
+  // All the people with id < 5, ordered by id and limited to 5
 });
 ```
 <a name="modelOnSave" />
