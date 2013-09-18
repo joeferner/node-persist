@@ -75,6 +75,7 @@ You can install using Node Package Manager (npm):
  * [defineClause](#modelDefineClause)
  * [onSave](#modelOnSave)
  * [onLoad](#modelOnLoad)
+ * [validate](#modelValidate)
  * [Associated Object Properties](#associatedObjectProperties)
  * [Model events](#modelEvents)
 
@@ -656,6 +657,54 @@ __Example__
 Person.onLoad = function(obj, connection, callback) {
   obj.fullName = obj.firstName + ' ' + obj.lastName;
   callback();
+};
+```
+<a name="modelValidate" />
+### Model.validate(obj, callback, connection)
+
+Model validation is loosely implemented. Instead, it's left to the developers to integrate any valiation library that fits their needs.
+If present this function will be called during a save or update operation.
+
+__Arguments__
+
+ * obj - The model object
+ * connection - The connection persist is currently using to do the save or update
+ * callback(success, message) - The callback to be called when the validate is complete.
+  * success - False if validation failed, True otherwise
+  * message - A string containing an error message, or a custom-defined object containing vaidation information
+
+__Example__
+```javascript
+Person = persist.define("Person", {
+  "name": type.STRING,
+  "age": type.INTEGER
+};
+
+//Single message validation
+Person.validate = function (obj, connection, callback) {
+  if (obj.name === 'bad name') {
+    return callback(false, 'You had a bad name');
+  }
+  return callback(true);
+};
+
+//Multiple message validation
+Person.validate = function (obj, connection, callback) {
+  var errors = [];
+
+  if (obj.name === 'bad name') {
+    errors.push({name:'You had a bad name'});
+  }
+  
+  if (obj.age < 0) {
+    errors.push({age:'Age must be greater than 0'});  
+  }
+  
+  if(errors.length > 0) {
+    return callback(false, errors);
+  }
+  
+  return callback(true);
 };
 ```
 <a name="associatedObjectProperties" />
