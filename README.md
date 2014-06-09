@@ -129,7 +129,7 @@ The file should follow a format like this:
 
       "prod": {
         "driver": "sqlite3",
-        "filename": "prod.db"
+        "filename": "prod.db",
         "sqlDir": "./prodSql",
         "pooling": {
           "name": "testPool",
