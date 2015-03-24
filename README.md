@@ -1,3 +1,5 @@
+# persist is not maintained anymore. If you would like to take it over from me please contact me.
+
 # persist
 
 persist is an ORM framework for node.js.
